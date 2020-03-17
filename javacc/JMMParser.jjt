@@ -1,0 +1,396 @@
+options {
+LOOKAHEAD=1;
+}
+PARSER_BEGIN(JMMParser)
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+public class JMMParser{
+    static SimpleNode parse(InputStream input_stream){
+        SimpleNode root = null;
+
+        System.out.println("Parser starting");
+
+        JMMParser MainProg = new JMMParser(input_stream);
+
+        try{
+            root = MainProg.Program();
+            MainProg.eval(root, 0);
+
+        }catch(ParseException e){
+            printParsingException(e);
+        }catch(Exception e){
+            System.out.println("Non parse exception ocured: ");
+            System.out.println(e);
+        }
+        
+        System.out.println();
+
+        return root;
+    }
+
+    static void printParsingException(ParseException e){
+        System.out.println("A Oopsie occured inside the code");
+        System.exit(-1);
+    }
+    
+    int eval(SimpleNode node, int depth) {
+        /*
+        if(node.id == CompTreeConstants.JJTEMPTY) return;
+        System.out.println();
+        for(int i = 0; i < depth; i++){
+            System.out.print("  ");
+        }
+        System.out.print(depth+" ");
+        switch(node.id){
+            case CompTreeConstants.JJTMAIN:
+                System.out.print("Main Program ");
+                break;
+            case CompTreeConstants.JJTIDENTIFIER:
+                System.out.print("[ID] ");
+                break;
+            case CompTreeConstants.JJTTYPE:
+                System.out.print("[Type] ");
+                break;
+            case CompTreeConstants.JJTVARDECLARATION:
+                System.out.print("[VarDeclaration] ");
+                break;
+            case CompTreeConstants.JJTIMPORTDECLARATION:
+                System.out.print("ImportDeclaration");
+                break;
+            case CompTreeConstants.JJTCLASSDECLARATION:
+                System.out.print("[ClassDeclaration] ");
+                break;
+            case CompTreeConstants.JJTMETHODDECLARATION:
+                System.out.print("[MethodDeclaration] ");
+                break;
+            case CompTreeConstants.JJTWHILE:
+                System.out.print("[while] ");
+                break;
+            case CompTreeConstants.JJTIF:
+                System.out.print("[if] ");
+                break;
+            case CompTreeConstants.JJTIFCOND:
+                System.out.print("[if cond] ");
+                break;
+            case CompTreeConstants.JJTIFBODY:
+                System.out.print("[if body] ");
+                break;
+            case CompTreeConstants.JJTELSE:
+                System.out.print("[else] ");
+                break;
+            case CompTreeConstants.JJTRETURN:
+                System.out.print("[returns] ");
+                break;
+            default:
+                System.out.print("["+String.valueOf(node.id)+"] ");
+                break;
+        }
+        if(node.type != null) System.out.print("Node type: "+node.type+" ");
+        
+        if(node.import_list != null && node.import_list.size() != 0){
+            System.out.print("import ");
+            for(String import_path : node.import_list){
+                System.out.print(" "+import_path);
+            }
+            System.out.print(" ");
+        }
+        SimpleNode lhs;
+        SimpleNode rhs;
+        int n_children = node.jjtGetNumChildren();
+        switch(n_children){
+            case 0:
+                //System.out.print("LEAF");
+                return;
+            case 1:
+                lhs = (SimpleNode) node.jjtGetChild(0); //left child
+                //System.out.print("Just going left");
+                if(lhs != null) eval(lhs, depth+1);
+                return;
+            case 2:
+                lhs = (SimpleNode) node.jjtGetChild(0); //left child
+                rhs = (SimpleNode) node.jjtGetChild(1); // right child
+                //System.out.print("2 children");
+
+                if(lhs != null) eval(lhs, depth+1);
+
+                if(rhs != null) eval(rhs, depth+1);
+                return;
+            default:
+                for(int i = 0; i < n_children; i++){
+                    lhs = (SimpleNode) node.jjtGetChild(i);
+                    eval(lhs, depth+1);
+                }
+                break;
+        }
+        */
+        return 0;
+    }
+}
+PARSER_END(JMMParser)
+SKIP :
+{
+//Eventually when we handle string parsing, remove these from here
+" "
+|"\r"
+|"\t"
+|"\n"
+//Ignore comments
+|< "//" (~["\n"])+ ("\n" | "\r" | "\r\n") >
+|< "/*" (~["*"])* "*" ( (~["*","/"])* (~["*"])* "*" | "*" )* "/" >
+
+}
+/*
+GENERAL RULE, TOKENS THAT INCLUDE EACHOTHER (in is included by int) MUST ALWAYS APPEAR
+SHORTEST TOKEN FIRST
+i.e.
+>in
+>int
+and NOT
+>int
+>i
+
+TODO
+Accept hex/bin number notation
+*/
+TOKEN:
+{
+
+< INTEGER: (["0"-"9"])+ >
+|< LF: "\n" | "\r" | "\r\n" >
+
+|< SC: ";" >
+|< NEW: "new" >
+|< OP: "(" >
+|< CP: ")" >
+|< OSB: "[" >
+|< CSB: "]" >
+|< OB: "{" >
+|< CB: "}" >
+
+|< NOT: "!" >
+|< ADD: "+" >
+|< SUB: "-" >
+|< MUL: "*" >
+|< DIV: "/" >
+|< LESSTHAN: "<" >
+|< BOOLAND: "&&" >
+|< EQ: "=" >
+|< SELECTOR: "." >
+|< SEPARATOR: "," >
+
+|< THIS: "this" >
+|< IF: "if" >
+|< ELSE: "else" >
+|< WHILE: "while" >
+|< RETURN: "return" >
+
+|< BOOL: "true" | "false" >
+|< BOOLEAN: "boolean" >
+|< INT: "int" >
+
+|< STRING: "String" >
+|< LENGTH: "length" >
+|< IMPORT: "import" >
+|< EXTENDS: "extends" >
+|< PUBLIC: "public" >
+|< VOID: "void" >
+|< MAIN: "main" >
+|< STATIC: "static" >
+|< CLASS: "class" >
+|
+// ID MUST ALWAYS BE THE LAST TOKEN BECAUSE OTHERWISE IT WILL BE MATCH EVERY STRING
+< ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+}
+
+SimpleNode Program() #MAIN: {}
+{
+    (
+        ( ImportDeclaration() )* ClassDeclaration() <EOF>
+    ) {return jjtThis;}
+}
+
+void Empty() : {}
+{
+     {}
+}
+
+void Identifier(): {Token t;}
+{
+    t=<ID>{
+        jjtThis.Identifier = t.image+"";
+        System.out.println(t.image+",");
+    }
+}
+
+void Type() #Type : {Token t;}
+{
+    LOOKAHEAD(2)
+    t=<INT>{
+        jjtThis.type = "int[]";
+    } <OSB> <CSB>
+    |
+    t=<INT>{
+        jjtThis.type = "int";
+    }
+    |
+    LOOKAHEAD(2)
+    t=<STRING>{
+        jjtThis.type = "String[]";
+    } <OSB> <CSB>
+    |
+    t=<STRING>{
+        jjtThis.type = "String";
+    }
+    |
+    t=<BOOLEAN>{
+        jjtThis.type = "boolean";
+    }
+    |
+    Identifier()
+}
+
+void VarDeclaration(): {}
+{
+    Type() Identifier() <SC>
+}
+
+
+void ImportDeclaration(): {Token import_section;}
+{
+    //import_section hops on all path sections of the import
+    <IMPORT> import_section=<ID>{
+        jjtThis.import_list.add(import_section.image+"");
+    }
+    
+    (
+        <SELECTOR> import_section=<ID>{
+            jjtThis.import_list.add(import_section.image+"");
+        }
+    )*
+    <OP> ( Type() ( <SEPARATOR> Type() )* )? <CP> (Type() #RETURN)? <SC>
+}
+
+void ClassDeclaration(): {Token t;}
+{
+    <CLASS> t=<ID>{
+        jjtThis.class_name=t.image+"";
+    } ( <EXTENDS> t=<ID>{
+        jjtThis.class_extends=t.image+"";
+    } )? <OB>
+        ( VarDeclaration() )*
+        ( MethodDeclaration() )*
+    <CB>
+}
+
+void MethodDeclaration():{}
+{
+    LOOKAHEAD(2)
+    <PUBLIC> Type() Identifier() <OP> ( Type() Identifier() ( <SEPARATOR> Type() Identifier() )* )? <CP> <OB>
+        
+        ( LOOKAHEAD(2) VarDeclaration() )*
+        ( Statement() )*
+        ( "return" Expression() <SC> )?
+    <CB>
+    |
+    <PUBLIC> <STATIC> <VOID> <MAIN> <OP>
+        <STRING> <OSB> <CSB> Identifier()
+    <CP> <OB>
+        ( LOOKAHEAD(2) VarDeclaration() )*
+        ( Statement() )*
+    <CB>
+
+}
+
+
+void Expression() #void: {Token t;}
+{
+    t = <INTEGER>{
+        //jjtThis.val = Integer.parseInt(t.image);
+    }       Expression_1()
+    |
+    <BOOL>  Expression_1()
+    |
+    <THIS>  Expression_1()
+    |
+    LOOKAHEAD(2)
+    <NEW> <INT> <OSB> Expression() <CSB> Expression_1() //new type[]
+    |
+    <NEW> Identifier() <OP> <CP> Expression_1()              //new var ()
+    |
+    <NOT> Expression() Expression_1()               //! expr()
+    |
+    <OP> Expression() <CP> Expression_1()           // ( expr() )
+    |
+    Identifier()    Expression_1()
+}
+
+void Expression_1() #void: {}
+{
+    ( <BOOLAND> | <LESSTHAN> | <ADD> | <SUB> | <MUL> | <DIV>) Expression() Expression_1()
+    |
+    <OSB> Expression() <CSB> Expression_1()
+    |
+    LOOKAHEAD(2)
+    <SELECTOR> <LENGTH> Expression_1()
+    |
+    <SELECTOR> Identifier() <OP> [ Expression() (<SEPARATOR> Expression())* ] <CP> Expression_1()
+    |
+    Empty()
+}
+void Statement() #void : {}
+{
+    <OB> (Statement())* <CB>
+    |
+    <IF> ifcond()
+    |
+    <WHILE> whileLoop()
+    |
+    //TO REMOVE THIS ONE AND SWAP WITH A LOOKAHEAD(2 or 1)
+    LOOKAHEAD(3)
+    Expression() <SC>
+    |
+    LOOKAHEAD(2)
+    Identifier() <EQ> Expression() <SC>
+    |
+    Identifier() <OSB> Expression() <CSB> <EQ> Expression() <SC>
+}
+
+//          IF HANDLING
+void ifcond() #IF: {}
+{
+    <OP> Expression() #IFCOND <CP> Statement() #IFBODY <ELSE> elsecond()
+}
+//          ELSE HANDLING
+void elsecond() #ELSE : {}
+{
+    Statement()
+} 
+//          WHILE HANDLING
+void whileLoop() #WHILE:{}
+{
+    try {
+    (
+        <OP> Expression() <CP> Statement()
+    )
+    }catch (ParseException e) {
+        System.out.println("Could not parse while");
+        System.out.println(e.toString());
+        error_skipto(CB, "no Expression found");
+    }
+}
+
+
+JAVACODE
+//Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
+void error_skipto(int kind, String a) {
+    ParseException e = generateParseException();
+    System.out.println(e.toString());
+    Token t;
+    do {
+        t = getNextToken();
+    }
+    while (t.kind != kind);
+}
