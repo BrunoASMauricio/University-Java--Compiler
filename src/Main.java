@@ -12,6 +12,8 @@ public class Main {
     }
 	
 	public static void main(String[] args) {
+        return;
+        /*
         if(args.length < 1){
             Usage();
         }
@@ -50,6 +52,7 @@ public class Main {
         SimpleNode root = JMMParser.parse(file_stream);
 
         root.dump(""); // prints the tree on the screen
+        */
 	}
 
     public static int eval(SimpleNode node) {
