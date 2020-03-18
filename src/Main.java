@@ -45,11 +45,10 @@ public class Main {
             System.exit(-1);
         }
 
-        //JMMParser myparser = new JMMParser(file_stream);
+        
+        SimpleNode root = JMMParser.parse(file_stream);
 
-        //SimpleNode root = JMMParser.parse(file_stream);
-
-        //root.dump(""); // prints the tree on the screen
+        root.dump(""); // prints the tree on the screen
 	}
 
     public static int eval(SimpleNode node) {

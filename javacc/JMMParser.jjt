@@ -33,7 +33,6 @@ public class JMMParser{
 
     static void printParsingException(ParseException e){
         System.out.println("A Oopsie occured inside the code");
-        System.exit(-1);
     }
     
     int eval(SimpleNode node, int depth) {
