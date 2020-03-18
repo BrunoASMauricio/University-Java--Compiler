@@ -12,12 +12,10 @@ public class Main {
     }
 	
 	public static void main(String[] args) {
-        return;
-        /*
         if(args.length < 1){
             Usage();
         }
-
+        
         String input_file = null;
         InputStream file_stream = null;
         int r = 0;
@@ -29,7 +27,7 @@ public class Main {
                 r = Integer.parseInt(args[i].substring(4));
             }else if(args[i].substring(0,2).equals("-o")){
                 o = true;
-            }else if(args[i].substring(args[i].length()-4, args[i].length()) == ".jmm"){
+            }else if(args[i].substring(args[i].length()-4, args[i].length()).equals(".jmm")){
                 input_file = args[i];
             }else{
                 System.out.println("Could not understand argument \""+args[i]+"\"");
@@ -49,10 +47,9 @@ public class Main {
 
         //JMMParser myparser = new JMMParser(file_stream);
 
-        SimpleNode root = JMMParser.parse(file_stream);
+        //SimpleNode root = JMMParser.parse(file_stream);
 
-        root.dump(""); // prints the tree on the screen
-        */
+        //root.dump(""); // prints the tree on the screen
 	}
 
     public static int eval(SimpleNode node) {
