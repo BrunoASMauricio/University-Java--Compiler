@@ -17,7 +17,7 @@ public class JMMParser{
 
         try{
             root = MainProg.Program();
-            MainProg.eval(root, 0);
+            //MainProg.eval(root, 0);
 
         }catch(ParseException e){
             printParsingException(e);
@@ -137,8 +137,9 @@ SKIP :
 |"\t"
 |"\n"
 //Ignore comments
+
+|< "/*" (~["*"])* "*" ( ~["*","/"] (~["*"])* "*" | "*" )* "/" >
 |< "//" (~["\n"])+ ("\n" | "\r" | "\r\n") >
-|< "/*" (~["*"])* "*" ( (~["*","/"])* (~["*"])* "*" | "*" )* "/" >
 
 }
 /*
@@ -201,7 +202,7 @@ TOKEN:
 |< CLASS: "class" >
 |
 // ID MUST ALWAYS BE THE LAST TOKEN BECAUSE OTHERWISE IT WILL BE MATCH EVERY STRING
-< ID: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+< ID: ["a"-"z","A"-"Z","_","$"] ( ["a"-"z","A"-"Z","$","_","0"-"9"] )* >
 }
 
 SimpleNode Program() #MAIN: {}
@@ -260,7 +261,7 @@ void VarDeclaration(): {}
 void ImportDeclaration(): {Token import_section;}
 {
     //import_section hops on all path sections of the import
-    <IMPORT> import_section=<ID>{
+    <IMPORT> (<STATIC>)? import_section=<ID>{
         jjtThis.import_list.add(import_section.image+"");
     }
     
@@ -269,7 +270,7 @@ void ImportDeclaration(): {Token import_section;}
             jjtThis.import_list.add(import_section.image+"");
         }
     )*
-    <OP> ( Type() ( <SEPARATOR> Type() )* )? <CP> (Type() #RETURN)? <SC>
+    (<OP> ( (Type() (<SEPARATOR> Type() )*) | <VOID> )? <CP>)? ( <VOID> | Type() #RETURN)? <SC>
 }
 
 void ClassDeclaration(): {Token t;}
@@ -279,7 +280,7 @@ void ClassDeclaration(): {Token t;}
     } ( <EXTENDS> t=<ID>{
         jjtThis.class_extends=t.image+"";
     } )? <OB>
-        ( VarDeclaration() )*
+        ( LOOKAHEAD(2) VarDeclaration() )*
         ( MethodDeclaration() )*
     <CB>
 }
@@ -287,7 +288,7 @@ void ClassDeclaration(): {Token t;}
 void MethodDeclaration():{}
 {
     LOOKAHEAD(2)
-    <PUBLIC> Type() Identifier() <OP> ( Type() Identifier() ( <SEPARATOR> Type() Identifier() )* )? <CP> <OB>
+    <PUBLIC> Type() Identifier() <OP> ( (Type() Identifier() ( <SEPARATOR> Type() Identifier() )* ) | <VOID> )? <CP> <OB>
         
         ( LOOKAHEAD(2) VarDeclaration() )*
         ( Statement() )*
@@ -303,21 +304,15 @@ void MethodDeclaration():{}
 
 }
 
-
-void Expression() #void: {Token t;}
+void Expression() #void: {}
 {
-    t = <INTEGER>{
-        //jjtThis.val = Integer.parseInt(t.image);
-    }       Expression_1()
+    IntegerConstant() Expression_1()
     |
-    <BOOL>  Expression_1()
+    BooleanConstant() Expression_1()
     |
-    <THIS>  Expression_1()
+    <THIS> #THIS Expression_1()
     |
-    LOOKAHEAD(2)
-    <NEW> <INT> <OSB> Expression() <CSB> Expression_1() //new type[]
-    |
-    <NEW> Identifier() <OP> <CP> Expression_1()              //new var ()
+    <NEW> New()
     |
     <NOT> Expression() Expression_1()               //! expr()
     |
@@ -325,10 +320,34 @@ void Expression() #void: {Token t;}
     |
     Identifier()    Expression_1()
 }
+/*
+Cant access jjtThis if #void is present, so need to break Expression into pieces
+*/
+void IntegerConstant() #INTCONST: {Token t;}
+{
+    t = <INTEGER>{
+        jjtThis.val = Integer.parseInt(t.image);
+    }
+}
+void BooleanConstant() #BOOLCONST: {Token t;}
+{
+    t = <BOOL>{
+        //jjtThis.bool_val = Boolean.parseBoolean(t.image);
+    }
+}
+void New() #NEW: {Token t;}
+{
+    <INT> <OSB> Expression() <CSB> Expression_1()   //new type[]
+    |
+    Identifier() <OP> <CP> Expression_1()           //new var ()
+}
 
+/*
+Second part of Expression (to avoid left-recursivity)
+*/
 void Expression_1() #void: {}
 {
-    ( <BOOLAND> | <LESSTHAN> | <ADD> | <SUB> | <MUL> | <DIV>) Expression() Expression_1()
+    ( <BOOLAND> #AND | <LESSTHAN> #LESSTHAN | <ADD> #ADD | <SUB> #SUB | <MUL> #MUL | <DIV> #DIV) Expression() Expression_1()
     |
     <OSB> Expression() <CSB> Expression_1()
     |
@@ -339,7 +358,9 @@ void Expression_1() #void: {}
     |
     Empty()
 }
-void Statement() #void : {}
+
+
+void Statement() : {System.out.println("Cool\n\n");}
 {
     <OB> (Statement())* <CB>
     |
@@ -347,23 +368,23 @@ void Statement() #void : {}
     |
     <WHILE> whileLoop()
     |
-    //TO REMOVE THIS ONE AND SWAP WITH A LOOKAHEAD(2 or 1)
-    LOOKAHEAD(3)
-    Expression() <SC>
+    LOOKAHEAD(2)
+    Identifier() <EQ> #ATTR Expression() <SC>
     |
     LOOKAHEAD(2)
-    Identifier() <EQ> Expression() <SC>
+    Identifier() <OSB> Expression()  <CSB> <EQ> #ATTR Expression() <SC>
     |
-    Identifier() <OSB> Expression() <CSB> <EQ> Expression() <SC>
+    //TO REMOVE THIS ONE AND SWAP WITH A LOOKAHEAD(2 or 1)
+    Expression() <SC>
 }
 
 //          IF HANDLING
-void ifcond() #IF: {}
+void ifcond() #void/* #IF */: {}
 {
-    <OP> Expression() #IFCOND <CP> Statement() #IFBODY <ELSE> elsecond()
+    <OP> Expression() #IFCOND <CP> Statement()/* #IFBODY */ <ELSE> elsecond()
 }
 //          ELSE HANDLING
-void elsecond() #ELSE : {}
+void elsecond() /* #ELSE */ : {}
 {
     Statement()
 } 
@@ -372,7 +393,7 @@ void whileLoop() #WHILE:{}
 {
     try {
     (
-        <OP> Expression() <CP> Statement()
+        <OP> Expression() #WHILECOND <CP> Statement()
     )
     }catch (ParseException e) {
         System.out.println("Could not parse while");
