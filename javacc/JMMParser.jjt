@@ -59,7 +59,7 @@ public class JMMParser{
         if(e.expectedTokenSequences.length > 0){
             expected.append(tokenImage[e.expectedTokenSequences[e.expectedTokenSequences.length-1][0]]).append(" ");
         }
-        expected.append(" ]");
+        expected.append(" ]\n");
         
         if(e.expectedTokenSequences.length == 0){
             System.out.println("Nothing, THIS SHOULD BE UNREACHABLE?");
@@ -254,7 +254,6 @@ void Identifier(): {Token t;}
 {
     t=<ID>{
         jjtThis.Identifier = t.image+"";
-        System.out.println(t.image+",");
     }
 }
 
@@ -393,7 +392,7 @@ void Expression_1() #void: {}
 }
 
 
-void Statement() : {System.out.println("Cool\n\n");}
+void Statement() : {}
 {
     <OB> (Statement())* <CB>
     |
@@ -429,21 +428,21 @@ void whileLoop() #WHILE:{}
         <OP> Expression() #WHILECOND <CP> Statement()
     )
     }catch (ParseException e) {
-        System.out.println("Could not parse while");
-        System.out.println(e.toString());
-        error_skipto(CB, "no Expression found");
+        System.out.println("COULD NOT PARSE WHILE");
+        error_skipto(CB, e);
     }
 }
 
 
 JAVACODE
 //Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
-void error_skipto(int kind, String a) {
-    ParseException e = generateParseException();
-    System.out.println(e.toString());
-    Token t;
-    do {
-        t = getNextToken();
+void error_skipto(int kind, ParseException e) throws Exception{
+    if(all_exceptions.size() == MAX_EXCEPTIONS){
+        throw new Exception("Maximum ammount of exceptions caught.");
     }
-    while (t.kind != kind);
+    all_exceptions.add(e);
+    Token t;
+    do{
+        t = getNextToken();
+    }while(t.kind != kind);
 }
