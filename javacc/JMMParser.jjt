@@ -81,11 +81,18 @@ public class JMMParser{
                 System.out.print("Main Program ");
                 break;
             case CompTreeConstants.JJTIDENTIFIER:
-                System.out.print("[ID] ");
+                System.out.print("[ID: "+node.Identifier+"] ");
                 break;
             case CompTreeConstants.JJTTYPE:
                 System.out.print("[Type] ");
                 break;
+            case CompTreeConstants.JJTNEW:
+                System.out.print("[new] ");
+                break;
+            case CompTreeConstants.JJTARGUMENTS:
+                System.out.print("[arguments] ");
+                break;
+
             case CompTreeConstants.JJTVARDECLARATION:
                 System.out.print("[VarDeclaration] ");
                 break;
@@ -98,8 +105,19 @@ public class JMMParser{
             case CompTreeConstants.JJTMETHODDECLARATION:
                 System.out.print("[MethodDeclaration] ");
                 break;
+                
+            case CompTreeConstants.JJTSTATEMENT:
+                System.out.print("[statement] ");
+                break;
+            case CompTreeConstants.JJTEXPR:
+                System.out.print("[RHS expression] ");
+                break;
+                
             case CompTreeConstants.JJTWHILE:
                 System.out.print("[while] ");
+                break;
+            case CompTreeConstants.JJTWHILECOND:
+                System.out.print("[while cond] ");
                 break;
             case CompTreeConstants.JJTIF:
                 System.out.print("[if] ");
@@ -107,14 +125,44 @@ public class JMMParser{
             case CompTreeConstants.JJTIFCOND:
                 System.out.print("[if cond] ");
                 break;
-            case CompTreeConstants.JJTIFBODY:
-                System.out.print("[if body] ");
-                break;
-            case CompTreeConstants.JJTELSE:
+            case CompTreeConstants.JJTELSEBODY:
                 System.out.print("[else] ");
                 break;
             case CompTreeConstants.JJTRETURN:
                 System.out.print("[returns] ");
+                break;
+
+            case CompTreeConstants.JJTLESSTHAN:
+                System.out.print("[<] ");
+                break;
+            case CompTreeConstants.JJTADD:
+                System.out.print("[+] ");
+                break;
+            case CompTreeConstants.JJTSUB:
+                System.out.print("[-] ");
+                break;
+            case CompTreeConstants.JJTMUL:
+                System.out.print("[*] ");
+                break;
+            case CompTreeConstants.JJTDIV:
+                System.out.print("[/] ");
+                break;
+
+            case CompTreeConstants.JJTATTR:
+                System.out.print("[attribution] ");
+                break;
+            case CompTreeConstants.JJTARATTR:
+                System.out.print("[array attribution] ");
+                break;
+                
+            case CompTreeConstants.JJTINTCONST:
+                System.out.print("[int constant: "+String.valueOf(node.val)+"] ");
+                break;
+            case CompTreeConstants.JJTBOOLCONST:
+                System.out.print("[boolean constant] ");
+                break;
+            case CompTreeConstants.JJTTHIS:
+                System.out.print("[this] ");
                 break;
             default:
                 System.out.print("["+String.valueOf(node.id)+"] ");
@@ -374,6 +422,10 @@ void New() #NEW: {Token t;}
     Identifier() <OP> <CP> Expression_1()           //new var ()
 }
 
+void Arguments()#ARGUMENTS: {}
+{
+    <OP> [ Expression() (<SEPARATOR> Expression() )* ] <CP>
+}
 /*
 Second part of Expression (to avoid left-recursivity)
 */
@@ -384,39 +436,58 @@ void Expression_1() #void: {}
     <OSB> Expression() <CSB> Expression_1()
     |
     LOOKAHEAD(2)
-    <SELECTOR> <LENGTH> Expression_1()
+    <SELECTOR> #LENGTH(1) <LENGTH> Expression_1()
     |
-    <SELECTOR> Identifier() <OP> [ Expression() (<SEPARATOR> Expression())* ] <CP> Expression_1()
+    <SELECTOR> Identifier() Arguments() Expression_1()
     |
     Empty()
 }
 
 
-void Statement() : {}
+void Statement() #void: {}
 {
-    <OB> (Statement())* <CB>
-    |
     <IF> ifcond()
     |
     <WHILE> whileLoop()
     |
     LOOKAHEAD(2)
-    Identifier() <EQ> #ATTR Expression() <SC>
+    normalAttribution()
     |
     LOOKAHEAD(2)
-    Identifier() <OSB> Expression()  <CSB> <EQ> #ATTR Expression() <SC>
+    arrAttribution()
     |
-    //TO REMOVE THIS ONE AND SWAP WITH A LOOKAHEAD(2 or 1)
+    justStatement()
+}
+//          Statement
+void justStatement() #STATEMENT: {}
+{
+    <OB> (Statement())* <CB>
+    |
     Expression() <SC>
 }
+void attributionExpression() #expr: {}
+{
+    Expression()
+}
+//          NORMAL ATTRIBUTION
+void normalAttribution() #ATTR: {}
+{
+    Identifier() <EQ> attributionExpression() <SC>
+}
+//          ARRAY ATTRIBUTION
+void arrAttribution() #ARATTR: {}
+{
+    Identifier() <OSB> Expression()  <CSB> <EQ> attributionExpression() <SC>
+}
+
 
 //          IF HANDLING
-void ifcond() #void/* #IF */: {}
+void ifcond() #IF: {}
 {
-    <OP> Expression() #IFCOND <CP> Statement()/* #IFBODY */ <ELSE> elsecond()
+    <OP> Expression() #IFCOND <CP> Statement()/* #IFBODY */ <ELSE> elsebody()
 }
 //          ELSE HANDLING
-void elsecond() /* #ELSE */ : {}
+void elsebody() /* #ELSE */ : {}
 {
     Statement()
 } 
