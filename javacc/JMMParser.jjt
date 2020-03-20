@@ -16,10 +16,11 @@ public class JMMParser{
     
     static SimpleNode parse(InputStream input_stream){
         SimpleNode root = null;
+        all_exceptions.clear();
+        JMMParser MainProg = new JMMParser(input_stream);
 
         System.out.println("Parser starting");
 
-        JMMParser MainProg = new JMMParser(input_stream);
 
         try{
             root = MainProg.Program();
