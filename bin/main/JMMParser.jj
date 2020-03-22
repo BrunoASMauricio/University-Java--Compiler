@@ -18,7 +18,7 @@ public class JMMParser/*@bgen(jjtree)*/implements JMMParserTreeConstants/*@egen*
     static List<ParseException> all_exceptions = new ArrayList<ParseException>();
     static int MAX_EXCEPTIONS = 5;
     
-    static SimpleNode parse(InputStream input_stream){
+    static SimpleNode parse(InputStream input_stream) throws Exception{
         SimpleNode root = null;
         all_exceptions.clear();
         JMMParser MainProg = new JMMParser(input_stream);
@@ -34,12 +34,14 @@ public class JMMParser/*@bgen(jjtree)*/implements JMMParserTreeConstants/*@egen*
         }catch(Exception e){
             System.out.println("Non parse exception ocured: ");
             System.out.println(e);
+            throw new Exception("Parser failure");
         }
         if(all_exceptions.size() != 0){
             for(ParseException parse_ex: all_exceptions){
                 printParsingException(parse_ex);
             }
-            return null;
+            throw new Exception("Parser failure");
+            //return null;
         }
         return root;
     }
@@ -49,7 +51,7 @@ public class JMMParser/*@bgen(jjtree)*/implements JMMParserTreeConstants/*@egen*
     static void printParsingException(ParseException e){
         System.out.println("PARSING ERROR");
         //If this object has been created due to a parse error, the token following this token (currentToken) will (therefore) be the first error token.
-        System.out.println("Unexpected symbol encountered: \"+e.currentToken.next.image+\" on line "+e.currentToken.beginLine+", column "+e.currentToken.beginColumn);
+        System.out.println("Unexpected symbol encountered: "+e.currentToken.next.image+" on line "+e.currentToken.beginLine+", column "+e.currentToken.beginColumn);
         System.out.println("Was expecting one of the following symbols:");
 
         StringBuffer expected = new StringBuffer();

@@ -11,7 +11,7 @@ public class Main {
         System.exit(-1);
     }
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
         if(args.length < 1){
             Usage();
         }
@@ -47,7 +47,7 @@ public class Main {
 
         
         SimpleNode root = JMMParser.parse(file_stream);
-
+        
         //JMMParser.eval(root, 0);
         System.out.println();
 	}
