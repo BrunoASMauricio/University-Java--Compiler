@@ -21,11 +21,9 @@ public class JMMParser{
 
         System.out.println("Parser starting");
 
-
         try{
             root = MainProg.Program();
-            //MainProg.eval(root, 0);
-            System.out.println();
+            
         }catch(ParseException e){
             System.out.println("UNEXPECTED Parsing Exception");
             printParsingException(e);
@@ -68,147 +66,53 @@ public class JMMParser{
         }
     }
     
-    int eval(SimpleNode node, int depth) {
-        /*
-        if(node.id == CompTreeConstants.JJTEMPTY) return;
-        System.out.println();
+    static int eval(SimpleNode node, int depth) {
+        SimpleNode lhs;
+        SimpleNode rhs;
+        int n_children;
+
         for(int i = 0; i < depth; i++){
             System.out.print("  ");
         }
-        System.out.print(depth+" ");
-        switch(node.id){
-            case CompTreeConstants.JJTMAIN:
-                System.out.print("Main Program ");
-                break;
-            case CompTreeConstants.JJTIDENTIFIER:
-                System.out.print("[ID: "+node.Identifier+"] ");
-                break;
-            case CompTreeConstants.JJTTYPE:
-                System.out.print("[Type] ");
-                break;
-            case CompTreeConstants.JJTNEW:
-                System.out.print("[new] ");
-                break;
-            case CompTreeConstants.JJTARGUMENTS:
-                System.out.print("[arguments] ");
-                break;
-
-            case CompTreeConstants.JJTVARDECLARATION:
-                System.out.print("[VarDeclaration] ");
-                break;
-            case CompTreeConstants.JJTIMPORTDECLARATION:
-                System.out.print("ImportDeclaration");
-                break;
-            case CompTreeConstants.JJTCLASSDECLARATION:
-                System.out.print("[ClassDeclaration] ");
-                break;
-            case CompTreeConstants.JJTMETHODDECLARATION:
-                System.out.print("[MethodDeclaration] ");
-                break;
-                
-            case CompTreeConstants.JJTSTATEMENT:
-                System.out.print("[statement] ");
-                break;
-            case CompTreeConstants.JJTEXPR:
-                System.out.print("[RHS expression] ");
-                break;
-                
-            case CompTreeConstants.JJTWHILE:
-                System.out.print("[while] ");
-                break;
-            case CompTreeConstants.JJTWHILECOND:
-                System.out.print("[while cond] ");
-                break;
-            case CompTreeConstants.JJTIF:
-                System.out.print("[if] ");
-                break;
-            case CompTreeConstants.JJTIFCOND:
-                System.out.print("[if cond] ");
-                break;
-            case CompTreeConstants.JJTELSEBODY:
-                System.out.print("[else] ");
-                break;
-            case CompTreeConstants.JJTRETURN:
-                System.out.print("[returns] ");
-                break;
-
-            case CompTreeConstants.JJTLESSTHAN:
-                System.out.print("[<] ");
-                break;
-            case CompTreeConstants.JJTADD:
-                System.out.print("[+] ");
-                break;
-            case CompTreeConstants.JJTSUB:
-                System.out.print("[-] ");
-                break;
-            case CompTreeConstants.JJTMUL:
-                System.out.print("[*] ");
-                break;
-            case CompTreeConstants.JJTDIV:
-                System.out.print("[/] ");
-                break;
-
-            case CompTreeConstants.JJTATTR:
-                System.out.print("[attribution] ");
-                break;
-            case CompTreeConstants.JJTARATTR:
-                System.out.print("[array attribution] ");
-                break;
-                
-            case CompTreeConstants.JJTINTCONST:
-                System.out.print("[int constant: "+String.valueOf(node.val)+"] ");
-                break;
-            case CompTreeConstants.JJTBOOLCONST:
-                System.out.print("[boolean constant] ");
-                break;
-            case CompTreeConstants.JJTTHIS:
-                System.out.print("[this] ");
-                break;
-            default:
-                System.out.print("["+String.valueOf(node.id)+"] ");
-                break;
-        }
-        if(node.type != null) System.out.print("Node type: "+node.type+" ");
         
-        if(node.import_list != null && node.import_list.size() != 0){
-            System.out.print("import ");
-            for(String import_path : node.import_list){
-                System.out.print(" "+import_path);
-            }
-            System.out.print(" ");
-        }
-        SimpleNode lhs;
-        SimpleNode rhs;
-        int n_children = node.jjtGetNumChildren();
-        switch(n_children){
-            case 0:
-                //System.out.print("LEAF");
-                return;
-            case 1:
-                lhs = (SimpleNode) node.jjtGetChild(0); //left child
-                //System.out.print("Just going left");
-                if(lhs != null) eval(lhs, depth+1);
-                return;
-            case 2:
-                lhs = (SimpleNode) node.jjtGetChild(0); //left child
-                rhs = (SimpleNode) node.jjtGetChild(1); // right child
-                //System.out.print("2 children");
-
-                if(lhs != null) eval(lhs, depth+1);
-
-                if(rhs != null) eval(rhs, depth+1);
-                return;
-            default:
-                for(int i = 0; i < n_children; i++){
-                    lhs = (SimpleNode) node.jjtGetChild(i);
-                    eval(lhs, depth+1);
-                }
+        System.out.print(depth+" ");
+        
+        switch(node.id){
+            case JMMParserTreeConstants.JJTIDENTIFIER:
+                System.out.println("[ID: "+node.image+"] ");
                 break;
+            
+            case JMMParserTreeConstants.JJTTYPE:
+                System.out.println("[Type: "+node.image+"] ");
+                break;
+            
+            case JMMParserTreeConstants.JJTOPERATOR:
+                System.out.println("[Operator: "+node.image+"] ");
+                break;
+            
+            case JMMParserTreeConstants.JJTINTCONST:
+                System.out.println("[Int Constant: "+node.int_val+"] ");
+                break;
+            
+            case JMMParserTreeConstants.JJTBOOLCONST:
+                System.out.println("[Boolean Constant: "+node.bool_val+"] ");
+                break;
+            
+            default:
+                System.out.println(JMMParserTreeConstants.jjtNodeName[node.id]);
         }
-        */
+
+        n_children = node.jjtGetNumChildren();
+        
+        for(int i = 0; i < n_children; i++){
+            lhs = (SimpleNode) node.jjtGetChild(i);
+            eval(lhs, depth+1);
+        }
+        
         return 0;
     }
 }
+
 PARSER_END(JMMParser)
 SKIP :
 {
@@ -286,50 +190,18 @@ TOKEN:
 < ID: ["a"-"z","A"-"Z","_","$"] ( ["a"-"z","A"-"Z","$","_","0"-"9"] )* >
 }
 
-SimpleNode Program() #MAIN: {}
+SimpleNode Program() #START: {}
 {
     (
         ( ImportDeclaration() )* ClassDeclaration() <EOF>
     ) {return jjtThis;}
 }
 
-void Empty() : {}
+void ImportDeclaration(): {}
 {
-     {}
-}
-
-void Identifier(): {Token t;}
-{
-    t=<ID>{
-        jjtThis.Identifier = t.image+"";
-    }
-}
-
-void Type() #Type : {Token t;}
-{
-    LOOKAHEAD(2)
-    t=<INT>{
-        jjtThis.type = "int[]";
-    } <OSB> <CSB>
-    |
-    t=<INT>{
-        jjtThis.type = "int";
-    }
-    |
-    LOOKAHEAD(2)
-    t=<STRING>{
-        jjtThis.type = "String[]";
-    } <OSB> <CSB>
-    |
-    t=<STRING>{
-        jjtThis.type = "String";
-    }
-    |
-    t=<BOOLEAN>{
-        jjtThis.type = "boolean";
-    }
-    |
-    Identifier()
+    <IMPORT> ( <STATIC> )? Identifier() ( <SELECTOR> Identifier() )*
+    ( <OP> ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
+    ( <VOID> | Type() #RETURN  )? <SC>
 }
 
 void VarDeclaration(): {}
@@ -337,174 +209,236 @@ void VarDeclaration(): {}
     Type() Identifier() <SC>
 }
 
-
-void ImportDeclaration(): {Token import_section;}
+void ClassHead(): {}
 {
-    //import_section hops on all path sections of the import
-    <IMPORT> (<STATIC>)? import_section=<ID>{
-        jjtThis.import_list.add(import_section.image+"");
-    }
-    
-    (
-        <SELECTOR> import_section=<ID>{
-            jjtThis.import_list.add(import_section.image+"");
-        }
-    )*
-    (<OP> ( (Type() (<SEPARATOR> Type() )*) | <VOID> )? <CP>)? ( <VOID> | Type() #RETURN)? <SC>
+    Identifier() ( <EXTENDS> Identifier() )?
 }
 
-void ClassDeclaration(): {Token t;}
+void ClassDeclaration(): {}
 {
-    <CLASS> t=<ID>{
-        jjtThis.class_name=t.image+"";
-    } ( <EXTENDS> t=<ID>{
-        jjtThis.class_extends=t.image+"";
-    } )? <OB>
-        ( LOOKAHEAD(2) VarDeclaration() )*
+    <CLASS> ClassHead() <OB>
+        ( VarDeclaration() )*
         ( MethodDeclaration() )*
+        
     <CB>
 }
 
-void MethodDeclaration():{}
+void MethodHead(): {}
 {
-    LOOKAHEAD(2)
-    <PUBLIC> Type() Identifier() <OP> ( (Type() Identifier() ( <SEPARATOR> Type() Identifier() )* ) | <VOID> )? <CP> <OB>
-        
-        ( LOOKAHEAD(2) VarDeclaration() )*
-        ( Statement() )*
-        ( "return" Expression() <SC> )?
-    <CB>
-    |
-    <PUBLIC> <STATIC> <VOID> <MAIN> <OP>
+    //Return is unnecessary here because the first token MUST be a Type, and is always the return type
+    //First token is return type, Second token is method name
+    //From then on, Type Identifier pairs are the arguments 
+    Type() /* #RETURN */ Identifier() <OP> ( (Type() Identifier() ( <SEPARATOR> Type() Identifier() )* ) | <VOID> )?
+}
+
+void MainMethod(): {}
+{
+    <STATIC> <VOID> <MAIN> <OP>
         <STRING> <OSB> <CSB> Identifier()
+    <CP> <OB>
+    ( LOOKAHEAD(2) VarDeclaration() )*
+    ( Statement() )*
+    <CB>
+}
+
+void NormalMethod(): {}
+{
+    MethodHead()
     <CP> <OB>
         ( LOOKAHEAD(2) VarDeclaration() )*
         ( Statement() )*
+        ( <RETURN> Expression() <SC> )?
     <CB>
-
 }
 
-void Expression() #void: {}
+void MethodDeclaration()#void: {}
 {
-    IntegerConstant() Expression_1()
+    <PUBLIC>
+        (
+        NormalMethod()
+        |
+        MainMethod()
+        )
+}
+
+void New(): {}
+{
+    <INT> <OSB> Expression() <CSB> Expression_1()
     |
-    BooleanConstant() Expression_1()
+    Identifier() <OP> <CP> Expression_1()
+}
+
+void Negate(): {}
+{
+    <NOT> Expression()
+}
+void BoolConst(): {Token t;}
+{
+    t=<BOOL>{
+        jjtThis.bool_val = Boolean.parseBoolean(t.image);
+    }
+}
+void IntConst(): {Token t;}
+{
+    t=<INTEGER>{
+        jjtThis.int_val = Integer.parseInt(t.image);
+    }
+}
+void Expression()#void: {}
+{
+    IntConst() Expression_1()
     |
-    <THIS> #THIS Expression_1()
+    BoolConst() Expression_1()
+    |
+    <THIS> Expression_1()
     |
     <NEW> New()
     |
-    <NOT> Expression() Expression_1()               //! expr()
+    Negate() Expression_1()
     |
-    <OP> Expression() <CP> Expression_1()           // ( expr() )
+    <OP> Expression() <CP> Expression_1()
     |
-    Identifier()    Expression_1()
-}
-/*
-Cant access jjtThis if #void is present, so need to break Expression into pieces
-*/
-void IntegerConstant() #INTCONST: {Token t;}
-{
-    t = <INTEGER>{
-        jjtThis.val = Integer.parseInt(t.image);
-    }
-}
-void BooleanConstant() #BOOLCONST: {Token t;}
-{
-    t = <BOOL>{
-        //jjtThis.bool_val = Boolean.parseBoolean(t.image);
-    }
-}
-void New() #NEW: {Token t;}
-{
-    <INT> <OSB> Expression() <CSB> Expression_1()   //new type[]
-    |
-    Identifier() <OP> <CP> Expression_1()           //new var ()
+    Identifier() Expression_1()
 }
 
-void Arguments()#ARGUMENTS: {}
+void Operator(): {Token t;}
 {
-    <OP> [ Expression() (<SEPARATOR> Expression() )* ] <CP>
+    ( t="&&" | t="<" | t="+" | t="-" | t="*" | t="/"){
+        jjtThis.image = t.image;
+    }
 }
-/*
-Second part of Expression (to avoid left-recursivity)
-*/
-void Expression_1() #void: {}
+void Operation()#void: {}
 {
-    ( <BOOLAND> #AND | <LESSTHAN> #LESSTHAN | <ADD> #ADD | <SUB> #SUB | <MUL> #MUL | <DIV> #DIV) Expression() Expression_1()
+    Operator() Expression()
+}
+
+void Expression_1()#void: {}
+{
+    Operation() Expression_1()
     |
     <OSB> Expression() <CSB> Expression_1()
     |
-    LOOKAHEAD(2)
-    <SELECTOR> #LENGTH(1) <LENGTH> Expression_1()
-    |
-    <SELECTOR> Identifier() Arguments() Expression_1()
+    <SELECTOR> Selector() Expression_1()
     |
     Empty()
 }
 
-
-void Statement() #void: {}
+void SelectorArguments(): {}
 {
-    <IF> ifcond()
-    |
-    <WHILE> whileLoop()
-    |
-    LOOKAHEAD(2)
-    normalAttribution()
-    |
-    LOOKAHEAD(2)
-    arrAttribution()
-    |
-    justStatement()
+    [ Expression() ( <SEPARATOR> Expression() )* ]
 }
-//          Statement
-void justStatement() #STATEMENT: {}
+
+void Selector(): {}
 {
-    <OB> (Statement())* <CB>
+    <LENGTH> #LENGTH
+    |
+    Identifier() <OP> SelectorArguments() <CP>
+}
+
+//Access here is unnecessary because the First Token is always the target ID
+//More tokens imply an expression that can then be computed
+void Access()#void /* #Access */: {}
+{
+    <OSB> Expression() <CSB>
+}
+
+void Target()#Target: {}
+{
+    Identifier() ( Access() )?
+}
+void Attribution()#Attribution: {}
+{
+    Target() <EQ> Expression() <SC>
+}
+
+void Statement()#void: {}
+{
+    IfStructure()
+    |
+    WhileStructure()
+    |
+    <OB> ( Statement() )* <CB>
+    |
+    LOOKAHEAD(2)
+    Attribution()
     |
     Expression() <SC>
 }
-void attributionExpression() #expr: {}
+
+void IfHead(): {}
 {
     Expression()
 }
-//          NORMAL ATTRIBUTION
-void normalAttribution() #ATTR: {}
+
+void IfStructure(): {}
 {
-    Identifier() <EQ> attributionExpression() <SC>
-}
-//          ARRAY ATTRIBUTION
-void arrAttribution() #ARATTR: {}
-{
-    Identifier() <OSB> Expression()  <CSB> <EQ> attributionExpression() <SC>
+    <IF> <OP> IfHead()  <CP> Statement() ElseStructure()
 }
 
-
-//          IF HANDLING
-void ifcond() #IF: {}
+void ElseStructure(): {}
 {
-    <OP> Expression() #IFCOND <CP> Statement()/* #IFBODY */ <ELSE> elsebody()
+    <ELSE> Statement()
 }
-//          ELSE HANDLING
-void elsebody() /* #ELSE */ : {}
+
+//Needed because expressions inside the while body would be confused with those inside the head
+void WhileHead(): {}
 {
-    Statement()
-} 
-//          WHILE HANDLING
-void whileLoop() #WHILE:{}
+    Expression()
+}
+
+void WhileStructure(): {}
 {
-    try {
-    (
-        <OP> Expression() #WHILECOND <CP> Statement()
-    )
+    <WHILE>
+    try{
+        <OP> WhileHead() <CP> Statement()
     }catch (ParseException e) {
         System.out.println("COULD NOT PARSE WHILE");
         error_skipto(CB, e);
     }
 }
 
+void Type(): {Token t;}
+{
+    <INT> (
+        <OSB> <CSB>{
+            jjtThis.image = "int[]";
+        }
+        |
+        Empty(){
+            jjtThis.image = "int";
+        }
+        )
+    |
+    <STRING> (
+        <OSB> <CSB>{
+            jjtThis.image = "String[]";
+        }
+        |
+        Empty(){
+            jjtThis.image = "String";
+        }
+        )
+    |
+    <BOOLEAN>{
+        jjtThis.image = "boolean";
+    }
+    |
+    t=<ID>{
+        jjtThis.image = t.image+"";
+    }
+}
 
+void Empty()#void: {}
+{
+    {}
+}
+
+void Identifier(): {Token t;}
+{
+    t=<ID>{
+        jjtThis.image = t.image+"";
+    }
+}
 JAVACODE
 //Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
 void error_skipto(int kind, ParseException e) throws Exception{

@@ -11,7 +11,12 @@ public class SimpleNode implements Node {
   protected Object value;
   protected JMMParser parser;
   //added
+  public int int_val;
+  public boolean bool_val;
+  public String image;
+  //idk
   public int val;
+  /*
   public String type;
   public String Identifier;
   public String import_name;
@@ -19,7 +24,7 @@ public class SimpleNode implements Node {
   public String class_extends;
   public String method_name;
   public List<String> import_list = new ArrayList<String>();
-
+  */
   public SimpleNode(int i) {
     id = i;
   }
