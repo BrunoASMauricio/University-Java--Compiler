@@ -48,7 +48,7 @@ public class Main {
         
         SimpleNode root = JMMParser.parse(file_stream);
         
-        //JMMParser.eval(root, 0);
+        JMMParser.eval(root, 0);
         System.out.println();
 	}
 	
