@@ -120,6 +120,7 @@ SKIP :
 {
 //Eventually when we handle string parsing, remove these from here
 " "
+|"\r\n"
 |"\r"
 |"\t"
 |"\n"
