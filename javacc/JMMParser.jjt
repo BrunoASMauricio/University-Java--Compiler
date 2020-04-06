@@ -1,13 +1,15 @@
 options {
 LOOKAHEAD=1;
 }
+/*
+Example build command
+echo "TREE"; jjtree Comp.jjt; echo "CC"; javacc Comp.jj; echo "JAVA"; javac *.java; cat ./testbed/fulltest_1 | java Comp
+*/
 PARSER_BEGIN(JMMParser)
 
-import java.io.InputStream;
-//import java.util.HashMap;
-//import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.InputStream;
 
 public class JMMParser{
     
@@ -88,10 +90,6 @@ public class JMMParser{
                 System.out.println("[Type: "+node.image+"] ");
                 break;
             
-            case JMMParserTreeConstants.JJTOPERATOR:
-                System.out.println("[Operator: "+node.image+"] ");
-                break;
-            
             case JMMParserTreeConstants.JJTINTCONST:
                 System.out.println("[Int Constant: "+node.int_val+"] ");
                 break;
@@ -114,13 +112,11 @@ public class JMMParser{
         return 0;
     }
 }
-
 PARSER_END(JMMParser)
 SKIP :
 {
+//Eventually when we handle string parsing, remove these from here
 " "
-|"\r\n"
-|"\n\r"
 |"\r"
 |"\t"
 |"\n"
@@ -164,7 +160,7 @@ TOKEN:
 |< MUL: "*" >
 |< DIV: "/" >
 |< LESSTHAN: "<" >
-|< BOOLAND: "&&" >
+|< AND: "&&" >
 |< EQ: "=" >
 |< SELECTOR: "." >
 |< SEPARATOR: "," >
@@ -264,17 +260,6 @@ void MethodDeclaration()#void: {}
         )
 }
 
-void New(): {}
-{
-    <INT> <OSB> Expression() <CSB> Expression_1()
-    |
-    Identifier() <OP> <CP> Expression_1()
-}
-
-void Negate(): {}
-{
-    <NOT> Expression()
-}
 void BoolConst(): {Token t;}
 {
     t=<BOOL>{
@@ -287,11 +272,118 @@ void IntConst(): {Token t;}
         jjtThis.int_val = Integer.parseInt(t.image);
     }
 }
+
+void And()#void:{}
+{
+    Lessthan() And1()
+}
+
+void And1()#void: {}
+{
+    "&&" Lessthan() #AND(2) And1()
+    |
+    Empty()
+}
+
+void Lessthan()#void: {}
+{
+    Add() Lessthan1()
+}
+
+void Lessthan1()#void: {}
+{
+    "<" Add() #LESSTHAN(2) Lessthan1()
+    |
+    Empty()
+}
+
+void Add()#void: {}
+{
+    Mul() Add1()
+}
+
+void Add1()#void: {}
+{
+    ("+"| "-") Mul() #ADD(2) Add1()
+    |
+    Empty()
+}
+
+void Mul()#void: {}
+{
+    Node() Mul1()
+}
+
+void Mul1()#void: {}
+{
+    ("*"| "/") Node() #MUL(2) Mul1()
+    |
+    Empty()
+}
+
+void SelectorArguments(): {}
+{
+    Expression() ( <SEPARATOR> Expression() )*
+}
+
+void Selector_1()#void: {}
+{
+    Identifier() ( <OP> ( SelectorArguments() )? <CP> )?
+    |
+    <LENGTH>
+}
+
+void Selector(): {}
+{
+    <SELECTOR> Selector_1()
+    |
+    <OSB> Expression() <CSB>
+}
+
+void This()#THIS: {}
+{
+    <THIS> ( Selector() )*
+}
+
+void New(): {}
+{
+    <INT> <OSB> Expression() <CSB>
+    |
+    Identifier() <OP> <CP>
+}
+
+void Negate(): {}
+{
+    <NOT> Expression()
+}
+
+void Node()#void: {}
+{
+    IntConst()
+    |
+    BoolConst()
+    |
+    Identifier() ( Selector() )*
+    |
+    <OP> And() <CP>
+    |
+    This()
+    |
+    <NEW> New() ( Selector() )*
+    |
+    Negate()
+
+}
+
 void Expression()#void: {}
 {
-    IntConst() Expression_1()
-    |
-    BoolConst() Expression_1()
+    And()
+}
+
+/*
+void Expression()#void: {}
+{
+    Terminal() Expression_1()
     |
     <THIS> Expression_1()
     |
@@ -300,43 +392,17 @@ void Expression()#void: {}
     Negate() Expression_1()
     |
     <OP> Expression() <CP> Expression_1()
-    |
-    Identifier() Expression_1()
-}
-
-void Operator(): {Token t;}
-{
-    ( t="&&" | t="<" | t="+" | t="-" | t="*" | t="/"){
-        jjtThis.image = t.image;
-    }
-}
-void Operation()#void: {}
-{
-    Operator() Expression()
 }
 
 void Expression_1()#void: {}
 {
-    Operation() Expression_1()
-    |
     <OSB> Expression() <CSB> Expression_1()
     |
     <SELECTOR> Selector() Expression_1()
     |
     Empty()
 }
-
-void SelectorArguments(): {}
-{
-    [ Expression() ( <SEPARATOR> Expression() )* ]
-}
-
-void Selector(): {}
-{
-    <LENGTH> #LENGTH
-    |
-    Identifier() <OP> SelectorArguments() <CP>
-}
+*/
 
 //Access here is unnecessary because the First Token is always the target ID
 //More tokens imply an expression that can then be computed
@@ -442,6 +508,7 @@ void Identifier(): {Token t;}
         jjtThis.image = t.image+"";
     }
 }
+
 JAVACODE
 //Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
 void error_skipto(int kind, ParseException e) throws Exception{
