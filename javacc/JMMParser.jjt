@@ -462,7 +462,7 @@ void WhileStructure(): {}
         <OP> WhileHead() <CP> Statement()
     }catch (ParseException e) {
         System.out.println("COULD NOT PARSE WHILE");
-        Comp.MainProg.error_skipto(CB, e);
+        error_skipto(CB, e);
     }
 }
 
@@ -509,3 +509,15 @@ void Identifier(): {Token t;}
     }
 }
 
+JAVACODE
+//Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
+void error_skipto(int kind, ParseException e) throws Exception{
+    if(all_exceptions.size() == MAX_EXCEPTIONS){
+        throw new Exception("Maximum ammount of exceptions caught.");
+    }
+    all_exceptions.add(e);
+    Token t;
+    do{
+        t = getNextToken();
+    }while(t.kind != kind);
+}

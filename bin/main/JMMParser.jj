@@ -1140,7 +1140,7 @@ void WhileStructure(): {/*@bgen(jjtree) WhileStructure */
         <OP> WhileHead() <CP> Statement()
     }catch (ParseException e) {
         System.out.println("COULD NOT PARSE WHILE");
-        Comp.MainProg.error_skipto(CB, e);
+        error_skipto(CB, e);
     }/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -1277,5 +1277,40 @@ void Identifier(): {/*@bgen(jjtree) Identifier */
         jjtree.closeNodeScope(jjtn000, true);
       }
     }
+/*@egen*/
+}
+
+JAVACODE
+//Addapted from https://javacc.github.io/javacc/tutorials/error-handling.html
+void error_skipto(int kind, ParseException e) throws Exception{/*@bgen(jjtree) error_skipto */
+ SimpleNode jjtn000 = new SimpleNode(JJTERROR_SKIPTO);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);
+ try {
+/*@egen*/
+    if(all_exceptions.size() == MAX_EXCEPTIONS){
+        throw new Exception("Maximum ammount of exceptions caught.");
+    }
+    all_exceptions.add(e);
+    Token t;
+    do{
+        t = getNextToken();
+    }while(t.kind != kind);/*@bgen(jjtree)*/
+ } catch (Throwable jjte000) {
+   if (jjtc000) {
+     jjtree.clearNodeScope(jjtn000);
+     jjtc000 = false;
+   } else {
+     jjtree.popNode();
+   }
+   if (jjte000 instanceof Exception) {
+     throw (Exception)jjte000;
+   }
+   throw (Error)jjte000;
+ } finally {
+   if (jjtc000) {
+     jjtree.closeNodeScope(jjtn000, true);
+   }
+ }
 /*@egen*/
 }
