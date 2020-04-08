@@ -1,0 +1,30 @@
+import java.util.Map;
+
+import javax.management.RuntimeErrorException;
+
+import java.util.LinkedHashMap;
+/*
+This table holds the available methods, classes and variables
+*/
+public class SymbolTable {
+    Map<String, Symbol> symbols;    //symbol name to holder structure
+
+    public SymbolTable(){
+        symbols = new LinkedHashMap<String, Symbol>(); //symbol map (linked to preserve insertion order)
+    }
+    /**
+     * Insert a new symbol into the table. Does not perform any check.
+     * @param new_symbol the symbol to insert
+     */
+    public void insertSymbol(Symbol new_symbol){
+        symbols.put(new_symbol.name, new_symbol);
+    }
+    /**
+     * Retrieves the value (Symbol) with the key name
+     * @param name HashMap key
+     * @return
+     */
+    public Symbol getSymbol(String name){
+        return symbols.get(name);
+    }
+}

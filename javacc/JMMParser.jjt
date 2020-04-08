@@ -138,6 +138,31 @@ and NOT
 
 TODO
 Accept hex/bin number notation
+
+The used operator precedence logic:
+
+D -> D && C | C
+C -> C < E | E
+E -> E ( + | - ) T | T
+T -> T ( * | / ) F | F
+F -> Terminal
+
+Removing left-recursion
+
+D -> C D1
+D1 -> && C D1 | e
+
+C -> E C1
+C1 -> < E C1 | e
+
+E -> T E1
+E1 -> ( + | - ) T E1 | e
+
+T -> F T1
+T1 -> ( * | / ) F T1 | e
+
+F -> Terminal
+
 */
 TOKEN:
 {
@@ -246,7 +271,7 @@ void NormalMethod(): {}
     <CP> <OB>
         ( LOOKAHEAD(2) VarDeclaration() )*
         ( Statement() )*
-        ( <RETURN> Expression() <SC> )?
+        ( <RETURN> Expression() #RETURN <SC> )?
     <CB>
 }
 
@@ -304,7 +329,11 @@ void Add()#void: {}
 
 void Add1()#void: {}
 {
-    ("+"| "-") Mul() #ADD(2) Add1()
+    (
+        "+" Mul() #ADD(2)
+        |
+        "-" Mul()  #SUB(2))
+     Add1()
     |
     Empty()
 }
@@ -316,7 +345,11 @@ void Mul()#void: {}
 
 void Mul1()#void: {}
 {
-    ("*"| "/") Node() #MUL(2) Mul1()
+    (
+        "*" Node() #MUL(2)
+        |
+        "/" Node() #DIV(2)
+    ) Mul1()
     |
     Empty()
 }
@@ -380,29 +413,6 @@ void Expression()#void: {}
     And()
 }
 
-/*
-void Expression()#void: {}
-{
-    Terminal() Expression_1()
-    |
-    <THIS> Expression_1()
-    |
-    <NEW> New()
-    |
-    Negate() Expression_1()
-    |
-    <OP> Expression() <CP> Expression_1()
-}
-
-void Expression_1()#void: {}
-{
-    <OSB> Expression() <CSB> Expression_1()
-    |
-    <SELECTOR> Selector() Expression_1()
-    |
-    Empty()
-}
-*/
 
 //Access here is unnecessary because the First Token is always the target ID
 //More tokens imply an expression that can then be computed
@@ -431,7 +441,7 @@ void Statement()#void: {}
     LOOKAHEAD(2)
     Attribution()
     |
-    Expression() <SC>
+    Expression() #DIRECTEXPRESSION <SC>
 }
 
 void IfHead(): {}
