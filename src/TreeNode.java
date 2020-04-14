@@ -43,21 +43,48 @@ public class TreeNode {
      * @param new_symbol Complete Symbol object to add
      */
     public void addSymbol(Symbol new_symbol){
+        //Build the signature from the name and type. Keep them for debug purposes
+        switch(new_symbol.type){
+            case Symbol.t_method:
+                new_symbol.signature = new_symbol.name+"(";
+                ArrayList<String> types = (ArrayList<String>)new_symbol.data;
+                for(int i = 0; i < types.size()-1; i++){
+                    if(i == 0){
+                        new_symbol.signature += types.get(i);
+                    }else{
+                        new_symbol.signature += ","+types.get(i);
+                    }
+                }
+                //There must always be at least 1 type
+                //The analyzer adding return void ensures this
+                new_symbol.signature += ")"+types.get(types.size()-1);
+                System.out.println("Method signature: "+new_symbol.signature);
+            break;
+            case Symbol.t_class:
+                
+            break;
+            case Symbol.t_variable:
+                
+            break;
+
+        }
         //Check local symbol table
-        Symbol dup = this.table.getSymbol(new_symbol.name);
+        Symbol dup = this.table.getSymbol(new_symbol.signature);
         if(dup != null){
             throw new RuntimeException("Duplicate declaration: \""+new_symbol.info+"\"\nFirst declaration: \""+dup.info+"\"");
         }
         //Check parent scope for warning
         dup = this.getSymbol(new_symbol.name);
         if(dup != null){
-            System.out.println("WARNING, variable already available in scope");
+            System.out.println("WARNING, variable already available in scope: \""+dup.info+"\"");
         }
+
+        this.table.insertSymbol(new_symbol);
     }
     /**
      * Retrieve a symbol accessible by this scope
      * @param name Symbol name to retrieve
-     * @return
+     * @return the symbol or null
      */
     public Symbol getSymbol(String name){
         Symbol ret = this.table.getSymbol(name);

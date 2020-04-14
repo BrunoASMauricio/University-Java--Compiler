@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 This table holds the available methods, classes and variables
 */
 public class SymbolTable {
-    Map<String, Symbol> symbols;    //symbol name to holder structure
+    LinkedHashMap<String, Symbol> symbols;    //symbol name to holder structure
 
     public SymbolTable(){
         symbols = new LinkedHashMap<String, Symbol>(); //symbol map (linked to preserve insertion order)
@@ -17,14 +17,19 @@ public class SymbolTable {
      * @param new_symbol the symbol to insert
      */
     public void insertSymbol(Symbol new_symbol){
-        symbols.put(new_symbol.name, new_symbol);
+        try{
+            symbols.put(new_symbol.signature, new_symbol);
+        }catch(Exception ex){
+            //System.out.println("DEAD: ");
+            //System.out.println(ex);
+        }
     }
     /**
      * Retrieves the value (Symbol) with the key name
      * @param name HashMap key
      * @return
      */
-    public Symbol getSymbol(String name){
-        return symbols.get(name);
+    public Symbol getSymbol(String signature){
+        return symbols.get(signature);
     }
 }

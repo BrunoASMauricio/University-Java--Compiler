@@ -223,8 +223,9 @@ SimpleNode Program() #START: {}
 
 void ImportDeclaration(): {}
 {
+    //The method node is necessary to know if it's a method or no (since there can be a method with 0 arguments and no return (void))
     <IMPORT> ( <STATIC> )? Identifier() ( <SELECTOR> Identifier() )*
-    ( <OP> ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
+    ( <OP> #IMPORTMETHOD(0) ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
     ( <VOID> | Type() #RETURN  )? <SC>
 }
 

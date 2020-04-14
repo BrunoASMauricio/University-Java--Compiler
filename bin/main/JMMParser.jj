@@ -264,33 +264,47 @@ void ImportDeclaration(): {/*@bgen(jjtree) ImportDeclaration */
 {/*@bgen(jjtree) ImportDeclaration */
     try {
 /*@egen*/
+    //The method node is necessary to know if it's a method or no (since there can be a method with 0 arguments and no return (void))
     <IMPORT> ( <STATIC> )? Identifier() ( <SELECTOR> Identifier() )*
-    ( <OP> ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
+    (/*@bgen(jjtree) #IMPORTMETHOD( 0) */
+      {
+        SimpleNode jjtn001 = new SimpleNode(JJTIMPORTMETHOD);
+        boolean jjtc001 = true;
+        jjtree.openNodeScope(jjtn001);
+      }
+      try {
+/*@egen*/ <OP>/*@bgen(jjtree)*/
+      } finally {
+        if (jjtc001) {
+          jjtree.closeNodeScope(jjtn001,  0);
+        }
+      }
+/*@egen*/                  ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
     ( <VOID> |/*@bgen(jjtree) RETURN */
                {
-                 SimpleNode jjtn001 = new SimpleNode(JJTRETURN);
-                 boolean jjtc001 = true;
-                 jjtree.openNodeScope(jjtn001);
+                 SimpleNode jjtn002 = new SimpleNode(JJTRETURN);
+                 boolean jjtc002 = true;
+                 jjtree.openNodeScope(jjtn002);
                }
                try {
 /*@egen*/ Type()/*@bgen(jjtree)*/
-               } catch (Throwable jjte001) {
-                 if (jjtc001) {
-                   jjtree.clearNodeScope(jjtn001);
-                   jjtc001 = false;
+               } catch (Throwable jjte002) {
+                 if (jjtc002) {
+                   jjtree.clearNodeScope(jjtn002);
+                   jjtc002 = false;
                  } else {
                    jjtree.popNode();
                  }
-                 if (jjte001 instanceof RuntimeException) {
-                   throw (RuntimeException)jjte001;
+                 if (jjte002 instanceof RuntimeException) {
+                   throw (RuntimeException)jjte002;
                  }
-                 if (jjte001 instanceof ParseException) {
-                   throw (ParseException)jjte001;
+                 if (jjte002 instanceof ParseException) {
+                   throw (ParseException)jjte002;
                  }
-                 throw (Error)jjte001;
+                 throw (Error)jjte002;
                } finally {
-                 if (jjtc001) {
-                   jjtree.closeNodeScope(jjtn001, true);
+                 if (jjtc002) {
+                   jjtree.closeNodeScope(jjtn002, true);
                  }
                }
 /*@egen*/          )? <SC>/*@bgen(jjtree)*/
