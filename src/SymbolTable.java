@@ -17,12 +17,8 @@ public class SymbolTable {
      * @param new_symbol the symbol to insert
      */
     public void insertSymbol(Symbol new_symbol){
-        try{
-            symbols.put(new_symbol.signature, new_symbol);
-        }catch(Exception ex){
-            //System.out.println("DEAD: ");
-            //System.out.println(ex);
-        }
+        symbols.put(new_symbol.signature, new_symbol);
+
     }
     /**
      * Retrieves the value (Symbol) with the key name

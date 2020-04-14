@@ -1,5 +1,7 @@
 options {
 LOOKAHEAD=1;
+//Store tockens in the SimpleNode
+TRACK_TOKENS=true;
 }
 /*
 Example build command
@@ -224,7 +226,9 @@ SimpleNode Program() #START: {}
 void ImportDeclaration(): {}
 {
     //The method node is necessary to know if it's a method or no (since there can be a method with 0 arguments and no return (void))
-    <IMPORT> ( <STATIC> )? Identifier() ( <SELECTOR> Identifier() )*
+    <IMPORT> ( <STATIC> #STATIC(0) )? Identifier() ( <SELECTOR> Identifier() )
+    //The grammar should only accept methods, but this is here just to check if there is any non method import
+    //The exception is throwned in the semantic
     ( <OP> #IMPORTMETHOD(0) ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
     ( <VOID> | Type() #RETURN  )? <SC>
 }

@@ -9,11 +9,11 @@ public class ImportTest {
 
     private static String CLASS_WITH_MAIN = "Main";
 
-
+    /*
     @Test
     public void testImports() {
         CompUtils.testParser("fixtures/public/FindMaximum.jmm", false, CLASS_WITH_MAIN);
     }
-
+    */
 
 }

@@ -49,7 +49,7 @@ public class Main {
         
         JMMParser.eval(root, 0);
 
-        Analyzer.analyze(root);
+        Analyzer.analyze(root, input_file);
 
         System.out.println();
 	}
