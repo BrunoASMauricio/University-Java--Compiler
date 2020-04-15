@@ -48,8 +48,22 @@ public class Main {
         SimpleNode root = JMMParser.parse(file_stream);
         
         JMMParser.eval(root, 0);
-
-        Analyzer.analyze(root, input_file);
+        try{
+            Analyzer.analyze(root, input_file);
+        }catch(DuplicateException ex){
+            System.out.println("\t\tERROR Duplicate detected");
+            System.out.println(ex);
+            System.exit(-1);
+        }catch(UndeclaredException ex){
+            System.out.println("\t\tERROR Undeclared entity");
+            System.out.println(ex);
+            System.exit(-1);
+        }catch(Exception ex){
+            System.out.println("Unhandled exception");
+            System.out.println(ex);
+            ex.printStackTrace(); 
+            System.exit(-1);
+        }
 
         System.out.println();
 	}

@@ -6,27 +6,42 @@ import java.util.List;
  * Handles it's symbol table, and searches in the symbol tables on the scopes above
  */
 public class TreeNode extends Symbol{
-    private TreeNode root;              //Always keep a reference to the root, just in case
-    private TreeNode parent;            //The "scope" above
-    private List<TreeNode> children;    //Children nodes
+    public TreeNode root;              //Always keep a reference to the root, just in case
+    public TreeNode parent;            //The "scope" above
+    public List<TreeNode> children;    //Children nodes
     public SymbolTable table;           //This nodes' symbol table
     /**
      * Basic constructor
      * @param in_type       //Scope type
      * @param in_parent     //Parent scope
      */
-    public TreeNode(Symbol in_symbol, TreeNode in_parent){
-        if(parent == null){
+    public TreeNode(TreeNode in_parent){
+        if(in_parent == null){
             this.root = this;
             this.parent = null;
         }else{
             this.root = in_parent.root;
             this.parent = in_parent;
         }
-        getFromSymbol(in_symbol);
         this.children = new ArrayList<TreeNode>();
         this.table = new SymbolTable();
     }
+
+    public void evalT(int depth){
+        System.out.println("Node Depth "+depth);
+        System.out.println("Node Symbol: ");
+        ((Symbol)this).evalS();
+        System.out.println("Symbol Table: ");
+        for(Symbol s : this.table.symbols.values()){
+            s.evalS();
+        }
+        System.out.println("Nmb children "+this.children.size());
+        System.out.println("\n\n");
+        for(TreeNode t : this.children){
+            t.evalT(depth+1);
+        }
+    }
+
     /**
      * Add a child to this scope, directly from a TreeNode
      * @param in_tree_node child tree node
@@ -37,6 +52,7 @@ public class TreeNode extends Symbol{
         children.add(in_tree_node);
         return in_tree_node;
     }
+
     /**
      * Add a symbol to the scope
      * @param new_symbol Complete Symbol object to add
@@ -68,7 +84,7 @@ public class TreeNode extends Symbol{
             default:
                 new_symbol.signature = new_symbol.name;
         }
-        new_symbol.signature = new_symbol.name;
+        //new_symbol.signature = new_symbol.name;
         //Check local symbol table
         Symbol dup = this.table.getSymbol(new_symbol.signature);
         if(dup != null){
@@ -88,13 +104,15 @@ public class TreeNode extends Symbol{
      * @param name Symbol name to retrieve
      * @return the symbol or null
      */
-    public Symbol getSymbol(String name){
-        Symbol ret = this.table.getSymbol(name);
+    public Symbol getSymbol(String signature){
+        Symbol ret = this.table.getSymbol(signature);
         if(ret != null){
+            //System.out.println("Symbol "+signature+" in "+this.name);
             return ret;
         }
+        //System.out.println("Symbol "+signature+" not in "+this.name);
         if(this.parent != null){
-            return this.parent.getSymbol(name);
+            return this.parent.getSymbol(signature);
         }
         return null;
     }

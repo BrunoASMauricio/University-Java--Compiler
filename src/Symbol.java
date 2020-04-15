@@ -24,6 +24,12 @@ public class Symbol {
         class ArrayList<Boolean>: [0] extended [1] static
         variable: data type
     */
+    public void evalS(){
+        System.out.println("Name "+this.name);
+        System.out.println("Type "+this.type);
+        System.out.println("Signature "+this.signature);
+        System.out.println();
+    }
     /**
      * Stores the information from the given Symbol,
      * in the current one.

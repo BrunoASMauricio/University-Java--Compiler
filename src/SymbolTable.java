@@ -18,14 +18,19 @@ public class SymbolTable {
      */
     public void insertSymbol(Symbol new_symbol){
         symbols.put(new_symbol.signature, new_symbol);
-
     }
     /**
      * Retrieves the value (Symbol) with the key name
-     * @param name HashMap key
+     * @param signature HashMap key
      * @return
      */
     public Symbol getSymbol(String signature){
         return symbols.get(signature);
+    }
+    /**
+     * Returns table size
+     */
+    public int getSize(){
+        return symbols.size();
     }
 }
