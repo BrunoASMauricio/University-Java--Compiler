@@ -1,6 +1,6 @@
 
-public class DuplicateException extends RuntimeException{
-    DuplicateException(String s){  
-        super(s);
+public class DuplicateException extends BaseException{
+    DuplicateException(String s, SimpleNode n){  
+        super(s, n);
     }
 }

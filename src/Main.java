@@ -58,6 +58,10 @@ public class Main {
             System.out.println("\t\tERROR Undeclared entity");
             System.out.println(ex);
             System.exit(-1);
+        }catch(IncompatibleException ex){
+            System.out.println("\t\tERROR incompatibility detected");
+            System.out.println(ex);
+            System.exit(-1);
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);

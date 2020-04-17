@@ -904,7 +904,7 @@ void SelectorArguments(): {/*@bgen(jjtree) SelectorArguments */
 {/*@bgen(jjtree) SelectorArguments */
     try {
 /*@egen*/
-    Expression() ( <SEPARATOR> Expression() )*/*@bgen(jjtree)*/
+    <OP> ( Expression() ( <SEPARATOR> Expression() )* )? <CP>/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -928,25 +928,74 @@ void SelectorArguments(): {/*@bgen(jjtree) SelectorArguments */
 /*@egen*/
 }
 
-void Selector_1()     : {}
-{
-    Identifier() ( <OP> ( SelectorArguments() )? <CP> )?
-    |
-    <LENGTH>
-}
-
-void Selector(): {/*@bgen(jjtree) Selector */
+void Selector_1()         : {/*@bgen(jjtree) SELECTOR */
   SimpleNode jjtn000 = new SimpleNode(JJTSELECTOR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
   jjtn000.jjtSetFirstToken(getToken(1));
 /*@egen*/}
-{/*@bgen(jjtree) Selector */
+{/*@bgen(jjtree) SELECTOR */
     try {
 /*@egen*/
+    Identifier() ( SelectorArguments() )?
+    |/*@bgen(jjtree) LENGTH */
+    {
+      SimpleNode jjtn001 = new SimpleNode(JJTLENGTH);
+      boolean jjtc001 = true;
+      jjtree.openNodeScope(jjtn001);
+      jjtn001.jjtSetFirstToken(getToken(1));
+    }
+    try {
+/*@egen*/
+    <LENGTH>/*@bgen(jjtree)*/
+    } finally {
+      if (jjtc001) {
+        jjtree.closeNodeScope(jjtn001, true);
+        jjtn001.jjtSetLastToken(getToken(0));
+      }
+    }
+/*@egen*/        /*@bgen(jjtree)*/
+    } catch (Throwable jjte000) {
+      if (jjtc000) {
+        jjtree.clearNodeScope(jjtn000);
+        jjtc000 = false;
+      } else {
+        jjtree.popNode();
+      }
+      if (jjte000 instanceof RuntimeException) {
+        throw (RuntimeException)jjte000;
+      }
+      if (jjte000 instanceof ParseException) {
+        throw (ParseException)jjte000;
+      }
+      throw (Error)jjte000;
+    } finally {
+      if (jjtc000) {
+        jjtree.closeNodeScope(jjtn000, true);
+        jjtn000.jjtSetLastToken(getToken(0));
+      }
+    }
+/*@egen*/
+}
+
+void Selector()     : {}
+{
     <SELECTOR> Selector_1()
     |
-    <OSB> Expression() <CSB>/*@bgen(jjtree)*/
+    ArrayAccess()
+    //<OSB> #ArrayAccess Expression() <CSB>
+}
+
+void IdentifierAccess():{/*@bgen(jjtree) IdentifierAccess */
+  SimpleNode jjtn000 = new SimpleNode(JJTIDENTIFIERACCESS);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
+/*@egen*/}
+{/*@bgen(jjtree) IdentifierAccess */
+    try {
+/*@egen*/
+    Identifier() ( Selector() )*/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -1077,7 +1126,7 @@ void Node()     : {}
     |
     BoolConst()
     |
-    Identifier() ( Selector() )*
+    IdentifierAccess()
     |
     <OP> And() <CP>
     |
@@ -1097,9 +1146,37 @@ void Expression()     : {}
 
 //Access here is unnecessary because the First Token is always the target ID
 //More tokens imply an expression that can then be computed
-void Access()      /* #Access */: {}
-{
-    <OSB> Expression() <CSB>
+void ArrayAccess():{/*@bgen(jjtree) ArrayAccess */
+  SimpleNode jjtn000 = new SimpleNode(JJTARRAYACCESS);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+  jjtn000.jjtSetFirstToken(getToken(1));
+/*@egen*/} //#void /* #Access */: {}
+{/*@bgen(jjtree) ArrayAccess */
+    try {
+/*@egen*/
+    <OSB> Expression() <CSB>/*@bgen(jjtree)*/
+    } catch (Throwable jjte000) {
+      if (jjtc000) {
+        jjtree.clearNodeScope(jjtn000);
+        jjtc000 = false;
+      } else {
+        jjtree.popNode();
+      }
+      if (jjte000 instanceof RuntimeException) {
+        throw (RuntimeException)jjte000;
+      }
+      if (jjte000 instanceof ParseException) {
+        throw (ParseException)jjte000;
+      }
+      throw (Error)jjte000;
+    } finally {
+      if (jjtc000) {
+        jjtree.closeNodeScope(jjtn000, true);
+        jjtn000.jjtSetLastToken(getToken(0));
+      }
+    }
+/*@egen*/
 }
 
 void Target()       : {/*@bgen(jjtree) Target */
@@ -1111,7 +1188,7 @@ void Target()       : {/*@bgen(jjtree) Target */
 {/*@bgen(jjtree) Target */
     try {
 /*@egen*/
-    Identifier() ( Access() )?/*@bgen(jjtree)*/
+    Identifier() ( ArrayAccess() )?/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);

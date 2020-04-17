@@ -1,6 +1,6 @@
 
-public class UndeclaredException extends RuntimeException{
-    UndeclaredException(String s){  
-        super(s);
+public class UndeclaredException extends BaseException{
+    UndeclaredException(String s, SimpleNode n){  
+        super(s,n);
     }
 }

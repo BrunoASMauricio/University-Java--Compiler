@@ -6,10 +6,11 @@ import java.util.List;
  * Handles it's symbol table, and searches in the symbol tables on the scopes above
  */
 public class TreeNode extends Symbol{
-    public TreeNode root;              //Always keep a reference to the root, just in case
+    private TreeNode root;              //Always keep a reference to the root, just in case
     public TreeNode parent;            //The "scope" above
-    public List<TreeNode> children;    //Children nodes
+    private List<TreeNode> children;    //Children nodes
     public SymbolTable table;           //This nodes' symbol table
+    ArrayList<Structure> structures;
     /**
      * Basic constructor
      * @param in_type       //Scope type
@@ -24,6 +25,7 @@ public class TreeNode extends Symbol{
             this.parent = in_parent;
         }
         this.children = new ArrayList<TreeNode>();
+        this.structures = new ArrayList<Structure>();
         this.table = new SymbolTable();
     }
 
@@ -47,8 +49,8 @@ public class TreeNode extends Symbol{
      * @param in_tree_node child tree node
      * @return the new child
      */
-    public TreeNode addChild(TreeNode in_tree_node){
-        this.addSymbol((Symbol)in_tree_node);
+    public TreeNode addChild(TreeNode in_tree_node, SimpleNode n){
+        this.addSymbol((Symbol)in_tree_node, n);
         children.add(in_tree_node);
         return in_tree_node;
     }
@@ -57,7 +59,7 @@ public class TreeNode extends Symbol{
      * Add a symbol to the scope
      * @param new_symbol Complete Symbol object to add
      */
-    public void addSymbol(Symbol new_symbol) throws DuplicateException{
+    public void addSymbol(Symbol new_symbol, SimpleNode n){
         //Build the signature from the name and type. Keep them for debug purposes
         switch(new_symbol.type){
             case Symbol.t_method:
@@ -70,9 +72,8 @@ public class TreeNode extends Symbol{
                         new_symbol.signature += ","+types.get(i);
                     }
                 }
-                //There must always be at least 1 type
-                //The analyzer adding return void ensures this
-                new_symbol.signature += ")"+types.get(types.size()-1);
+                //The return type does not belong in the signature
+                new_symbol.signature += ")";//+types.get(types.size()-1);
                 System.out.println("Method signature: "+new_symbol.signature);
             break;
             case Symbol.t_class:
@@ -89,15 +90,19 @@ public class TreeNode extends Symbol{
         Symbol dup = this.table.getSymbol(new_symbol.signature);
         if(dup != null){
             //throw new RuntimeException("Duplicate declaration: \""+new_symbol.info+"\"\nFirst declaration: \""+dup.info+"\"");
-            throw new DuplicateException("Duplicate: \""+new_symbol.signature+"\"\nFirst declaration: \""+dup.signature+"\"");
+            throw new DuplicateException("Duplicate: \""+new_symbol.signature+"\"\nFirst declaration: \""+dup.signature+"\"", n);
         }
         //Check parent scope for warning
         dup = this.getSymbol(new_symbol.signature);
         if(dup != null){
             System.out.println("WARNING, variable already available in scope: \""+dup.signature+"\"");
         }
-
+        new_symbol.scope = this;
         this.table.insertSymbol(new_symbol);
+    }
+    
+    public Symbol getLocalSymbol(String signature){
+        return this.table.getSymbol(signature);
     }
     /**
      * Retrieve a symbol accessible by this scope
@@ -105,20 +110,19 @@ public class TreeNode extends Symbol{
      * @return the symbol or null
      */
     public Symbol getSymbol(String signature){
-        Symbol ret = this.table.getSymbol(signature);
+        Symbol ret = getLocalSymbol(signature);
         if(ret != null){
-            //System.out.println("Symbol "+signature+" in "+this.name);
+            System.out.println("Symbol "+signature+" in "+this.name);
             return ret;
         }
-        //System.out.println("Symbol "+signature+" not in "+this.name);
+        System.out.println("Symbol "+signature+" not in "+this.name);
         if(this.parent != null){
             return this.parent.getSymbol(signature);
         }
         return null;
     }
 
-
-    public int getType(){
+    /*public int getType(){
         return this.type;
     }
     
@@ -128,5 +132,5 @@ public class TreeNode extends Symbol{
     
     public TreeNode getChild(int i){
         return this.children.get(i);
-    }
+    }*/
 }

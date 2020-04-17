@@ -361,21 +361,27 @@ void Mul1()#void: {}
 
 void SelectorArguments(): {}
 {
-    Expression() ( <SEPARATOR> Expression() )*
+    <OP> ( Expression() ( <SEPARATOR> Expression() )* )? <CP>
 }
 
-void Selector_1()#void: {}
+void Selector_1()#SELECTOR: {}
 {
-    Identifier() ( <OP> ( SelectorArguments() )? <CP> )?
+    Identifier() ( SelectorArguments() )?
     |
-    <LENGTH>
+    <LENGTH> #LENGTH
 }
 
-void Selector(): {}
+void Selector()#void: {}
 {
     <SELECTOR> Selector_1()
     |
-    <OSB> Expression() <CSB>
+    ArrayAccess()
+    //<OSB> #ArrayAccess Expression() <CSB>
+}
+
+void IdentifierAccess():{}
+{
+    Identifier() ( Selector() )*
 }
 
 void This()#THIS: {}
@@ -401,7 +407,7 @@ void Node()#void: {}
     |
     BoolConst()
     |
-    Identifier() ( Selector() )*
+    IdentifierAccess()
     |
     <OP> And() <CP>
     |
@@ -421,14 +427,14 @@ void Expression()#void: {}
 
 //Access here is unnecessary because the First Token is always the target ID
 //More tokens imply an expression that can then be computed
-void Access()#void /* #Access */: {}
+void ArrayAccess():{} //#void /* #Access */: {}
 {
     <OSB> Expression() <CSB>
 }
 
 void Target()#Target: {}
 {
-    Identifier() ( Access() )?
+    Identifier() ( ArrayAccess() )?
 }
 void Attribution()#Attribution: {}
 {

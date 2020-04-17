@@ -7,6 +7,7 @@ public class Symbol {
     public final static int t_method = 1;     //Symbol method type
     public final static int t_variable = 2;   //Symbol variable type
     public final static int t_file_root = 3;  //The symbol that refers to the file root (last symbol)
+    public TreeNode scope;              //The symbols scope
     public String signature;            //Map key (will eventually replace name and type)
     public String name;                 //Symbol name
     public int type;                    //Symbol type
@@ -21,13 +22,15 @@ public class Symbol {
     }
     /*
     data meaning by type:
-        class ArrayList<Boolean>: [0] extended [1] static
-        variable: data type
+        class: ArrayList<Boolean>: [0] extended [1] static
+        variable: String: data type
+        method: ArrayList<String>: argument types and the return type in the last argument
     */
     public void evalS(){
-        System.out.println("Name "+this.name);
-        System.out.println("Type "+this.type);
-        System.out.println("Signature "+this.signature);
+        System.out.println("Symbol ");
+        System.out.println("\tName "+this.name);
+        System.out.println("\tType "+this.type);
+        System.out.println("\tSignature "+this.signature);
         System.out.println();
     }
     /**

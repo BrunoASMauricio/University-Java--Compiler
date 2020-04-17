@@ -1,5 +1,52 @@
 # COMP - Project 1
 
+## Project Structure
+
+### File Structure
+
+#### Main.java
+
+The class containing the main function.
+
+Reads the arguments and sends them to the relevant classes.
+
+Reads the file, starts the parser, analyzer and handles whatever exceptions pop-up
+
+#### javacc/JMMParser.jjt
+
+The JJTree/Javacc parser.
+
+Implements the grammar and throws parsing exceptions.
+
+#### javacc/SimpleNode.java
+
+A replacement for the auto-generated simple node.
+
+Holds custom information (only 3 new variables).
+
+#### src/Analyzer.java
+
+The class that handles all of the Semantic analysis and generates the structures needed for Jasmin.
+
+### Logical Structure
+
+The Syntax tree is transformed into a High-Level Intermediate Representation.
+
+The HLIR used is a tree where each node is a scope. Each node except the file root, is a Symbol in it's parents' table.
+
+Each node in the tree has:
+    A table of the Symbols that belong to its scope.
+
+A Symbol is a variable, class or method, and contains the relevant information as well as a signature.
+
+The nodes that represent classes (only 1 for j--), also has a tree of Structures/Expressions.
+
+The tree of structures contains the control functions as well as expressions and statements.
+
+
+
+## Project requirements
+
 For this project, you need to [install Gradle](https://gradle.org/install/)
 
 ## Project setup

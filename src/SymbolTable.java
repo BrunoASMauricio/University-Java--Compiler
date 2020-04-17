@@ -1,7 +1,3 @@
-import java.util.Map;
-
-import javax.management.RuntimeErrorException;
-
 import java.util.LinkedHashMap;
 /*
 This table holds the available methods, classes and variables
