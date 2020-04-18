@@ -20,6 +20,7 @@ public class Main {
         InputStream file_stream = null;
         int r = 0;
         boolean o = false;
+        SimpleNode root = null;
         
         //Read arguments
         for(int i = 0; i < args.length; i++){
@@ -44,10 +45,14 @@ public class Main {
             e.printStackTrace();
             System.exit(-1);
         }
-        
-        SimpleNode root = JMMParser.parse(file_stream);
-        
-        JMMParser.eval(root, 0);
+        try{
+            root = JMMParser.parse(file_stream);
+            JMMParser.eval(root, 0);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            System.exit(-1);
+        }
+
         try{
             Analyzer.analyze(root, input_file);
         }catch(DuplicateException ex){

@@ -62,7 +62,8 @@ public class TreeNode extends Symbol{
     public void addSymbol(Symbol new_symbol, SimpleNode n){
         //Build the signature from the name and type. Keep them for debug purposes
         switch(new_symbol.type){
-            case Symbol.t_method:
+            case Symbol.t_method_static:
+            case Symbol.t_method_instance:
                 new_symbol.signature = new_symbol.name+"(";
                 ArrayList<String> types = (ArrayList<String>)new_symbol.data;
                 for(int i = 0; i < types.size()-1; i++){
@@ -95,6 +96,9 @@ public class TreeNode extends Symbol{
         //Check parent scope for warning
         dup = this.getSymbol(new_symbol.signature);
         if(dup != null){
+            if(dup.type == Symbol.t_class){
+                throw new IllegalNameException(new_symbol.signature, n);
+            }
             System.out.println("WARNING, variable already available in scope: \""+dup.signature+"\"");
         }
         new_symbol.scope = this;

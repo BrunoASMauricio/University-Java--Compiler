@@ -4,9 +4,10 @@ Basic structure like symbol information holder
 public class Symbol {
     public final static int t_unset = -1;     //Unset symbol type (to know if the symbol is empty)
     public final static int t_class = 0;      //Symbol class type
-    public final static int t_method = 1;     //Symbol method type
-    public final static int t_variable = 2;   //Symbol variable type
-    public final static int t_file_root = 3;  //The symbol that refers to the file root (last symbol)
+    public final static int t_method_instance = 1;     //Symbol method type
+    public final static int t_method_static = 2;     //Symbol method type
+    public final static int t_variable = 3;   //Symbol variable type
+    public final static int t_file_root = 4;  //The symbol that refers to the file root (last symbol)
     public TreeNode scope;              //The symbols scope
     public String signature;            //Map key (will eventually replace name and type)
     public String name;                 //Symbol name
@@ -22,7 +23,7 @@ public class Symbol {
     }
     /*
     data meaning by type:
-        class: ArrayList<Boolean>: [0] extended [1] static
+        class: Extends String
         variable: String: data type
         method: ArrayList<String>: argument types and the return type in the last argument
     */

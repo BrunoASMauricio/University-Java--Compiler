@@ -222,11 +222,21 @@ SimpleNode Program() #START: {}
         ( ImportDeclaration() )* ClassDeclaration() <EOF>
     ) {return jjtThis;}
 }
-
+/*
+void Import(): {Token t;}{
+    <import> [<static> jjtThis.isStatic=true;]
+    t=<IDENTIFIER>{jjtThis.className=t.image;}
+    [<DOT> t=<Identifier> {jjtThis.methodName=t.image}]
+    [<LB> ParamList() <RB> [Type()|<VOID>#Void] ]
+}
+void ParamList(): {
+    [Type()  (<COMMA> Type())*]
+}
+*/
 void ImportDeclaration(): {}
 {
     //The method node is necessary to know if it's a method or no (since there can be a method with 0 arguments and no return (void))
-    <IMPORT> ( <STATIC> #STATIC(0) )? Identifier() ( <SELECTOR> Identifier() )
+    <IMPORT> ( <STATIC> #STATIC(0) )? Identifier() ( <SELECTOR> Identifier() )?
     //The grammar should only accept methods, but this is here just to check if there is any non method import
     //The exception is throwned in the semantic
     ( <OP> #IMPORTMETHOD(0) ( (Type() ( <SEPARATOR> Type() )*) | <VOID> )? <CP> )?
@@ -381,7 +391,7 @@ void Selector()#void: {}
 
 void IdentifierAccess():{}
 {
-    Identifier() ( Selector() )*
+    Identifier() ( SelectorArguments() )? ( Selector() )*
 }
 
 void This()#THIS: {}

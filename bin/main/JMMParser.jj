@@ -260,7 +260,17 @@ SimpleNode Program()       : {/*@bgen(jjtree) START */
     }
 /*@egen*/
 }
-
+/*
+void Import(): {Token t;}{
+    <import> [<static> jjtThis.isStatic=true;]
+    t=<IDENTIFIER>{jjtThis.className=t.image;}
+    [<DOT> t=<Identifier> {jjtThis.methodName=t.image}]
+    [<LB> ParamList() <RB> [Type()|<VOID>#Void] ]
+}
+void ParamList(): {
+    [Type()  (<COMMA> Type())*]
+}
+*/
 void ImportDeclaration(): {/*@bgen(jjtree) ImportDeclaration */
   SimpleNode jjtn000 = new SimpleNode(JJTIMPORTDECLARATION);
   boolean jjtc000 = true;
@@ -286,7 +296,7 @@ void ImportDeclaration(): {/*@bgen(jjtree) ImportDeclaration */
                    jjtn001.jjtSetLastToken(getToken(0));
                  }
                }
-/*@egen*/            )? Identifier() ( <SELECTOR> Identifier() )
+/*@egen*/            )? Identifier() ( <SELECTOR> Identifier() )?
     //The grammar should only accept methods, but this is here just to check if there is any non method import
     //The exception is throwned in the semantic
     (/*@bgen(jjtree) #IMPORTMETHOD( 0) */
@@ -995,7 +1005,7 @@ void IdentifierAccess():{/*@bgen(jjtree) IdentifierAccess */
 {/*@bgen(jjtree) IdentifierAccess */
     try {
 /*@egen*/
-    Identifier() ( Selector() )*/*@bgen(jjtree)*/
+    Identifier() ( SelectorArguments() )? ( Selector() )*/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
