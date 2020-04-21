@@ -25,6 +25,7 @@ public class Structure {
 
         Method Access: Arguments
         Array Access: Expression
+        Int Array Access: Expression
     */
     public void addChild(Structure child_structure){
         this.nested_structures.add(child_structure);

@@ -35,6 +35,7 @@ public class JMMParser/*@bgen(jjtree)*/implements JMMParserTreeConstants/*@egen*
         }catch(ParseException e){
             System.out.println("UNEXPECTED Parsing Exception");
             printParsingException(e);
+            throw new Exception("Parser failure");
         }catch(Exception e){
             System.out.println("Non parse exception ocured: ");
             System.out.println(e);
@@ -124,6 +125,8 @@ SKIP :
 //Eventually when we handle string parsing, remove these from here
 " "
 |"\r"
+|"\r\n"
+|"\n\r"
 |"\t"
 |"\n"
 //Ignore comments
@@ -174,7 +177,6 @@ TOKEN:
 {
 
 < INTEGER: (["0"-"9"])+ >
-|< LF: "\n" | "\r" | "\r\n" >
 
 |< SC: ";" >
 |< NEW: "new" >
@@ -993,7 +995,6 @@ void Selector()     : {}
     <SELECTOR> Selector_1()
     |
     ArrayAccess()
-    //<OSB> #ArrayAccess Expression() <CSB>
 }
 
 void IdentifierAccess():{/*@bgen(jjtree) IdentifierAccess */
@@ -1073,7 +1074,22 @@ void New(): {/*@bgen(jjtree) New */
 /*@egen*/
     <INT> <OSB> Expression() <CSB>
     |
-    Identifier() <OP> <CP>/*@bgen(jjtree)*/
+    Identifier()/*@bgen(jjtree) SELECTORARGUMENTS */
+                 {
+                   SimpleNode jjtn001 = new SimpleNode(JJTSELECTORARGUMENTS);
+                   boolean jjtc001 = true;
+                   jjtree.openNodeScope(jjtn001);
+                   jjtn001.jjtSetFirstToken(getToken(1));
+                 }
+                 try {
+/*@egen*/ <OP>/*@bgen(jjtree)*/
+                 } finally {
+                   if (jjtc001) {
+                     jjtree.closeNodeScope(jjtn001, true);
+                     jjtn001.jjtSetLastToken(getToken(0));
+                   }
+                 }
+/*@egen*/                    <CP> ( Selector() )*/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -1142,7 +1158,7 @@ void Node()     : {}
     |
     This()
     |
-    <NEW> New() ( Selector() )*
+    <NEW> New()
     |
     Negate()
 

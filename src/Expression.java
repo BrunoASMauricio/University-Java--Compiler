@@ -18,6 +18,7 @@ public class Expression extends Structure{
     public static final int t_access_length = 9;    //.length
     public static final int t_method_access = 10;   //Method access
     public static final int t_array_access = 11;    //Array access
+    public static final int t_int_array = 12;    //Array access
 
     public String return_type;      //The expression value type
     public Object value;            //The expression value, if available
@@ -27,7 +28,6 @@ public class Expression extends Structure{
     used_symbol by type:
         Access: Accessed variable symbol
         Method: Accessed method symbol
-        Array Access: Accessed variable array symbol
     */
     public Expression(TreeNode scope){
         super(scope);

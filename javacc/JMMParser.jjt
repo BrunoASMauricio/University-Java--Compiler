@@ -31,6 +31,7 @@ public class JMMParser{
         }catch(ParseException e){
             System.out.println("UNEXPECTED Parsing Exception");
             printParsingException(e);
+            throw new Exception("Parser failure");
         }catch(Exception e){
             System.out.println("Non parse exception ocured: ");
             System.out.println(e);
@@ -120,6 +121,8 @@ SKIP :
 //Eventually when we handle string parsing, remove these from here
 " "
 |"\r"
+|"\r\n"
+|"\n\r"
 |"\t"
 |"\n"
 //Ignore comments
@@ -170,7 +173,6 @@ TOKEN:
 {
 
 < INTEGER: (["0"-"9"])+ >
-|< LF: "\n" | "\r" | "\r\n" >
 
 |< SC: ";" >
 |< NEW: "new" >
@@ -386,7 +388,6 @@ void Selector()#void: {}
     <SELECTOR> Selector_1()
     |
     ArrayAccess()
-    //<OSB> #ArrayAccess Expression() <CSB>
 }
 
 void IdentifierAccess():{}
@@ -403,7 +404,7 @@ void New(): {}
 {
     <INT> <OSB> Expression() <CSB>
     |
-    Identifier() <OP> <CP>
+    Identifier() <OP> #SELECTORARGUMENTS <CP> ( Selector() )*
 }
 
 void Negate(): {}
@@ -423,7 +424,7 @@ void Node()#void: {}
     |
     This()
     |
-    <NEW> New() ( Selector() )*
+    <NEW> New()
     |
     Negate()
 

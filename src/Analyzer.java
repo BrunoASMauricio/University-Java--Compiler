@@ -125,6 +125,7 @@ Return type mismatch; And many more.
     public static String getMethodSignature(SimpleNode method_node, TreeNode scope){
         String signature = ((SimpleNode)method_node.jjtGetChild(0)).image+"(";
         Expression help_expr;
+
         for(int i = 0; i < method_node.jjtGetChild(1).jjtGetNumChildren(); i++){
             //Each argument is based on an expression that has a return type, and is scope
             //bound to the "line" scope and not the previous call scopes
@@ -136,12 +137,24 @@ Return type mismatch; And many more.
             }
         }
         signature += ")";
+
         return signature;
     }
     public static Expression getSelector(TreeNode scope){
         Expression this_expr = new Expression(scope);
         
         return this_expr;
+    }
+    public static void getArrayAccess(Expression this_expr, SimpleNode arr_expr_node, TreeNode scope){
+        Expression helper_expr;
+
+        this_expr.expression_type = Expression.t_array_access;
+        helper_expr = getExpression(arr_expr_node, scope);
+        this_expr.data = helper_expr;
+        this_expr.return_type = helper_expr.return_type;
+        if(this_expr.return_type != "int"){
+            throw new IncompatibleException("Array accesses must be of type int and not "+this_expr.return_type, arr_expr_node);
+        }
     }
     /**
      * Follows the scopes in a method call / variable or array access
@@ -163,8 +176,7 @@ Return type mismatch; And many more.
         this_expr = new Expression(parent_scope);
         switch(follow_node.id){
             case JMMParserTreeConstants.JJTARRAYACCESS:
-                this_expr.expression_type = Expression.t_array_access;
-
+                Analyzer.getArrayAccess(this_expr, helper, scope);
                 break;
             case JMMParserTreeConstants.JJTSELECTOR:
                 if(helper.id == JMMParserTreeConstants.JJTLENGTH){
@@ -221,7 +233,7 @@ Return type mismatch; And many more.
         i = 0;
         expr = new Expression(current_scope);
         expr.type = Structure.t_expression;
-        //System.out.println(JMMParserTreeConstants.jjtNodeName[expr_node.id]);
+        //System.out.println(">>>>"+JMMParserTreeConstants.jjtNodeName[expr_node.id]);
         switch(expr_node.id){
             //Operations
             case JMMParserTreeConstants.JJTAND:
@@ -268,7 +280,9 @@ Return type mismatch; And many more.
                 expr.expression_type = Expression.t_access;
                 expr.used_symbol = helper_symbol;
                 switch(helper_symbol.type){
-                    case Symbol.t_variable:
+                    case Symbol.t_variable_ninit:
+                        throw new UninitializedException("Variable "+helper_symbol.name+" not initialized ", expr_node);
+                    case Symbol.t_variable_init:
                         expr.return_type = (String)helper_symbol.data;
                         break;
                     case Symbol.t_class:
@@ -299,20 +313,26 @@ Return type mismatch; And many more.
             
             case JMMParserTreeConstants.JJTNEW:
                 //Can only be int[] or Identifier[] where Identifier must be an existing class
+                if(((SimpleNode)expr_node.jjtGetChild(0)).id != JMMParserTreeConstants.JJTIDENTIFIER){
+                    expr.expression_type = Expression.t_int_array;
+                    expr.return_type = "int[]";
+                    expr.data = Analyzer.getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope);
+                    break;
+                }
 
-            break;
             //The next two cases start from a scope and follow it (down, unless they come across another identifier access)
             case JMMParserTreeConstants.JJTIDENTIFIERACCESS:
                 //Get and use "remote"/higher scope/symbol
-                //System.out.println("\t\t\t\t\t>>> neato burrito "+((SimpleNode)expr_node.jjtGetChild(0)).image);
                 i = 1;
                 if(node_children > 1){
                     //Started with a method (normally, being static or non static depends on the current method, but since methods must be non static, assume non static)
-                    if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS){
+                    if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS || expr_node.id == JMMParserTreeConstants.JJTNEW){
                         expr.expression_type = Expression.t_method_access;
-                        System.out.println("Fetching method");
                         
                         String signature = getMethodSignature(expr_node, current_scope);
+                        
+                        System.out.println("Fetching method "+signature);
+                        
                         expr.used_symbol = getByIdentifier(signature, current_scope, expr_node);
                         helper_al = ((ArrayList<String>)(expr.used_symbol.data));
                         System.out.println("method returns "+expr.used_symbol.name+" "+helper_al.get(helper_al.size()-1));
@@ -320,7 +340,7 @@ Return type mismatch; And many more.
                         helper_expression.return_type = helper_al.get(helper_al.size()-1);
                         i++;
                         
-                        //expr.addChild(helper_expression);
+                        expr.addChild(helper_expression);
 
                         static_access = false;
                         //See if the return type is a class, or not
@@ -340,30 +360,44 @@ Return type mismatch; And many more.
                         if(expr.used_symbol.type == Symbol.t_class){
                             static_access = true;
                             helper_scope = (TreeNode)(expr.used_symbol);
+                            System.out.println("CLASS TYPE, STATIC");
                         }else{
+                            if(expr.used_symbol.type == Symbol.t_variable_ninit){
+                                throw new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node);
+                            }
                             static_access = false;
                             //If the return type isn't a class type, scope is inexistent
                             if(checkBasicType((String)expr.used_symbol.data)){
-                                helper_scope = null;
+                                System.out.println("NORMAL TYPE");
+                                helper_scope = current_scope;
                             }else{
+                                System.out.println("CLASS TYPE, INSTANCE");
                                 helper_scope = (TreeNode)getByIdentifier((String)expr.used_symbol.data, current_scope, expr_node);
+                                expr.used_symbol = helper_scope;
                             }
                         }
 
                         expr.expression_type = Expression.t_access;
-                        helper_expression = new Expression((TreeNode)expr.used_symbol);
                         
-                        //expr.addChild(helper_expression);
+                        System.out.println("\nOn line "+expr_node.firstToken.beginLine);
+                        Token helper = expr_node.firstToken;
+                        while(helper != expr_node.lastToken){
+                            System.out.print(JMMParserConstants.tokenImage[helper.kind]);
+                            helper = helper.next;
+                        }
+
+                        helper_expression = new Expression(helper_scope);
+                        
+                        expr.addChild(helper_expression);
                         if(node_children < 2){
                             throw new RuntimeException("fuck");
                         }
-
                     }
                     
-                    
                     while(i < node_children){
+
                         helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, static_access, current_scope);
-                        helper_scope = helper_expression.used_symbol.scope;
+                        
                         expr.addChild(helper_expression);
                         static_access = false;
                         if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
@@ -374,21 +408,25 @@ Return type mismatch; And many more.
                                 throw new RuntimeException("Undefined beahaviour "+helper_expression.return_type);
                             }
                         }
+
+
                     }
                     expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                     System.out.println("FINAL RETURN "+expr.return_type);
 
 
-
-
                 }else{
+                    //Variable access
                     expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
+                    if(expr.used_symbol.type == Symbol.t_variable_ninit){
+                        throw new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node);
+                    }
                     expr.expression_type = Expression.t_access;
                     if(expr.used_symbol.type == Symbol.t_class){
-                        //expr.return_type = expr.used_symbol.name;
                         throw new RuntimeException("Cannot use class name in this context");
-                    }else if(expr.used_symbol.type == Symbol.t_variable){
+                    }else if(expr.used_symbol.type == Symbol.t_variable_ninit || expr.used_symbol.type == Symbol.t_variable_init){
                         expr.return_type = (String)(expr.used_symbol.data);
+                        expr.used_symbol.type = Symbol.t_variable_init;
                     }else{
                         throw new RuntimeException("unexpected symbol type "+expr.used_symbol.type);
                     }
@@ -406,18 +444,25 @@ Return type mismatch; And many more.
                 }
                 while(i < node_children){
                     helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, false,  current_scope);
-                    helper_scope = helper_expression.used_symbol.scope;
+                    //helper_scope = helper_expression.used_symbol.scope;
+                    if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
+                        helper_scope = null;
+                    }else{
+                        helper_scope = (TreeNode)current_scope.getSymbol(helper_expression.return_type);
+                        if(helper_scope.type != Symbol.t_class){
+                            throw new RuntimeException("Undefined beahaviour "+helper_expression.return_type);
+                        }
+                    }
                     expr.addChild(helper_expression);
                 }
                 expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                 break;
+            case JMMParserTreeConstants.JJTARRAYACCESS:
+                Analyzer.getArrayAccess(expr, (SimpleNode)expr_node.jjtGetChild(0), current_scope);
+                break;
             default:
                 throw new RuntimeException("UNRECOGNIZED "+expr_node.id);
         }
-
-        //while(i < node_children){
-
-        //}
         return expr;
     }
 
@@ -426,6 +471,7 @@ Return type mismatch; And many more.
         SimpleNode target;
         Expression helper1;
         Expression helper2;
+        Symbol target_symbol;
 
         target = (SimpleNode)attr_node.jjtGetChild(0);
         this_attr = new Structure(current_scope);
@@ -433,24 +479,41 @@ Return type mismatch; And many more.
 
         //Check variable
         //System.out.println("Target variable: "+((SimpleNode)target.jjtGetChild(0)).image);
-        getByIdentifier(((SimpleNode)target.jjtGetChild(0)).image, current_scope, attr_node);
-
+        target_symbol = getByIdentifier(((SimpleNode)target.jjtGetChild(0)).image, current_scope, attr_node);
         //                      TODO
         //Normal variable access or array access
+        helper1 = new Expression(current_scope);
+        helper1.type = Structure.t_expression;
+        helper1.expression_type = Expression.t_access;
+        helper1.used_symbol = target_symbol;
+        switch(target_symbol.type){
+            case Symbol.t_variable_ninit:
+            case Symbol.t_variable_init:
+                helper1.return_type = (String)target_symbol.data;
+                break;
+            case Symbol.t_class:
+                helper1.return_type = target_symbol.name;
+                break;
+            default:
+                throw new RuntimeException("Wrong Identifier type "+target_symbol.type);
+        }
 
         if(target.jjtGetNumChildren() > 1){
             //Array access
-            //STILL NEED TO DO THIS
-            //System.out.println("TARGET > 1 "+((SimpleNode)target.jjtGetChild(1)).image);
+            //                                          STILL NEED TO DO THIS
+            //Array access means the array must be intialized
+            if(target_symbol.type == Symbol.t_variable_ninit){
+                throw new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node);
+            }
             this_attr.addChild(Analyzer.getExpression(((SimpleNode)target.jjtGetChild(1)), current_scope));
+            helper1.return_type = "int";
         }
-        helper1 = Analyzer.getExpression((SimpleNode)target.jjtGetChild(0), current_scope);
+        target_symbol.type = Symbol.t_variable_init;
+        //System.out.println("NEXT");
         helper2 = Analyzer.getExpression((SimpleNode)attr_node.jjtGetChild(1), current_scope);
 
         if(!helper1.return_type.equals(helper2.return_type)){
             throw new IncompatibleException(helper1.return_type+" is incompatible with "+helper2.return_type, attr_node);
-        }else{
-
         }
         this_attr.addChild(helper1);
         this_attr.addChild(helper2);
@@ -548,7 +611,7 @@ Return type mismatch; And many more.
 
         this_variable.name = ((SimpleNode)decl_node.jjtGetChild(1)).image;
         this_variable.data = ((SimpleNode)decl_node.jjtGetChild(0)).image;
-        this_variable.type = Symbol.t_variable;
+        this_variable.type = Symbol.t_variable_ninit;
 
         helper_symbol = current_scope.table.getSymbol(this_variable.name);
         if(helper_symbol != null){
@@ -561,7 +624,7 @@ Return type mismatch; And many more.
         current_scope.addSymbol(this_variable, decl_node);
     }
 
-    public static TreeNode getMethod(SimpleNode method_node, Boolean ismain, TreeNode parent){
+    public static void getMethod(SimpleNode method_node, Boolean ismain, TreeNode parent, Boolean only_head){
         SimpleNode help_node;
         int i;
         int node_children;
@@ -584,7 +647,7 @@ Return type mismatch; And many more.
                 types.add(((SimpleNode)help_node.jjtGetChild(j)).image);
                 //Create argument variable (the first variables are the argument variables)
                 helper_symbol = new Symbol();
-                helper_symbol.type = Symbol.t_variable;
+                helper_symbol.type = Symbol.t_variable_init;
                 helper_symbol.name = ((SimpleNode)help_node.jjtGetChild(j+1)).image;
                 helper_symbol.data = ((SimpleNode)help_node.jjtGetChild(j)).image;
 
@@ -601,7 +664,7 @@ Return type mismatch; And many more.
             this_method.name = "main";
             types.add("String[]");
             helper_symbol = new Symbol();
-            helper_symbol.type = Symbol.t_variable;
+            helper_symbol.type = Symbol.t_variable_init;
             helper_symbol.name = ((SimpleNode)help_node).image;
             helper_symbol.data = "String[]";
             argument_variables.add(helper_symbol);
@@ -613,6 +676,15 @@ Return type mismatch; And many more.
         for(Symbol s: argument_variables){
             this_method.addSymbol(s, method_node);
         }
+        
+        if(only_head == true){
+            parent.addChild(this_method, method_node);
+            return;
+        }else{
+            TreeNode.buildSignature(this_method);
+            this_method = (TreeNode)parent.getSymbol(this_method.signature);
+        }
+
         //Search inside the method
         while(i < node_children){
             help_node = (SimpleNode) method_node.jjtGetChild(i++);
@@ -629,52 +701,90 @@ Return type mismatch; And many more.
             }
         }
         
-        parent.addChild(this_method, method_node);
-        return this_method;
     }
 
     public static void getClass(SimpleNode class_node, TreeNode root_scope){
         SimpleNode help_node;
         int i;
+        int method_start;
         int node_children;
         TreeNode class_treenode;
-        ArrayList<Boolean> class_defs;
+        //Default constructor
+        Symbol this_class_constructor;
+        TreeNode helper;
+        String class_defs;
 
         node_children = class_node.jjtGetNumChildren();
         i = 0;
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
-        class_defs = new ArrayList<Boolean>();
+        class_defs = "";
         class_treenode = new TreeNode(root_scope);
         class_treenode.name = ((SimpleNode)help_node.jjtGetChild(0)).image;
         class_treenode.type = Symbol.t_class;
+        this_class_constructor = new Symbol();
 
         //Class extends
         if(help_node.jjtGetNumChildren() == 2){
-            class_treenode.data = ((SimpleNode)help_node.jjtGetChild(1)).image;
-            class_defs.add(true);
-        }else{
-            class_defs.add(false);
+            class_defs = ((SimpleNode)help_node.jjtGetChild(1)).image;
+            helper = (TreeNode)root_scope.getSymbol(((SimpleNode)help_node.jjtGetChild(1)).image);
+            helper.evalT(0);
+            for(Symbol s : helper.table.symbols.values()){
+                class_treenode.addSymbol(s, class_node);
+            }
         }
-        //Normal classes cant be static in J--
-        class_defs.add(false);
         class_treenode.data = class_defs;
+        
+        this_class_constructor.name = class_treenode.name;
+        this_class_constructor.data = new ArrayList<String>();
+        this_class_constructor.type = Symbol.t_method_instance;
+        ((ArrayList<String>)this_class_constructor.data).add(this_class_constructor.name);
+        
+        root_scope.addSymbol(this_class_constructor, class_node);
         
         root_scope.addChild(class_treenode, class_node);
 
-        while(i < node_children){
+        help_node = (SimpleNode) class_node.jjtGetChild(i++);
+
+        while(i < node_children && help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
+            Analyzer.getVarDecl(help_node, class_treenode);
             help_node = (SimpleNode) class_node.jjtGetChild(i++);
-            //Get class variables
-            if(help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
-                Analyzer.getVarDecl(help_node, class_treenode);
-            }else if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){
-            //Get methods
-                Analyzer.getMethod(help_node, false, class_treenode);
+        }
+        method_start = i-1;
+
+        //Get method signatures
+        while(true){
+            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){
+                //Get methods
+                Analyzer.getMethod(help_node, false, class_treenode, true);
             }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){
-            //Get main
-                Analyzer.getMethod(help_node, true, class_treenode);
+                //Get main
+                Analyzer.getMethod(help_node, true, class_treenode, true);
             }else{
-                throw new RuntimeException("Unrecognized token "+help_node.id);
+                throw new RuntimeException("1Unrecognized token "+help_node.id);
             }
+            if(i == node_children){
+                break;
+            }
+            help_node = (SimpleNode) class_node.jjtGetChild(i++);
+        }
+        i = method_start;
+        //Get method bodies
+        help_node = (SimpleNode) class_node.jjtGetChild(i++);
+        
+        while(true){
+            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){
+                //Get methods
+                Analyzer.getMethod(help_node, false, class_treenode, false);
+            }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){
+                //Get main
+                Analyzer.getMethod(help_node, true, class_treenode, false);
+            }else{
+                throw new RuntimeException("2Unrecognized token "+help_node.id);
+            }
+            if(i == node_children){
+                break;
+            }
+            help_node = (SimpleNode) class_node.jjtGetChild(i++);
         }
     }
 
@@ -719,11 +829,14 @@ Return type mismatch; And many more.
             System.out.println("Too many names in import, maximum of 2");
             System.exit(-1);
         }
-        if(help_node.id != JMMParserTreeConstants.JJTIMPORTMETHOD){
+        /*if(help_node.id != JMMParserTreeConstants.JJTIMPORTMETHOD){
             System.out.println("Non method imported, missing ()");
             System.exit(-1);
+        }*/
+        //If is constructor
+        if(names.size() == 0){
+            names.add((((SimpleNode)import_node.jjtGetChild(0))).image);
         }
-
         //For simplicity, since we can only have import1.import2, directly assume that the first is the class name and the second the method
         this_class_treenode.name = names.get(0);
         this_class_treenode.type = Symbol.t_class;
@@ -780,7 +893,8 @@ Return type mismatch; And many more.
             try{
                 this_class_treenode.addSymbol(this_import_method, import_node);
             }catch(DuplicateException ex){
-                throw new DuplicateException("Import "+ex, import_node);
+                System.out.println("WARNING duplicate import on line "+import_node.firstToken.beginLine);
+                //throw new DuplicateException("Import "+ex, import_node);
             }
         }else{
             System.out.println("PARSER MADE A MISTAKE");
@@ -793,7 +907,6 @@ Return type mismatch; And many more.
         SimpleNode node;
         int i;
         TreeNode tree_root;
-
 
         System.out.println("Analyzer starting");
         

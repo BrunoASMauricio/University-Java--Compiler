@@ -28,6 +28,35 @@ public class TreeNode extends Symbol{
         this.structures = new ArrayList<Structure>();
         this.table = new SymbolTable();
     }
+    public static void buildSignature(Symbol _symbol) {
+        switch(_symbol.type){
+            case Symbol.t_method_static:
+            case Symbol.t_method_instance:
+                _symbol.signature = _symbol.name+"(";
+                ArrayList<String> types = (ArrayList<String>)_symbol.data;
+                for(int i = 0; i < types.size()-1; i++){
+                    if(i == 0){
+                        _symbol.signature += types.get(i);
+                    }else{
+                        _symbol.signature += ","+types.get(i);
+                    }
+                }
+                //The return type does not belong in the signature
+                _symbol.signature += ")";//+types.get(types.size()-1);
+            break;
+            case Symbol.t_class:
+                _symbol.signature = _symbol.name;
+            break;
+            case Symbol.t_variable_init:
+                _symbol.signature = _symbol.name;
+            break;
+            case Symbol.t_variable_ninit:
+                _symbol.signature = _symbol.name;
+            break;
+            default:
+                _symbol.signature = _symbol.name;
+        }
+    }
 
     public void evalT(int depth){
         System.out.println("Node Depth "+depth);
@@ -54,39 +83,15 @@ public class TreeNode extends Symbol{
         children.add(in_tree_node);
         return in_tree_node;
     }
-
+    
     /**
      * Add a symbol to the scope
      * @param new_symbol Complete Symbol object to add
      */
     public void addSymbol(Symbol new_symbol, SimpleNode n){
         //Build the signature from the name and type. Keep them for debug purposes
-        switch(new_symbol.type){
-            case Symbol.t_method_static:
-            case Symbol.t_method_instance:
-                new_symbol.signature = new_symbol.name+"(";
-                ArrayList<String> types = (ArrayList<String>)new_symbol.data;
-                for(int i = 0; i < types.size()-1; i++){
-                    if(i == 0){
-                        new_symbol.signature += types.get(i);
-                    }else{
-                        new_symbol.signature += ","+types.get(i);
-                    }
-                }
-                //The return type does not belong in the signature
-                new_symbol.signature += ")";//+types.get(types.size()-1);
-                System.out.println("Method signature: "+new_symbol.signature);
-            break;
-            case Symbol.t_class:
-                new_symbol.signature = new_symbol.name;
-            break;
-            case Symbol.t_variable:
-                new_symbol.signature = new_symbol.name;
-            break;
-            default:
-                new_symbol.signature = new_symbol.name;
-        }
-        //new_symbol.signature = new_symbol.name;
+        TreeNode.buildSignature(new_symbol);
+        //System.out.println("\t\t\t\tADDING SYMBOL "+new_symbol.signature);
         //Check local symbol table
         Symbol dup = this.table.getSymbol(new_symbol.signature);
         if(dup != null){
@@ -116,10 +121,10 @@ public class TreeNode extends Symbol{
     public Symbol getSymbol(String signature){
         Symbol ret = getLocalSymbol(signature);
         if(ret != null){
-            System.out.println("Symbol "+signature+" in "+this.name);
+            //System.out.println("Symbol "+signature+" in "+this.name);
             return ret;
         }
-        System.out.println("Symbol "+signature+" not in "+this.name);
+        //System.out.println("Symbol "+signature+" not in "+this.name);
         if(this.parent != null){
             return this.parent.getSymbol(signature);
         }

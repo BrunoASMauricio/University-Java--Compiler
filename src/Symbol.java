@@ -6,19 +6,18 @@ public class Symbol {
     public final static int t_class = 0;      //Symbol class type
     public final static int t_method_instance = 1;     //Symbol method type
     public final static int t_method_static = 2;     //Symbol method type
-    public final static int t_variable = 3;   //Symbol variable type
-    public final static int t_file_root = 4;  //The symbol that refers to the file root (last symbol)
+    public final static int t_variable_ninit = 3;   //Symbol variable type
+    public final static int t_variable_init = 4;   //Symbol variable type
+    public final static int t_file_root = 5;  //The symbol that refers to the file root (last symbol)
     public TreeNode scope;              //The symbols scope
     public String signature;            //Map key (will eventually replace name and type)
     public String name;                 //Symbol name
     public int type;                    //Symbol type
-    public String info;                 //Should contain line/column, as well as aditional information (printed in exceptions)
     public Object data;                 //The specified types' data
     public Symbol(){
         this.signature = null;
         this.name = null;
         this.type = Symbol.t_unset;
-        this.info = null;
         this.data = null;
     }
     /*
@@ -44,7 +43,6 @@ public class Symbol {
         this.signature = s.signature;
         this.name = s.name;
         this.type = s.type;
-        this.info = s.info;
         this.data = s.data;
     }
 }

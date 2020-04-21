@@ -50,7 +50,7 @@ public class Main {
             JMMParser.eval(root, 0);
         }catch(Exception ex){
             ex.printStackTrace();
-            System.exit(-1);
+            throw new RuntimeException("Syntatical error");
         }
 
         try{
@@ -58,20 +58,20 @@ public class Main {
         }catch(DuplicateException ex){
             System.out.println("\t\tERROR Duplicate detected");
             System.out.println(ex);
-            System.exit(-1);
+            throw new RuntimeException("Semantic error");
         }catch(UndeclaredException ex){
             System.out.println("\t\tERROR Undeclared entity");
             System.out.println(ex);
-            System.exit(-1);
+            throw new RuntimeException("Semantic error");
         }catch(IncompatibleException ex){
             System.out.println("\t\tERROR incompatibility detected");
             System.out.println(ex);
-            System.exit(-1);
+            throw new RuntimeException("Semantic error");
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);
             ex.printStackTrace(); 
-            System.exit(-1);
+            throw new RuntimeException("Semantic error");
         }
 
         System.out.println();

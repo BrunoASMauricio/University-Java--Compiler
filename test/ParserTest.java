@@ -57,25 +57,24 @@ public class ParserTest {
     ONLY SEMANTIC FAILURES DONT ASSERT CORRECTLY, EVERYTHING BELLOW WAS COMMENTED TO ALLOW CORRECT COMPILATION (A SINGLE ASSERT FAILURE STOPS THE PROCESS)
     
     */
-    /*
+    @Test
+    public void testLife() {
+        test("fixtures/public/Life.jmm", false);
+    }
+    
     @Test
     public void testFindMaximum() {
         test("fixtures/public/FindMaximum.jmm", false);
     }
-
+    
     @Test
     public void testHelloWorld() {
         test("fixtures/public/HelloWorld.jmm", false);
     }
-
+    
     @Test
     public void testLazysort() {
         test("fixtures/public/Lazysort.jmm", false);
-    }
-
-    @Test
-    public void testLife() {
-        test("fixtures/public/Life.jmm", false);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class ParserTest {
     public void testWhileAndIF() {
         test("fixtures/public/WhileAndIF.jmm", false);
     }
-/*
+
     @Test
     public void testarr_index_not_int() {
         test("fixtures/public/fail/semantic/arr_index_not_int.jmm", true);
@@ -187,5 +186,4 @@ public class ParserTest {
     public void testNestedLoop() {
         test("fixtures/public/fail/syntactical/NestedLoop.jmm", true);
     }
-    */
 }
