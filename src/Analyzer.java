@@ -6,32 +6,26 @@ public class Analyzer {
     /*
 Errors to detect
 
-Undeclared variable
-Reserved identifier misuse.
-Multiple declaration of variable in a scope.
-Accessing an out of scope variable.
-Actual and formal parameter mismatch.
-
-Duplicate functions;
-Function type mismatch;
-Function does not return when it should;
-Function not declared;
-Wrong number of arguments for a function;
-Wrong type of arguments;
-Undefined arguments;
-Repeated arguments;
-Redefinition of global variables;
-Type mismatches;
-Detection of size as a variable instead of a property;
-Variables previously defined as other types;
-Undefined variables;
-Confusion between arrays and variables;
-Return type not declared;
-Undefined arrays;
-Detection if operations are done only with scalars;
-Undefined indexes;
-Return type mismatch; And many more.
-
+V    Undeclared variable
+X    Reserved identifier misuse.
+V    Multiple declaration of variable in a scope.
+V    Accessing an out of scope variable. (undeclared variables or methods)
+V    Duplicate functions;
+V    Function type mismatch;
+X    Function does not return when it should;
+V    Wrong number of arguments for a function;
+V    Wrong type of arguments;
+X    Undefined arguments;
+X    Repeated arguments;
+V    Redefinition of global variables;
+V    Type mismatches;
+?    Detection of size as a variable instead of a property;
+V    Variables previously defined as other types;
+X    Confusion between arrays and variables;
+X    Return type not declared;
+V    Undefined arrays;
+?    Detection if operations are done only with scalars;
+V    Undefined indexes;
     */
     /**
      * Checks if the given type is a basic type
@@ -54,6 +48,9 @@ Return type mismatch; And many more.
     }
     /**
      * Looks for a type. If no basic type was found, looks for classes
+     * @param type String type to look for
+     * @param current_scope Target scope
+     * @param n Current AST node
      */
     public static void checkType(String type, TreeNode current_scope, SimpleNode n){
         Symbol helper;
@@ -68,6 +65,7 @@ Return type mismatch; And many more.
      * Searches the scope for a symbol with the given signature
      * @param signature Target signature
      * @param current_scope Scope to search in (including visible scopes)
+     * @param n Current AST node
      * @return The found symbol
      */
     public static Symbol getByIdentifier(String signature, TreeNode current_scope, SimpleNode n){
@@ -75,10 +73,13 @@ Return type mismatch; And many more.
         if(helper == null){
             throw new UndeclaredException("Undefined "+signature, n);
         }
-        //System.out.println("\t\t\t\t>>>FOUND SYMBOL "+signature);
         return helper;
     }
-    
+    /**
+     * Handles the Arithmetic expression that starts at node expr_node and sets an Expression object accordingly
+     * @param expr_node The start of the operation
+     * @param expr The target Expression object
+     */
     public static void parseArithOperation(SimpleNode expr_node, Expression expr){
         if(expr_node.jjtGetNumChildren() != 2){
             throw new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id);
@@ -90,14 +91,18 @@ Return type mismatch; And many more.
         
         if(!lhs.return_type.equals(rhs.return_type)){
             throw new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node);
-        }else{
-            //THIS ALSO INCLUDES ARRAYS AND STRINGS AND IT SHOULDNT
+        }else{//Only accept int return types
             if(!(lhs.return_type.equals("int"))){
                 throw new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node);
             }
         }
         expr.return_type = "int";
     }
+    /**
+     * Handles the Logic Operation expression (less than and and) that starts at node expr_node and sets an Expression object accordingly
+     * @param expr_node The start of the operation
+     * @param expr The target Expression object
+     */
     public static void parseOperation(SimpleNode expr_node, Expression expr){
         if(expr_node.jjtGetNumChildren() != 2){
             throw new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id);
@@ -110,6 +115,9 @@ Return type mismatch; And many more.
         if(!lhs.return_type.equals(rhs.return_type)){
             throw new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node);
         }else{
+
+            //WHAT EXACTLY IS TO BE DONE HERE? CAN BOOLEAN ANDS HANDLE INTS? CAN LESS THANS HANDLE BOOLEANS?
+
             if(!checkBasicType(lhs.return_type)){
                 throw new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node);
             }
@@ -117,10 +125,10 @@ Return type mismatch; And many more.
         expr.return_type = "boolean";
     }
     /**
-     * Handles Identifier() ( SelectorArguments() )?
-     * @param method_node
-     * @param scope
-     * @return
+     * Handles Identifier() ( SelectorArguments() )? type nodes, and returns the signature
+     * @param method_node AST Node where the method starts (the node that contains Identifier() ( SelectorArguments() )? as the  2 children)
+     * @param scope The current scope
+     * @return The method signature
      */
     public static String getMethodSignature(SimpleNode method_node, TreeNode scope){
         String signature = ((SimpleNode)method_node.jjtGetChild(0)).image+"(";
@@ -140,11 +148,12 @@ Return type mismatch; And many more.
 
         return signature;
     }
-    public static Expression getSelector(TreeNode scope){
-        Expression this_expr = new Expression(scope);
-        
-        return this_expr;
-    }
+    /**
+     * Handles Array access (a single expression that must return an int type) and sets an Expression Object accordingly
+     * @param this_expr The Expression Object to build into
+     * @param arr_expr_node The AST expression that is inside the ArrayAccess
+     * @param scope The current scope
+     */
     public static void getArrayAccess(Expression this_expr, SimpleNode arr_expr_node, TreeNode scope){
         Expression helper_expr;
 
@@ -162,6 +171,7 @@ Return type mismatch; And many more.
      * of them but B has A as a parent and C has B
      * @param follow_node The Node to follow
      * @param parent The parent expression (local scope, relative to the previous selector)
+     * @param static_access Wether the current access was done statically or not
      * @param scope The "line" scope
      * @return The generated Expression
      */
@@ -185,21 +195,17 @@ Return type mismatch; And many more.
                 }else{
                     if(follow_node.jjtGetNumChildren() == 2){
                         this_expr.expression_type = Expression.t_method_access;
-                        //Assemble method signature methodname(arg_type_1, ag_type_2,...)
-                        //NEED TO ADD THE STRUCTURES AS ARGUMENTS AND BIND THEM TO THE OVERALL TREE STRUCTURE
                         String signature = getMethodSignature(follow_node, scope);
-                        
                         this_expr.used_symbol = getByIdentifier(signature, parent_scope, follow_node);
-                        //Get method return type
+
                         if(this_expr.used_symbol.type == Symbol.t_method_static && static_access == false){
                             throw new RuntimeException("Tried to access a static method from a non static scope "+this_expr.used_symbol.name);
                         }else if(this_expr.used_symbol.type == Symbol.t_method_instance && static_access == true){
                             throw new RuntimeException("Tried to access a non static method from a static scope "+this_expr.used_symbol.name);
                         }
+                        
                         ArrayList<String> a = (ArrayList<String>)this_expr.used_symbol.data;
-                        //System.out.println(">>"+signature+" "+a.get(a.size()-1));
-                        //System.out.flush();
-                        this_expr.return_type = a.get(a.size()-1);
+                        this_expr.return_type = a.get(a.size()-1);                        //Get method return type
                     }else{
                         this_expr.expression_type = Expression.t_access;
                         this_expr.used_symbol = getByIdentifier(((SimpleNode)follow_node.jjtGetChild(0)).image, parent_scope, follow_node);
@@ -213,10 +219,10 @@ Return type mismatch; And many more.
         return this_expr;
     }
     /**
-     * 
-     * @param expr_node
-     * @param current_scope
-     * @return
+     * Retrieves a general Expression
+     * @param expr_node Expressions start node
+     * @param current_scope Current scope
+     * @return The return type of the expression
      */
     public static Expression getExpression(SimpleNode expr_node, TreeNode current_scope){
         int node_children;
@@ -465,23 +471,26 @@ Return type mismatch; And many more.
         }
         return expr;
     }
-
+    /**
+     * Handles a variable attribution ( Target() <EQ> Expression() <SC> )
+     * @param attr_node The AST node
+     * @param current_scope The current scope
+     * @return A structure holding the attribution
+     */
     public static Structure getAttribution(SimpleNode attr_node, TreeNode current_scope){
         Structure this_attr;
         SimpleNode target;
         Expression helper1;
         Expression helper2;
+        Expression helper3;
         Symbol target_symbol;
 
         target = (SimpleNode)attr_node.jjtGetChild(0);
         this_attr = new Structure(current_scope);
         this_attr.type = Structure.t_attribution;
 
-        //Check variable
-        //System.out.println("Target variable: "+((SimpleNode)target.jjtGetChild(0)).image);
+        //Check for variable existence and place it into an Expression Object
         target_symbol = getByIdentifier(((SimpleNode)target.jjtGetChild(0)).image, current_scope, attr_node);
-        //                      TODO
-        //Normal variable access or array access
         helper1 = new Expression(current_scope);
         helper1.type = Structure.t_expression;
         helper1.expression_type = Expression.t_access;
@@ -499,17 +508,19 @@ Return type mismatch; And many more.
         }
 
         if(target.jjtGetNumChildren() > 1){
-            //Array access
-            //                                          STILL NEED TO DO THIS
-            //Array access means the array must be intialized
+            //Array access (array must itself be initialized)
             if(target_symbol.type == Symbol.t_variable_ninit){
                 throw new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node);
             }
-            this_attr.addChild(Analyzer.getExpression(((SimpleNode)target.jjtGetChild(1)), current_scope));
-            helper1.return_type = "int";
+            helper3 = Analyzer.getExpression((SimpleNode)target.jjtGetChild(1), current_scope);
+            if(!helper3.return_type.equals("int")){
+                throw new IncompatibleException("Array access must be int, not "+helper3.return_type,attr_node);
+            }
+            this_attr.addChild(helper3);
+            helper1.return_type = "int";    //Arrays con only be of type int, so the required return_type for the left needs to be int now
         }
         target_symbol.type = Symbol.t_variable_init;
-        //System.out.println("NEXT");
+
         helper2 = Analyzer.getExpression((SimpleNode)attr_node.jjtGetChild(1), current_scope);
 
         if(!helper1.return_type.equals(helper2.return_type)){
@@ -518,13 +529,17 @@ Return type mismatch; And many more.
         this_attr.addChild(helper1);
         this_attr.addChild(helper2);
         
-
         if(attr_node.jjtGetNumChildren() != 2) {
             throw new RuntimeException("Wrong number of children on attribution "+attr_node.jjtGetNumChildren());
         }
         return this_attr;
     }
-
+    /**
+     * Retrieves a while structure
+     * @param while_structure_node The starting AST node
+     * @param current_scope The current scope
+     * @return The generated structure
+     */
     public static Structure getWhile(SimpleNode while_structure_node, TreeNode current_scope){
         SimpleNode help_node;
         int i;
@@ -535,19 +550,16 @@ Return type mismatch; And many more.
         i = 0;
         help_node = (SimpleNode)while_structure_node.jjtGetChild(i++);
         node_children = while_structure_node.jjtGetNumChildren();
-
         this_while = new Structure(current_scope);
         this_while.type = Structure.t_while;
 
-        //While head condition
-        helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);
+        helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);           //While head condition
         if(helper.return_type != "boolean"){
             throw new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", while_structure_node);
         }
         this_while.addChild(helper);
 
-        //While body statements
-        while(i < node_children){
+        while(i < node_children){                                                                       //While body statements
             help_node = (SimpleNode)while_structure_node.jjtGetChild(i++);
             this_while.addChild(Analyzer.getStatement(help_node, current_scope));
         }
@@ -555,6 +567,12 @@ Return type mismatch; And many more.
         return this_while;
     }
     
+    /**
+     * Retrieves an if structure
+     * @param while_structure_node The starting AST node
+     * @param current_scope The current scope
+     * @return The generated structure
+     */
     public static Structure getIf(SimpleNode if_structure_node, TreeNode current_scope){
         SimpleNode help_node;
         int i;
@@ -569,28 +587,31 @@ Return type mismatch; And many more.
         this_if = new Structure(current_scope);
         this_if.type = Structure.t_if;
 
-        //If head condition
-        helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);
+        helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);   //If head condition
         if(helper.return_type != "boolean"){
             throw new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", if_structure_node);
         }
         this_if.addChild(helper);
 
-        //If body statements
-        while(i < node_children && ((SimpleNode)if_structure_node.jjtGetChild(i)).id != JMMParserTreeConstants.JJTELSESTRUCTURE){
+        while(i < node_children && ((SimpleNode)if_structure_node.jjtGetChild(i)).id != JMMParserTreeConstants.JJTELSESTRUCTURE){   //If body statements
             help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
             this_if.addChild(Analyzer.getStatement(help_node, current_scope));
         }
         i++;
-        //Else body statements
-        while(i < node_children){
+    
+        while(i < node_children){                                                               //Else body statements
             help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
             this_if.addChild(Analyzer.getStatement(help_node, current_scope));
         }
 
         return this_if;
     }
-
+    /**
+     * Retrieves a general statement
+     * @param statement_node The starting AST statement node
+     * @param current_scope The current scope
+     * @return The generated structure object
+     */
     public static Structure getStatement(SimpleNode statement_node, TreeNode current_scope){
         if(statement_node.id == JMMParserTreeConstants.JJTIFSTRUCTURE){
             return Analyzer.getIf(statement_node, current_scope);
@@ -604,7 +625,11 @@ Return type mismatch; And many more.
             throw new RuntimeException("Unrecognized token "+statement_node.id);
         }
     }
-
+    /**
+     * Retrieves a variable declaration
+     * @param decl_node The AST node
+     * @param current_scope The current scope
+     */
     public static void getVarDecl(SimpleNode decl_node, TreeNode current_scope){
         Symbol this_variable = new Symbol();
         Symbol helper_symbol;
@@ -618,12 +643,16 @@ Return type mismatch; And many more.
             throw new DuplicateException("Variable already present", decl_node);
         }
         //System.out.println("Variable declared: "+this_variable.data+" "+this_variable.name);
-        
         checkType((String)this_variable.data, current_scope, decl_node);
-
         current_scope.addSymbol(this_variable, decl_node);
     }
-
+    /**
+     * Retrieves a method
+     * @param method_node The NormalMethod/MainMethod AST node
+     * @param ismain Whether it's a normalm method or the main method
+     * @param parent Parent scope
+     * @param only_head Java needs to retrieve all the method signatures before the bodies, when this variable is true, the head will be added to the symbols table, when false the body will be parsed
+     */
     public static void getMethod(SimpleNode method_node, Boolean ismain, TreeNode parent, Boolean only_head){
         SimpleNode help_node;
         int i;
@@ -643,22 +672,17 @@ Return type mismatch; And many more.
             this_method.type = Symbol.t_method_instance;
             this_method.name = ((SimpleNode)help_node.jjtGetChild(1)).image;
             for(int j = 2; j < help_node.jjtGetNumChildren(); j+=2){
-                //Add types for method signature
-                types.add(((SimpleNode)help_node.jjtGetChild(j)).image);
-                //Create argument variable (the first variables are the argument variables)
-                helper_symbol = new Symbol();
+                types.add(((SimpleNode)help_node.jjtGetChild(j)).image);        //Add types for method signature
+                helper_symbol = new Symbol();                                   //Create argument variable (the first variables are the argument variables)
                 helper_symbol.type = Symbol.t_variable_init;
                 helper_symbol.name = ((SimpleNode)help_node.jjtGetChild(j+1)).image;
                 helper_symbol.data = ((SimpleNode)help_node.jjtGetChild(j)).image;
 
                 checkType((String)helper_symbol.data, parent, method_node);
-
                 argument_variables.add(helper_symbol);
             }
-            //Last type is always the return type
-            types.add(((SimpleNode)help_node.jjtGetChild(0)).image);
+            types.add(((SimpleNode)help_node.jjtGetChild(0)).image);            //With how the Parser is done, the last type is always the return type
             checkType(((SimpleNode)help_node.jjtGetChild(0)).image, parent, method_node);
-
         }else{
             this_method.type = Symbol.t_method_static;
             this_method.name = "main";
@@ -668,12 +692,10 @@ Return type mismatch; And many more.
             helper_symbol.name = ((SimpleNode)help_node).image;
             helper_symbol.data = "String[]";
             argument_variables.add(helper_symbol);
-            //Last type is always the return type
-            types.add("void");
+            types.add("void");      //Still need to add void as the return type
         }
         this_method.data = types;
-        //Add argument variables (needs to be done after creating the TreeNode)
-        for(Symbol s: argument_variables){
+        for(Symbol s: argument_variables){          //Add argument variables as symbols
             this_method.addSymbol(s, method_node);
         }
         
@@ -685,32 +707,30 @@ Return type mismatch; And many more.
             this_method = (TreeNode)parent.getSymbol(this_method.signature);
         }
 
-        //Search inside the method
-        while(i < node_children){
+        while(i < node_children){                                               //Search inside the method
             help_node = (SimpleNode) method_node.jjtGetChild(i++);
-            //Add method variables
+
             if(help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
                 Analyzer.getVarDecl(help_node, this_method);
-            }else if(help_node.id == JMMParserTreeConstants.JJTRETURN){
-            //Method return expression
-                //Return only has 1 child
+            }else if(help_node.id == JMMParserTreeConstants.JJTRETURN){         //Method return expression
                 Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), this_method);
-            }else{
-            //Get statements
+            }else{                                                              //Get statements
                 Analyzer.getStatement(help_node, this_method);
             }
         }
-        
     }
-
+    /**
+     * Retrieve a full class
+     * @param class_node The AST class node
+     * @param root_scope The root scope
+     */
     public static void getClass(SimpleNode class_node, TreeNode root_scope){
         SimpleNode help_node;
         int i;
         int method_start;
         int node_children;
         TreeNode class_treenode;
-        //Default constructor
-        Symbol this_class_constructor;
+        Symbol this_class_constructor;        //Default constructor
         TreeNode helper;
         String class_defs;
 
@@ -723,8 +743,7 @@ Return type mismatch; And many more.
         class_treenode.type = Symbol.t_class;
         this_class_constructor = new Symbol();
 
-        //Class extends
-        if(help_node.jjtGetNumChildren() == 2){
+        if(help_node.jjtGetNumChildren() == 2){        //Class extends
             class_defs = ((SimpleNode)help_node.jjtGetChild(1)).image;
             helper = (TreeNode)root_scope.getSymbol(((SimpleNode)help_node.jjtGetChild(1)).image);
             helper.evalT(0);
@@ -740,9 +759,7 @@ Return type mismatch; And many more.
         ((ArrayList<String>)this_class_constructor.data).add(this_class_constructor.name);
         
         root_scope.addSymbol(this_class_constructor, class_node);
-        
         root_scope.addChild(class_treenode, class_node);
-
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
 
         while(i < node_children && help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
@@ -751,13 +768,10 @@ Return type mismatch; And many more.
         }
         method_start = i-1;
 
-        //Get method signatures
-        while(true){
-            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){
-                //Get methods
+        while(true){        //Get method signatures
+            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){                 //Get methods
                 Analyzer.getMethod(help_node, false, class_treenode, true);
-            }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){
-                //Get main
+            }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){             //Get main
                 Analyzer.getMethod(help_node, true, class_treenode, true);
             }else{
                 throw new RuntimeException("1Unrecognized token "+help_node.id);
@@ -767,16 +781,14 @@ Return type mismatch; And many more.
             }
             help_node = (SimpleNode) class_node.jjtGetChild(i++);
         }
+
         i = method_start;
-        //Get method bodies
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
         
-        while(true){
-            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){
-                //Get methods
+        while(true){        //Get method bodies
+            if(help_node.id == JMMParserTreeConstants.JJTNORMALMETHOD){                 //Get methods
                 Analyzer.getMethod(help_node, false, class_treenode, false);
-            }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){
-                //Get main
+            }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){             //Get main
                 Analyzer.getMethod(help_node, true, class_treenode, false);
             }else{
                 throw new RuntimeException("2Unrecognized token "+help_node.id);
@@ -787,15 +799,17 @@ Return type mismatch; And many more.
             help_node = (SimpleNode) class_node.jjtGetChild(i++);
         }
     }
-
+    /**
+     * Retrieve an import
+     * @param import_node The AST import node
+     * @param root_scope The root scope
+     */
     public static void getImport(SimpleNode import_node, TreeNode root_scope){
         int node_children;
         SimpleNode help_node;
         int i;
-        //Imported class
-        TreeNode this_class_treenode;
-        //Imported method
-        Symbol this_import_method;
+        TreeNode this_class_treenode;        //Imported class
+        Symbol this_import_method;        //Imported method
         ArrayList<String> types;
         ArrayList<String> names;
 
@@ -803,21 +817,18 @@ Return type mismatch; And many more.
         this_class_treenode = new TreeNode(root_scope);
         types = new ArrayList<String>();
         names = new ArrayList<String>();
-
         node_children = import_node.jjtGetNumChildren();
         i = 0;
         help_node = (SimpleNode) import_node.jjtGetChild(i++);
 
-        //Is the method static?
-        if(help_node.id == JMMParserTreeConstants.JJTSTATIC){
+        if(help_node.id == JMMParserTreeConstants.JJTSTATIC){        //Is the method static?
             help_node = (SimpleNode) import_node.jjtGetChild(i++);
             this_import_method.type = Symbol.t_method_static;
         }else{
             this_import_method.type = Symbol.t_method_instance;
         }
         
-        //Get names (should only be 2)
-        while(help_node.id == JMMParserTreeConstants.JJTIDENTIFIER && i < node_children){
+        while(help_node.id == JMMParserTreeConstants.JJTIDENTIFIER && i < node_children){        //Get names (should only be 2)
             names.add(help_node.image);
             if(i == node_children){
                 break;
@@ -829,30 +840,22 @@ Return type mismatch; And many more.
             System.out.println("Too many names in import, maximum of 2");
             System.exit(-1);
         }
-        /*if(help_node.id != JMMParserTreeConstants.JJTIMPORTMETHOD){
-            System.out.println("Non method imported, missing ()");
-            System.exit(-1);
-        }*/
-        //If is constructor
-        if(names.size() == 0){
+        
+        if(names.size() == 0){          //If is a simple method import (aka import Name;)
             names.add((((SimpleNode)import_node.jjtGetChild(0))).image);
         }
-        //For simplicity, since we can only have import1.import2, directly assume that the first is the class name and the second the method
+
         this_class_treenode.name = names.get(0);
         this_class_treenode.type = Symbol.t_class;
-        //Cant know what/if the class extends anything at all, so assume false
-        this_class_treenode.data= null;
+        this_class_treenode.data= null;        //Cant know what/if the class extends anything at all, so assume false
 
-        //Try to add class, if it is already present, retrieve it
-        //Since we are in the import state, the nodes present in the root are all TreeNodes (thus, assuming the cast is valid)
-        try{
+        try{        //Try to add class, if it is already present, retrieve it
             root_scope.addChild(this_class_treenode, import_node);
         }catch(DuplicateException ex){
             this_class_treenode = (TreeNode)root_scope.getSymbol(this_class_treenode.signature);
         }
 
-        //Get argument types
-        if(i < node_children){
+        if(i < node_children){        //Get argument types
             help_node = (SimpleNode) import_node.jjtGetChild(i++);
             while(help_node.id == JMMParserTreeConstants.JJTTYPE){              //Get type
                 types.add(help_node.image);
@@ -862,53 +865,53 @@ Return type mismatch; And many more.
                 help_node = (SimpleNode) import_node.jjtGetChild(i++);
             }
         }
-        if(names.size() == 1){
-            //Can only be a constructor, and according to the professor
+
+        if(names.size() == 1){            //Can only be a constructor (impoort Name();)
             this_import_method.name = names.get(0);
             if(help_node.id == JMMParserTreeConstants.JJTRETURN){
                 types.add(((SimpleNode)help_node.jjtGetChild(0)).image);
             }else{
-                //assume it returns the object if no other return type is present
-                types.add(this_import_method.name);
+                types.add(this_import_method.name); //Assume it returns the object if no other return type is present
             }
             this_import_method.data = types;
             
-            //Try to add the method to the class symbol table
-            try{
+            try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
                 root_scope.addSymbol(this_import_method, import_node);
             }catch(DuplicateException ex){
-                throw new DuplicateException("Import "+ex, import_node);
+                System.out.println("WARNING duplicate import on line "+import_node.firstToken.beginLine);
             }
-        }else if(names.size() == 2){
+
+        }else if(names.size() == 2){    //Add a return type, void if none present
             this_import_method.name = names.get(1);
-            //Add a return type, void if none present
             if(help_node.id == JMMParserTreeConstants.JJTRETURN){
                 types.add(((SimpleNode)help_node.jjtGetChild(0)).image);
             }else{
                 types.add("void");
             }
             this_import_method.data = types;
-
-            //Try to add the method to the class symbol table
-            try{
+            
+            try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
                 this_class_treenode.addSymbol(this_import_method, import_node);
             }catch(DuplicateException ex){
                 System.out.println("WARNING duplicate import on line "+import_node.firstToken.beginLine);
-                //throw new DuplicateException("Import "+ex, import_node);
             }
         }else{
             System.out.println("PARSER MADE A MISTAKE");
             System.exit(-1);
         }
-
     }
-
+    /**
+     * Fully semantically parse the program AST inside root into a HIR
+     * @param root The AST root node
+     * @param filename The filename
+     * @return The HIR root (HIR is a tree)
+     */
     public static TreeNode analyze(SimpleNode root, String filename){
         SimpleNode node;
         int i;
         TreeNode tree_root;
 
-        System.out.println("Analyzer starting");
+        System.out.println("Analyzer starting on "+filename);
         
         if(root.id != JMMParserTreeConstants.JJTSTART){
             System.out.println("Wrong semantic start "+root.id);
@@ -920,16 +923,14 @@ Return type mismatch; And many more.
         tree_root = new TreeNode(null);
 
         Analyzer.debug_node = tree_root;
-
         tree_root.type = Symbol.t_file_root;
         tree_root.name = "root";
-        //tree_root.name = filename;
         
         while(node.id == JMMParserTreeConstants.JJTIMPORTDECLARATION){
             Analyzer.getImport(node, tree_root);
             node = (SimpleNode)root.jjtGetChild(i++);
         }
-        //Root only has 1 child, which is the class itself
+        
         Analyzer.getClass(node, tree_root);
         System.out.println("\n");
         //System.out.println("\t\t\t\t>>"+debug_node.getSymbol("MonteCarloPi"));
