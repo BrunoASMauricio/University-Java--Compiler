@@ -4,8 +4,8 @@ public class Structure {
     public final static int t_unset = -1;
     public final static int t_if = 0;
     public final static int t_while = 1;
-    public final static int t_attribution = 1;
-    public final static int t_expression = 2;
+    public final static int t_attribution = 2;
+    public final static int t_expression = 3;
     //The nested expressions and structures
     public ArrayList<Structure> nested_structures;
     public TreeNode scope;
@@ -30,9 +30,34 @@ public class Structure {
     public void addChild(Structure child_structure){
         this.nested_structures.add(child_structure);
     }
-    public void evalS(){
-        System.out.println("Structure");
-        System.out.println("\tType "+this.type);
+    public void evalSt(int depth){
+        for(int i = 0; i < depth; i++){
+            System.out.print(" ");
+        }
+        System.out.print("Structure Type: ");
+        switch(this.type){
+            case t_unset:
+                System.out.print("WARNING Unset structure");
+                break;
+            case t_if:
+                System.out.print("IF");
+                break;
+            case t_while:
+                System.out.print("WHILE");
+                break;
+            case t_attribution:
+                System.out.print("ATTRIBUTION");
+                break;
+            case t_expression:
+                ((Expression)this).evalE();
+                break;
+            default:
+                System.out.print("ERROR, UNDEFINED STRUCTURE TYPE "+this.type);
+                System.exit(-1);
+        }
         System.out.println();
+        for(Structure t : this.nested_structures){
+            t.evalSt(depth+1);
+        }
     }
 }

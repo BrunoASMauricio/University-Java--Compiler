@@ -62,11 +62,16 @@ public class TreeNode extends Symbol{
         System.out.println("Node Depth "+depth);
         System.out.println("Node Symbol: ");
         ((Symbol)this).evalS();
+        System.out.println("Nmb children "+this.children.size());
         System.out.println("Symbol Table: ");
         for(Symbol s : this.table.symbols.values()){
             s.evalS();
         }
-        System.out.println("Nmb children "+this.children.size());
+        System.out.println("Structures ("+this.structures.size()+"): ");
+        for(Structure t : this.structures){
+            t.evalSt(depth+1);
+        }
+
         System.out.println("\n\n");
         for(TreeNode t : this.children){
             t.evalT(depth+1);

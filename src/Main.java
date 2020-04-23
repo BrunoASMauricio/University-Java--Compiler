@@ -21,6 +21,7 @@ public class Main {
         int r = 0;
         boolean o = false;
         SimpleNode root = null;
+        TreeNode semantic_root = null;
         
         //Read arguments
         for(int i = 0; i < args.length; i++){
@@ -54,7 +55,7 @@ public class Main {
         }
 
         try{
-            Analyzer.analyze(root, input_file);
+            semantic_root = Analyzer.analyze(root, input_file);
         }catch(DuplicateException ex){
             System.out.println("\t\tERROR Duplicate detected");
             System.out.println(ex);
@@ -73,6 +74,15 @@ public class Main {
             ex.printStackTrace(); 
             throw new RuntimeException("Semantic error");
         }
+
+        try{
+            Jasminify.start(semantic_root);
+        }catch(Exception ex){
+            System.out.println("Unhandled exception");
+            System.out.println(ex);
+            ex.printStackTrace(); 
+            throw new RuntimeException("Jasmin error");
+        }    
 
         System.out.println();
 	}

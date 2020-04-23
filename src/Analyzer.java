@@ -1,10 +1,20 @@
 import java.util.ArrayList;
-import java.util.prefs.NodeChangeEvent;
 
 public class Analyzer {
     public static TreeNode debug_node;
     /*
 Errors to detect
+
+V   Invalid Type
+X   Invalid return type
+V   Undefined variable name (on the current scope)
+x   Arithmetic and lessthan opertions must only be performed on two int type variables
+x   Logical expressions (ifs, whiles and boolean ands) must only be performed on booleans
+V   Attribution compatibility
+V   Array access must be with int return type
+V   Method name and signature incompatibility
+
+
 
 V    Undeclared variable
 X    Reserved identifier misuse.
@@ -159,7 +169,8 @@ V    Undefined indexes;
 
         this_expr.expression_type = Expression.t_array_access;
         helper_expr = getExpression(arr_expr_node, scope);
-        this_expr.data = helper_expr;
+        this_expr.addChild(helper_expr);
+        //this_expr.data = helper_expr;
         this_expr.return_type = helper_expr.return_type;
         if(this_expr.return_type != "int"){
             throw new IncompatibleException("Array accesses must be of type int and not "+this_expr.return_type, arr_expr_node);
@@ -337,11 +348,11 @@ V    Undefined indexes;
                         
                         String signature = getMethodSignature(expr_node, current_scope);
                         
-                        System.out.println("Fetching method "+signature);
+                        //System.out.println("Fetching method "+signature);
                         
                         expr.used_symbol = getByIdentifier(signature, current_scope, expr_node);
                         helper_al = ((ArrayList<String>)(expr.used_symbol.data));
-                        System.out.println("method returns "+expr.used_symbol.name+" "+helper_al.get(helper_al.size()-1));
+                        //System.out.println("method returns "+expr.used_symbol.name+" "+helper_al.get(helper_al.size()-1));
                         helper_expression = new Expression(current_scope);
                         helper_expression.return_type = helper_al.get(helper_al.size()-1);
                         i++;
@@ -366,7 +377,6 @@ V    Undefined indexes;
                         if(expr.used_symbol.type == Symbol.t_class){
                             static_access = true;
                             helper_scope = (TreeNode)(expr.used_symbol);
-                            System.out.println("CLASS TYPE, STATIC");
                         }else{
                             if(expr.used_symbol.type == Symbol.t_variable_ninit){
                                 throw new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node);
@@ -374,27 +384,14 @@ V    Undefined indexes;
                             static_access = false;
                             //If the return type isn't a class type, scope is inexistent
                             if(checkBasicType((String)expr.used_symbol.data)){
-                                System.out.println("NORMAL TYPE");
                                 helper_scope = current_scope;
                             }else{
-                                System.out.println("CLASS TYPE, INSTANCE");
                                 helper_scope = (TreeNode)getByIdentifier((String)expr.used_symbol.data, current_scope, expr_node);
                                 expr.used_symbol = helper_scope;
                             }
                         }
 
                         expr.expression_type = Expression.t_access;
-                        
-                        System.out.println("\nOn line "+expr_node.firstToken.beginLine);
-                        Token helper = expr_node.firstToken;
-                        while(helper != expr_node.lastToken){
-                            System.out.print(JMMParserConstants.tokenImage[helper.kind]);
-                            helper = helper.next;
-                        }
-
-                        helper_expression = new Expression(helper_scope);
-                        
-                        expr.addChild(helper_expression);
                         if(node_children < 2){
                             throw new RuntimeException("fuck");
                         }
@@ -418,9 +415,6 @@ V    Undefined indexes;
 
                     }
                     expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
-                    System.out.println("FINAL RETURN "+expr.return_type);
-
-
                 }else{
                     //Variable access
                     expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
@@ -488,6 +482,7 @@ V    Undefined indexes;
         target = (SimpleNode)attr_node.jjtGetChild(0);
         this_attr = new Structure(current_scope);
         this_attr.type = Structure.t_attribution;
+        helper3 = null;
 
         //Check for variable existence and place it into an Expression Object
         target_symbol = getByIdentifier(((SimpleNode)target.jjtGetChild(0)).image, current_scope, attr_node);
@@ -516,7 +511,6 @@ V    Undefined indexes;
             if(!helper3.return_type.equals("int")){
                 throw new IncompatibleException("Array access must be int, not "+helper3.return_type,attr_node);
             }
-            this_attr.addChild(helper3);
             helper1.return_type = "int";    //Arrays con only be of type int, so the required return_type for the left needs to be int now
         }
         target_symbol.type = Symbol.t_variable_init;
@@ -527,6 +521,9 @@ V    Undefined indexes;
             throw new IncompatibleException(helper1.return_type+" is incompatible with "+helper2.return_type, attr_node);
         }
         this_attr.addChild(helper1);
+        if(helper3 != null){
+            this_attr.addChild(helper3);
+        }
         this_attr.addChild(helper2);
         
         if(attr_node.jjtGetNumChildren() != 2) {
@@ -659,6 +656,7 @@ V    Undefined indexes;
         int node_children;
         TreeNode this_method;
         Symbol helper_symbol;
+        String return_type;
         ArrayList<String> types = new ArrayList<String>();
         ArrayList<Symbol> argument_variables = new ArrayList<Symbol>();
 
@@ -681,6 +679,7 @@ V    Undefined indexes;
                 checkType((String)helper_symbol.data, parent, method_node);
                 argument_variables.add(helper_symbol);
             }
+            return_type = ((SimpleNode)help_node.jjtGetChild(0)).image;
             types.add(((SimpleNode)help_node.jjtGetChild(0)).image);            //With how the Parser is done, the last type is always the return type
             checkType(((SimpleNode)help_node.jjtGetChild(0)).image, parent, method_node);
         }else{
@@ -692,6 +691,7 @@ V    Undefined indexes;
             helper_symbol.name = ((SimpleNode)help_node).image;
             helper_symbol.data = "String[]";
             argument_variables.add(helper_symbol);
+            return_type = "void";
             types.add("void");      //Still need to add void as the return type
         }
         this_method.data = types;
@@ -713,9 +713,20 @@ V    Undefined indexes;
             if(help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
                 Analyzer.getVarDecl(help_node, this_method);
             }else if(help_node.id == JMMParserTreeConstants.JJTRETURN){         //Method return expression
-                Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), this_method);
+                Expression h = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), this_method);
+                if(!return_type.equals(h.return_type)){
+                    throw new IncompatibleException("Incompatible return type, can't convert from "+h.return_type+" to "+return_type, method_node);
+                }
+                Expression helper = new Expression(parent);
+                helper.expression_type = Expression.t_return;
+                helper.nested_structures.add(h);
+                helper.return_type = h.return_type;
+                helper.used_symbol = h.used_symbol;
+                helper.value = h.value;
+                this_method.structures.add(helper);
+                return;
             }else{                                                              //Get statements
-                Analyzer.getStatement(help_node, this_method);
+                this_method.structures.add(Analyzer.getStatement(help_node, this_method));
             }
         }
     }
@@ -760,6 +771,10 @@ V    Undefined indexes;
         
         root_scope.addSymbol(this_class_constructor, class_node);
         root_scope.addChild(class_treenode, class_node);
+        if(class_node.jjtGetNumChildren() <= i){
+            System.out.println("WARNING empty class"+class_treenode.name);
+            return;
+        }
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
 
         while(i < node_children && help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
@@ -810,10 +825,12 @@ V    Undefined indexes;
         int i;
         TreeNode this_class_treenode;        //Imported class
         Symbol this_import_method;        //Imported method
+        Symbol this_constructor;        //Imported method
         ArrayList<String> types;
         ArrayList<String> names;
 
         this_import_method = new Symbol();
+        this_constructor = new Symbol();
         this_class_treenode = new TreeNode(root_scope);
         types = new ArrayList<String>();
         names = new ArrayList<String>();
@@ -880,8 +897,17 @@ V    Undefined indexes;
             }catch(DuplicateException ex){
                 System.out.println("WARNING duplicate import on line "+import_node.firstToken.beginLine);
             }
-
         }else if(names.size() == 2){    //Add a return type, void if none present
+            this_constructor.name = names.get(0);                           //Also create constructor
+            this_constructor.data = new ArrayList<String>();
+            ((ArrayList<String>)this_constructor.data).add(names.get(0));
+            this_constructor.type = Symbol.t_method_instance;
+
+            try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
+                root_scope.addSymbol(this_constructor, import_node);
+            }catch(DuplicateException ex){
+            }
+
             this_import_method.name = names.get(1);
             if(help_node.id == JMMParserTreeConstants.JJTRETURN){
                 types.add(((SimpleNode)help_node.jjtGetChild(0)).image);
@@ -933,8 +959,7 @@ V    Undefined indexes;
         
         Analyzer.getClass(node, tree_root);
         System.out.println("\n");
-        //System.out.println("\t\t\t\t>>"+debug_node.getSymbol("MonteCarloPi"));
-        //tree_root.evalT(0);
+        tree_root.evalT(0);
         return tree_root;
     }
 
