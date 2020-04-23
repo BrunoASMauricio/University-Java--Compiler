@@ -757,7 +757,9 @@ V    Undefined indexes;
         if(help_node.jjtGetNumChildren() == 2){        //Class extends
             class_defs = ((SimpleNode)help_node.jjtGetChild(1)).image;
             helper = (TreeNode)root_scope.getSymbol(((SimpleNode)help_node.jjtGetChild(1)).image);
-            helper.evalT(0);
+            if(helper == null){
+                throw new UndeclaredException("Undefined "+((SimpleNode)help_node.jjtGetChild(1)).image, class_node);
+            }
             for(Symbol s : helper.table.symbols.values()){
                 class_treenode.addSymbol(s, class_node);
             }
