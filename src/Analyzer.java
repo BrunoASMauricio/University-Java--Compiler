@@ -660,7 +660,7 @@ V    Undefined indexes;
         ArrayList<String> types = new ArrayList<String>();
         ArrayList<Symbol> argument_variables = new ArrayList<Symbol>();
 
-        this_method =  new TreeNode(parent);
+        this_method =  new JasminMethod(parent);            //Simple wrapper, Analyzer uses just as a TreeNode
         node_children = method_node.jjtGetNumChildren();
         i = 0;
         help_node = (SimpleNode)method_node.jjtGetChild(i++);
@@ -735,7 +735,7 @@ V    Undefined indexes;
      * @param class_node The AST class node
      * @param root_scope The root scope
      */
-    public static void getClass(SimpleNode class_node, TreeNode root_scope){
+    public static TreeNode getClass(SimpleNode class_node, TreeNode root_scope){
         SimpleNode help_node;
         int i;
         int method_start;
@@ -748,7 +748,7 @@ V    Undefined indexes;
         node_children = class_node.jjtGetNumChildren();
         i = 0;
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
-        class_defs = "";
+        class_defs = null;
         class_treenode = new TreeNode(root_scope);
         class_treenode.name = ((SimpleNode)help_node.jjtGetChild(0)).image;
         class_treenode.type = Symbol.t_class;
@@ -773,9 +773,10 @@ V    Undefined indexes;
         
         root_scope.addSymbol(this_class_constructor, class_node);
         root_scope.addChild(class_treenode, class_node);
+
         if(class_node.jjtGetNumChildren() <= i){
-            System.out.println("WARNING empty class"+class_treenode.name);
-            return;
+            System.out.println("WARNING empty class "+class_treenode.name);
+            return class_treenode;
         }
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
 
@@ -815,6 +816,7 @@ V    Undefined indexes;
             }
             help_node = (SimpleNode) class_node.jjtGetChild(i++);
         }
+        return class_treenode;
     }
     /**
      * Retrieve an import
@@ -934,10 +936,9 @@ V    Undefined indexes;
      * @param filename The filename
      * @return The HIR root (HIR is a tree)
      */
-    public static TreeNode analyze(SimpleNode root, String filename){
+    public static TreeNode analyze(TreeNode tree_root, SimpleNode root, String filename){
         SimpleNode node;
         int i;
-        TreeNode tree_root;
 
         System.out.println("Analyzer starting on "+filename);
         
@@ -948,8 +949,7 @@ V    Undefined indexes;
         
         i = 0;
         node = (SimpleNode)root.jjtGetChild(i++);
-        tree_root = new TreeNode(null);
-
+        
         Analyzer.debug_node = tree_root;
         tree_root.type = Symbol.t_file_root;
         tree_root.name = "root";
@@ -959,10 +959,9 @@ V    Undefined indexes;
             node = (SimpleNode)root.jjtGetChild(i++);
         }
         
-        Analyzer.getClass(node, tree_root);
+        
         System.out.println("\n");
-        tree_root.evalT(0);
-        return tree_root;
+        return Analyzer.getClass(node, tree_root);
     }
 
 }

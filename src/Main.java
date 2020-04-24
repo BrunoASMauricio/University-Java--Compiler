@@ -20,8 +20,9 @@ public class Main {
         InputStream file_stream = null;
         int r = 0;
         boolean o = false;
-        SimpleNode root = null;
-        TreeNode semantic_root = null;
+        SimpleNode AST_root = null;
+        TreeNode semantic_class_root = null;
+        TreeNode semantic_file_root = null;
         
         //Read arguments
         for(int i = 0; i < args.length; i++){
@@ -46,16 +47,22 @@ public class Main {
             e.printStackTrace();
             System.exit(-1);
         }
+
+        //                  USE SYNTAX PARSER TO GENERATE SimpleNode TREE
+
         try{
-            root = JMMParser.parse(file_stream);
-            JMMParser.eval(root, 0);
+            AST_root = JMMParser.parse(file_stream);
+            JMMParser.eval(AST_root, 0);
         }catch(Exception ex){
             ex.printStackTrace();
             throw new RuntimeException("Syntatical error");
         }
 
+        //                  USE SEMANTICA ANALYZER TO GENERATE Scope TREE
+
         try{
-            semantic_root = Analyzer.analyze(root, input_file);
+            semantic_file_root = new TreeNode(null);
+            semantic_class_root = Analyzer.analyze(semantic_file_root, AST_root, input_file);
         }catch(DuplicateException ex){
             System.out.println("\t\tERROR Duplicate detected");
             System.out.println(ex);
@@ -74,15 +81,20 @@ public class Main {
             ex.printStackTrace(); 
             throw new RuntimeException("Semantic error");
         }
+        
+        semantic_file_root.evalT(0);
+
+        //                      USE THE Scope TREE TO GENERATE JASMIN CODE
 
         try{
-            Jasminify.start(semantic_root);
+            Jasminify.start(semantic_file_root, semantic_class_root);
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);
             ex.printStackTrace(); 
-            throw new RuntimeException("Jasmin error");
-        }    
+            //throw new RuntimeException("Jasmin error");
+        }
+        //*
 
         System.out.println();
 	}

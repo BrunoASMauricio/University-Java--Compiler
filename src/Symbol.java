@@ -14,11 +14,16 @@ public class Symbol {
     public String name;                 //Symbol name
     public int type;                    //Symbol type
     public Object data;                 //The specified types' data
+
+    public Object Jdata;                //Data required by Jasmin
+    public int Jvarindex;               //Jasmin symbol index in stack
     public Symbol(){
         this.signature = null;
         this.name = null;
         this.type = Symbol.t_unset;
         this.data = null;
+        this.Jdata = null;
+        this.Jvarindex = -1;
     }
     /*
     data meaning by type:

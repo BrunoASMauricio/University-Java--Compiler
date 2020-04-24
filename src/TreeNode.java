@@ -8,7 +8,7 @@ import java.util.List;
 public class TreeNode extends Symbol{
     private TreeNode root;              //Always keep a reference to the root, just in case
     public TreeNode parent;            //The "scope" above
-    private List<TreeNode> children;    //Children nodes
+    public List<TreeNode> children;    //Children nodes
     public SymbolTable table;           //This nodes' symbol table
     ArrayList<Structure> structures;
     /**
