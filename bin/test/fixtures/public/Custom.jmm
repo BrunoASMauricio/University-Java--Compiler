@@ -5,7 +5,9 @@ class Simple {
 		int a;
 		int b;
 		Simple simple;
-		int c;
+		int[] d;
+        d = new int[2];
+        d[0] = 0;
         		
         a = 30;
 		b = 0-10;

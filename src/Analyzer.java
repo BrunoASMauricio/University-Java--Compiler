@@ -512,6 +512,9 @@ V    Undefined indexes;
             if(!helper3.return_type.equals("int")){
                 throw new IncompatibleException("Array access must be int, not "+helper3.return_type,attr_node);
             }
+            if(!helper1.return_type.equals("int[]")){
+                throw new IncompatibleException("Arrays must be of type int[], and not "+helper1.return_type,attr_node);
+            }
             helper1.return_type = "int";    //Arrays con only be of type int, so the required return_type for the left needs to be int now
         }
         target_symbol.type = Symbol.t_variable_init;
