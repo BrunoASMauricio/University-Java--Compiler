@@ -21,10 +21,12 @@ public class Expression extends Structure{
     public static final int t_int_array = 12;    //Array access
 
     public static final int t_return = 13;
+    
     public String return_type;      //The expression value type
     public Object value;            //The expression value, if available
     public int expression_type;
     public Symbol used_symbol;
+    public Boolean is_new;
     /*
     used_symbol by type:
         Access: Accessed variable symbol
@@ -37,10 +39,14 @@ public class Expression extends Structure{
         used_symbol = null;
         type = Structure.t_expression;
         expression_type = Expression.t_unset;
+        is_new = false;
     }
 
     public void evalE(){
         System.out.print("Expression: ");
+        if(this.is_new == true){
+            System.out.print("NEW ");
+        }
         switch(this.expression_type){
             case t_unset:
                 System.out.print("WARNING Unset expression");
@@ -88,7 +94,7 @@ public class Expression extends Structure{
                 System.out.print("RETURN");
                 break;
             default:
-                System.out.print("ERROR, UNDEFINED STRUCTURE TYPE "+this.type);
+                System.out.print("ERROR, UNDEFINED EXPRESSION TYPE "+this.expression_type);
                 System.exit(-1);
         }
         if(this.used_symbol != null){
@@ -99,7 +105,6 @@ public class Expression extends Structure{
             System.exit(-1);
         }
         System.out.print(" return type "+this.return_type);
-
 
     }
 }

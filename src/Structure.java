@@ -10,7 +10,6 @@ public class Structure {
     public ArrayList<Structure> nested_structures;
     public TreeNode scope;
     public int type;
-    public Object data;
     public Structure(TreeNode current_scope){
         this.type = Structure.t_unset;
         this.nested_structures = new ArrayList<Structure>();
@@ -26,6 +25,8 @@ public class Structure {
         Method Access: Arguments
         Array Access: Expression
         Int Array Access: Expression
+    data by type:
+        int[]:  An expression with the 
     */
     public void addChild(Structure child_structure){
         this.nested_structures.add(child_structure);

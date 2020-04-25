@@ -140,7 +140,7 @@ V    Undefined indexes;
      * @param scope The current scope
      * @return The method signature
      */
-    public static String getMethodSignature(SimpleNode method_node, TreeNode scope){
+    public static String getMethodSignature(SimpleNode method_node, TreeNode scope, Expression method){
         String signature = ((SimpleNode)method_node.jjtGetChild(0)).image+"(";
         Expression help_expr;
 
@@ -148,6 +148,9 @@ V    Undefined indexes;
             //Each argument is based on an expression that has a return type, and is scope
             //bound to the "line" scope and not the previous call scopes
             help_expr = getExpression((SimpleNode)method_node.jjtGetChild(1).jjtGetChild(i), scope);
+            if(method != null){
+                method.addChild(help_expr);
+            }
             if(i == 0){
                 signature += help_expr.return_type;
             }else{
@@ -206,9 +209,9 @@ V    Undefined indexes;
                 }else{
                     if(follow_node.jjtGetNumChildren() == 2){
                         this_expr.expression_type = Expression.t_method_access;
-                        String signature = getMethodSignature(follow_node, scope);
+                        String signature = getMethodSignature(follow_node, scope, this_expr);
                         this_expr.used_symbol = getByIdentifier(signature, parent_scope, follow_node);
-
+                        
                         if(this_expr.used_symbol.type == Symbol.t_method_static && static_access == false){
                             throw new RuntimeException("Tried to access a static method from a non static scope "+this_expr.used_symbol.name);
                         }else if(this_expr.used_symbol.type == Symbol.t_method_instance && static_access == true){
@@ -333,10 +336,11 @@ V    Undefined indexes;
                 if(((SimpleNode)expr_node.jjtGetChild(0)).id != JMMParserTreeConstants.JJTIDENTIFIER){
                     expr.expression_type = Expression.t_int_array;
                     expr.return_type = "int[]";
-                    expr.data = Analyzer.getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope);
+                    expr.nested_structures.add(Analyzer.getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope));
                     break;
                 }
-
+                expr.is_new = true;
+                System.out.println(expr);
             //The next two cases start from a scope and follow it (down, unless they come across another identifier access)
             case JMMParserTreeConstants.JJTIDENTIFIERACCESS:
                 //Get and use "remote"/higher scope/symbol
@@ -346,7 +350,8 @@ V    Undefined indexes;
                     if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS || expr_node.id == JMMParserTreeConstants.JJTNEW){
                         expr.expression_type = Expression.t_method_access;
                         
-                        String signature = getMethodSignature(expr_node, current_scope);
+                        String signature = getMethodSignature(expr_node, current_scope, null);
+                        System.out.println("\t\t\t"+signature);
                         
                         //System.out.println("Fetching method "+signature);
                         
@@ -387,7 +392,7 @@ V    Undefined indexes;
                                 helper_scope = current_scope;
                             }else{
                                 helper_scope = (TreeNode)getByIdentifier((String)expr.used_symbol.data, current_scope, expr_node);
-                                expr.used_symbol = helper_scope;
+                                //expr.used_symbol = helper_scope;
                             }
                         }
 
@@ -398,9 +403,7 @@ V    Undefined indexes;
                     }
                     
                     while(i < node_children){
-
                         helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, static_access, current_scope);
-                        
                         expr.addChild(helper_expression);
                         static_access = false;
                         if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
@@ -411,8 +414,6 @@ V    Undefined indexes;
                                 throw new RuntimeException("Undefined beahaviour "+helper_expression.return_type);
                             }
                         }
-
-
                     }
                     expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                 }else{
