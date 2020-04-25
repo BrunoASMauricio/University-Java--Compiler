@@ -37,7 +37,7 @@ public class Main {
         System.out.println("Parsing file "+input_file);
         //Read file
         try{
-            //Instead of SYstem.in
+            //Instead of System.in
             file_stream = new FileInputStream(input_file);
         }catch(Exception e){
             System.out.println("A problem occured while reading the file "+input_file);

@@ -1,14 +1,14 @@
 import static MathUtils.random(int,int) int; //lowerLimit,upperLimit
 import Quicksort;
-import Quicksort.quicksort(int[],int,int) void; //array, begin, size
-import Quicksort.printL(int[]) void;
+import Quicksort.quicksort(int[],int,int) boolean; //array, begin, size
+import Quicksort.printL(int[]) boolean;
 
 class Lazysort extends Quicksort {
     public static void main(String[] a) {
         int[] L;
         int i;
 		boolean d;
-        Quicksort q;
+        Lazysort q;
 
         L = new int[10];
 
