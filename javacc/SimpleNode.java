@@ -25,11 +25,11 @@ public class SimpleNode implements Node {
   public String method_name;
   public List<String> import_list = new ArrayList<String>();
   
-  public SimpleNode(final int i) {
+  public SimpleNode(int i) {
     id = i;
   }
 
-  public SimpleNode(final JMMParser p, final int i) {
+  public SimpleNode(JMMParser p, int i) {
     this(i);
     parser = p;
   }
@@ -40,21 +40,21 @@ public class SimpleNode implements Node {
   public void jjtClose() {
   }
 
-  public void jjtSetParent(final Node n) { parent = n; }
+  public void jjtSetParent(Node n) { parent = n; }
   public Node jjtGetParent() { return parent; }
 
-  public void jjtAddChild(final Node n, final int i) {
+  public void jjtAddChild(Node n, int i) {
     if (children == null) {
       children = new Node[i + 1];
     } else if (i >= children.length) {
-      final Node c[] = new Node[i + 1];
+      Node c[] = new Node[i + 1];
       System.arraycopy(children, 0, c, 0, children.length);
       children = c;
     }
     children[i] = n;
   }
 
-  public Node jjtGetChild(final int i) {
+  public Node jjtGetChild(int i) {
     return children[i];
   }
 
@@ -62,7 +62,7 @@ public class SimpleNode implements Node {
     return (children == null) ? 0 : children.length;
   }
 
-  public void jjtSetValue(final Object value) { this.value = value; }
+  public void jjtSetValue(Object value) { this.value = value; }
   public Object jjtGetValue() { return value; }
 
   /* You can override these two methods in subclasses of SimpleNode to
@@ -74,16 +74,16 @@ public class SimpleNode implements Node {
   public String toString() {
     return JMMParserTreeConstants.jjtNodeName[id];
   }
-  public String toString(final String prefix) { return prefix + toString(); }
+  public String toString(String prefix) { return prefix + toString(); }
 
   /* Override this method if you want to customize how the node dumps
      out its children. */
 
-    public void dump(final String prefix) {
+    public void dump(String prefix) {
       System.out.println(toString(prefix));
       if (children != null) {
         for (int i = 0; i < children.length; ++i) {
-          final SimpleNode n = (SimpleNode)children[i];
+          SimpleNode n = (SimpleNode)children[i];
           if (n != null) {
             n.dump(prefix + " ");
           }
@@ -110,7 +110,7 @@ public class SimpleNode implements Node {
         System.out.println("\t[ "+this.val+" ]");
       } else {
         for (int i = 0; i < children.length; ++i) {
-          final SimpleNode n = (SimpleNode)children[i];
+          SimpleNode n = (SimpleNode)children[i];
           if (n != null) {
             n.dump();
           }
@@ -120,22 +120,6 @@ public class SimpleNode implements Node {
 
   public int getId() {
     return id;
-  }
-
-  public Object jjtAccept(JMMParserVisitor visitor, Object data) {
-
-    return
-    visitor.visit(this, data);
-  }
-
-  public Object childrenAccept(JMMParserVisitor visitor, Object data)
-  {
-    if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-        children[i].jjtAccept(visitor, data);
-      }
-    }
-    return data;
   }
 }
 

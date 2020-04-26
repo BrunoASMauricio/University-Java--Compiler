@@ -1,6 +1,5 @@
 options {
 LOOKAHEAD=1;
-VISITOR=true;
 }
 /*
 Example build command
