@@ -10,6 +10,10 @@ public class Main {
         System.out.println("\tWith the \"–o\" option, the compiler should perform a set of code optimizations.");
         System.exit(-1);
     }
+
+    public static void printExceptions(){
+
+    }
 	
 	public static void main(String[] args) throws Exception{
         if(args.length < 1){
@@ -52,42 +56,28 @@ public class Main {
 
         try{
             AST_root = JMMParser.parse(file_stream);
-            JMMParser.eval(AST_root, 0);
+            //JMMParser.eval(AST_root, 0);
         }catch(Exception ex){
             ex.printStackTrace();
             throw new RuntimeException("Syntatical error");
         }
 
-        //                  USE SEMANTICA ANALYZER TO GENERATE Scope TREE
+        //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 
         try{
             semantic_file_root = new TreeNode(null);
             semantic_class_root = Analyzer.analyze(semantic_file_root, AST_root, input_file);
-        }catch(DuplicateException ex){
-            System.out.println("\t\tERROR Duplicate detected");
-            System.out.println(ex);
-            throw new RuntimeException("Semantic error");
-        }catch(UndeclaredException ex){
-            System.out.println("\t\tERROR Undeclared entity");
-            System.out.println(ex);
-            throw new RuntimeException("Semantic error");
-        }catch(IncompatibleException ex){
-            System.out.println("\t\tERROR incompatibility detected");
-            System.out.println(ex);
-            throw new RuntimeException("Semantic error");
+            //semantic_file_root.evalT(0);
         }catch(Exception ex){
-            System.out.println("Unhandled exception");
-            System.out.println(ex);
             ex.printStackTrace(); 
             throw new RuntimeException("Semantic error");
         }
         
-        semantic_file_root.evalT(0);
 
         //                      USE THE Scope TREE TO GENERATE JASMIN CODE
 
         try{
-            Jasminify.start(semantic_file_root, semantic_class_root);
+            //Jasminify.start(semantic_file_root, semantic_class_root);
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);

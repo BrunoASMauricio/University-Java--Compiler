@@ -2,41 +2,43 @@ import java.util.ArrayList;
 
 public class Analyzer {
     public static TreeNode debug_node;
+    public static final int max_exceptions = 4;
+    public static int current_exceptions;
+    public static Exception[] thrown_exceptions;
     /*
 Errors to detect
 
 V   Invalid Type
-X   Invalid return type
+V   Invalid return type
 V   Undefined variable name (on the current scope)
-x   Arithmetic and lessthan opertions must only be performed on two int type variables
-x   Logical expressions (ifs, whiles and boolean ands) must only be performed on booleans
+V   Arithmetic and lessthan opertions must only be performed on two int type variables
+V   Logical expressions (ifs, whiles and boolean ands) must only be performed on booleans
 V   Attribution compatibility
 V   Array access must be with int return type
 V   Method name and signature incompatibility
-
-
-
 V    Undeclared variable
 X    Reserved identifier misuse.
 V    Multiple declaration of variable in a scope.
 V    Accessing an out of scope variable. (undeclared variables or methods)
 V    Duplicate functions;
 V    Function type mismatch;
-X    Function does not return when it should;
+V    Function does not return when it should;
 V    Wrong number of arguments for a function;
 V    Wrong type of arguments;
-X    Undefined arguments;
-X    Repeated arguments;
-V    Redefinition of global variables;
+V    Undefined arguments;
 V    Type mismatches;
-?    Detection of size as a variable instead of a property;
 V    Variables previously defined as other types;
-X    Confusion between arrays and variables;
-X    Return type not declared;
+V    Confusion between arrays and variables;
 V    Undefined arrays;
-?    Detection if operations are done only with scalars;
 V    Undefined indexes;
     */
+    public static void throwException(RuntimeException ex){
+        if(Analyzer.current_exceptions < Analyzer.max_exceptions){
+            Analyzer.thrown_exceptions[Analyzer.current_exceptions++] = ex;
+        }else{
+            throw new RuntimeException("Too many exceptions");
+        }
+    }
     /**
      * Checks if the given type is a basic type
      */
@@ -67,7 +69,8 @@ V    Undefined indexes;
         if(!checkBasicType(type)){
             helper = current_scope.getSymbol(type);
             if(helper == null || helper.type != Symbol.t_class){
-                throw new UndeclaredException("Undefined data type "+type, n);
+                Analyzer.throwException(new UndeclaredException("Undefined data type "+type, n));
+                return;
             }
         }
     }
@@ -81,7 +84,8 @@ V    Undefined indexes;
     public static Symbol getByIdentifier(String signature, TreeNode current_scope, SimpleNode n){
         Symbol helper = current_scope.getSymbol(signature);
         if(helper == null){
-            throw new UndeclaredException("Undefined "+signature, n);
+            Analyzer.throwException(new UndeclaredException("Undefined "+signature, n));
+            return null;
         }
         return helper;
     }
@@ -92,7 +96,8 @@ V    Undefined indexes;
      */
     public static void parseArithOperation(SimpleNode expr_node, Expression expr){
         if(expr_node.jjtGetNumChildren() != 2){
-            throw new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id);
+            Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
+            return;
         }
         Expression lhs = getExpression((SimpleNode)expr_node.jjtGetChild(0) , expr.scope);
         Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
@@ -100,22 +105,25 @@ V    Undefined indexes;
         expr.nested_structures.add(rhs);
         
         if(!lhs.return_type.equals(rhs.return_type)){
-            throw new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node);
+            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+            return;
         }else{//Only accept int return types
             if(!(lhs.return_type.equals("int"))){
-                throw new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node);
+                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node));
+                return;
             }
         }
         expr.return_type = "int";
     }
     /**
-     * Handles the Logic Operation expression (less than and and) that starts at node expr_node and sets an Expression object accordingly
+     * Handles the Boolean Operation expressions (and) that starts at node expr_node and sets an Expression object accordingly
      * @param expr_node The start of the operation
      * @param expr The target Expression object
      */
-    public static void parseOperation(SimpleNode expr_node, Expression expr){
+    public static void parseBooleanOperation(SimpleNode expr_node, Expression expr){
         if(expr_node.jjtGetNumChildren() != 2){
-            throw new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id);
+            Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
+            return;
         }
         Expression lhs = getExpression((SimpleNode)expr_node.jjtGetChild(0) , expr.scope);
         Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
@@ -123,17 +131,43 @@ V    Undefined indexes;
         expr.nested_structures.add(rhs);
         
         if(!lhs.return_type.equals(rhs.return_type)){
-            throw new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node);
+            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+            return;
         }else{
-
-            //WHAT EXACTLY IS TO BE DONE HERE? CAN BOOLEAN ANDS HANDLE INTS? CAN LESS THANS HANDLE BOOLEANS?
-
             if(!checkBasicType(lhs.return_type)){
-                throw new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node);
+                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
+                return;
             }
         }
         expr.return_type = "boolean";
     }
+    /**
+     * Handles the Logic Operation expressions (less than) that starts at node expr_node and sets an Expression object accordingly
+     * @param expr_node The start of the operation
+     * @param expr The target Expression object
+     */
+    public static void parseLogicOperation(SimpleNode expr_node, Expression expr){
+        if(expr_node.jjtGetNumChildren() != 2){
+            Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
+            return;
+        }
+        Expression lhs = getExpression((SimpleNode)expr_node.jjtGetChild(0) , expr.scope);
+        Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
+        expr.nested_structures.add(lhs);
+        expr.nested_structures.add(rhs);
+        
+        if(!lhs.return_type.equals(rhs.return_type)){
+            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+            return;
+        }else{
+            if(!lhs.return_type.equals("int")){
+                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
+                return;
+            }
+        }
+        expr.return_type = "boolean";
+    }
+
     /**
      * Handles Identifier() ( SelectorArguments() )? type nodes, and returns the signature
      * @param method_node AST Node where the method starts (the node that contains Identifier() ( SelectorArguments() )? as the  2 children)
@@ -176,7 +210,8 @@ V    Undefined indexes;
         //this_expr.data = helper_expr;
         this_expr.return_type = helper_expr.return_type;
         if(this_expr.return_type != "int"){
-            throw new IncompatibleException("Array accesses must be of type int and not "+this_expr.return_type, arr_expr_node);
+            Analyzer.throwException(new IncompatibleException("Array accesses must be of type int and not "+this_expr.return_type, arr_expr_node));
+            return;
         }
     }
     /**
@@ -195,7 +230,8 @@ V    Undefined indexes;
         
         helper = (SimpleNode)follow_node.jjtGetChild(0);
         if(parent_scope == null){
-            throw new RuntimeException("Invalid scope");
+            Analyzer.throwException(new RuntimeException("Invalid scope"));
+            return null;
         }
         this_expr = new Expression(parent_scope);
         switch(follow_node.id){
@@ -213,9 +249,11 @@ V    Undefined indexes;
                         this_expr.used_symbol = getByIdentifier(signature, parent_scope, follow_node);
                         
                         if(this_expr.used_symbol.type == Symbol.t_method_static && static_access == false){
-                            throw new RuntimeException("Tried to access a static method from a non static scope "+this_expr.used_symbol.name);
+                            Analyzer.throwException(new RuntimeException("Tried to access a static method from a non static scope "+this_expr.used_symbol.name));
+                            return null;
                         }else if(this_expr.used_symbol.type == Symbol.t_method_instance && static_access == true){
-                            throw new RuntimeException("Tried to access a non static method from a static scope "+this_expr.used_symbol.name);
+                            Analyzer.throwException(new RuntimeException("Tried to access a non static method from a static scope "+this_expr.used_symbol.name));
+                            return null;
                         }
                         
                         ArrayList<String> a = (ArrayList<String>)this_expr.used_symbol.data;
@@ -228,7 +266,8 @@ V    Undefined indexes;
                 }
                 break;
             default:
-                throw new RuntimeException("Unexpected token type "+follow_node.id+" inside a selection");
+                Analyzer.throwException(new RuntimeException("Unexpected token type "+follow_node.id+" inside a selection"));
+                return null;
         }
         return this_expr;
     }
@@ -258,12 +297,12 @@ V    Undefined indexes;
             //Operations
             case JMMParserTreeConstants.JJTAND:
                 expr.expression_type = Expression.t_and;
-                parseOperation(expr_node, expr);
+                parseBooleanOperation(expr_node, expr);
                 expr.return_type = "boolean";
                 break;
             case JMMParserTreeConstants.JJTLESSTHAN:
                 expr.expression_type = Expression.t_lessthan;
-                parseOperation(expr_node, expr);
+                parseLogicOperation(expr_node, expr);
                 expr.return_type = "boolean";
                 break;
             case JMMParserTreeConstants.JJTADD:
@@ -301,7 +340,8 @@ V    Undefined indexes;
                 expr.used_symbol = helper_symbol;
                 switch(helper_symbol.type){
                     case Symbol.t_variable_ninit:
-                        throw new UninitializedException("Variable "+helper_symbol.name+" not initialized ", expr_node);
+                        Analyzer.throwException(new UninitializedException("Variable "+helper_symbol.name+" not initialized ", expr_node));
+                        return null;
                     case Symbol.t_variable_init:
                         expr.return_type = (String)helper_symbol.data;
                         break;
@@ -309,17 +349,20 @@ V    Undefined indexes;
                         expr.return_type = helper_symbol.name;
                         break;
                     default:
-                        throw new RuntimeException("Wrong Identifier type "+helper_symbol.type);
+                        Analyzer.throwException(new RuntimeException("Wrong Identifier type "+helper_symbol.type));
+                        return null;
                 }
                 break;
             case JMMParserTreeConstants.JJTNEGATE:
                 expr.expression_type = Expression.t_negate;
                 if(expr_node.jjtGetNumChildren() != 1){
-                    throw new RuntimeException("Wrong ammount of children, negate should only have 1 child, not "+expr_node.jjtGetNumChildren());
+                    Analyzer.throwException(new RuntimeException("Wrong ammount of children, negate should only have 1 child, not "+expr_node.jjtGetNumChildren()));
+                    return null;
                 }
                 helper_expression = getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope);
                 if(helper_expression.return_type != "boolean"){
-                    throw new IncompatibleException("Cannot convert from "+helper_expression.return_type+" to boolean", expr_node);
+                    Analyzer.throwException(new IncompatibleException("Cannot convert from "+helper_expression.return_type+" to boolean", expr_node));
+                    return null;
                 }
                 expr.addChild(helper_expression);
                 expr.return_type = "boolean";
@@ -327,7 +370,8 @@ V    Undefined indexes;
 
             case JMMParserTreeConstants.JJTDIRECTEXPRESSION:
                 if(expr_node.jjtGetNumChildren() != 1){
-                    throw new RuntimeException("Parser issue! Wrong ammount of children for direct expression "+expr_node.jjtGetNumChildren());
+                    Analyzer.throwException(new RuntimeException("Parser issue! Wrong ammount of children for direct expression "+expr_node.jjtGetNumChildren()));
+                    return null;
                 }
                 return getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope);
             
@@ -372,7 +416,8 @@ V    Undefined indexes;
                         }else{
                             helper_scope = (TreeNode)current_scope.getSymbol(str_helper);
                             if(helper_scope.type != Symbol.t_class){
-                                throw new RuntimeException("Undefined beahaviour "+helper_scope.type);
+                                Analyzer.throwException(new RuntimeException("Undefined beahaviour "+helper_scope.type));
+                                return null;
                             }
                         }
 
@@ -384,7 +429,8 @@ V    Undefined indexes;
                             helper_scope = (TreeNode)(expr.used_symbol);
                         }else{
                             if(expr.used_symbol.type == Symbol.t_variable_ninit){
-                                throw new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node);
+                                Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
+                                return null;
                             }
                             static_access = false;
                             //If the return type isn't a class type, scope is inexistent
@@ -398,7 +444,8 @@ V    Undefined indexes;
 
                         expr.expression_type = Expression.t_access;
                         if(node_children < 2){
-                            throw new RuntimeException("fuck");
+                            Analyzer.throwException(new RuntimeException("Wrong ammount of nodes"));
+                            return null;
                         }
                     }
                     
@@ -411,7 +458,8 @@ V    Undefined indexes;
                         }else{
                             helper_scope = (TreeNode)current_scope.getSymbol(helper_expression.return_type);
                             if(helper_scope.type != Symbol.t_class){
-                                throw new RuntimeException("Undefined beahaviour "+helper_expression.return_type);
+                                Analyzer.throwException(new RuntimeException("Undefined beahaviour "+helper_expression.return_type));
+                                return null;
                             }
                         }
                     }
@@ -420,16 +468,19 @@ V    Undefined indexes;
                     //Variable access
                     expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
                     if(expr.used_symbol.type == Symbol.t_variable_ninit){
-                        throw new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node);
+                        Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
+                        return null;
                     }
                     expr.expression_type = Expression.t_access;
                     if(expr.used_symbol.type == Symbol.t_class){
-                        throw new RuntimeException("Cannot use class name in this context");
+                        Analyzer.throwException(new RuntimeException("Cannot use class name in this context"));
+                        return null;
                     }else if(expr.used_symbol.type == Symbol.t_variable_ninit || expr.used_symbol.type == Symbol.t_variable_init){
                         expr.return_type = (String)(expr.used_symbol.data);
                         expr.used_symbol.type = Symbol.t_variable_init;
                     }else{
-                        throw new RuntimeException("unexpected symbol type "+expr.used_symbol.type);
+                        Analyzer.throwException(new RuntimeException("unexpected symbol type "+expr.used_symbol.type));
+                        return null;
                     }
                 }
                 break;
@@ -440,7 +491,8 @@ V    Undefined indexes;
                 while(helper_scope.type != Symbol.t_class){
                     helper_scope = helper_scope.parent;
                     if(helper_scope == null){
-                        throw new RuntimeException("Scope parent is null, can't find class");
+                        Analyzer.throwException(new RuntimeException("Scope parent is null, can't find class"));
+                        return null;
                     }
                 }
                 while(i < node_children){
@@ -451,7 +503,8 @@ V    Undefined indexes;
                     }else{
                         helper_scope = (TreeNode)current_scope.getSymbol(helper_expression.return_type);
                         if(helper_scope.type != Symbol.t_class){
-                            throw new RuntimeException("Undefined beahaviour "+helper_expression.return_type);
+                            Analyzer.throwException(new RuntimeException("Undefined beahaviour "+helper_expression.return_type));
+                            return null;
                         }
                     }
                     expr.addChild(helper_expression);
@@ -462,7 +515,8 @@ V    Undefined indexes;
                 Analyzer.getArrayAccess(expr, (SimpleNode)expr_node.jjtGetChild(0), current_scope);
                 break;
             default:
-                throw new RuntimeException("UNRECOGNIZED "+expr_node.id);
+                Analyzer.throwException( new RuntimeException("UNRECOGNIZED "+expr_node.id));
+                return null;
         }
         return expr;
     }
@@ -500,20 +554,24 @@ V    Undefined indexes;
                 helper1.return_type = target_symbol.name;
                 break;
             default:
-                throw new RuntimeException("Wrong Identifier type "+target_symbol.type);
+                Analyzer.throwException( new RuntimeException("Wrong Identifier type "+target_symbol.type));
+                return null;
         }
 
         if(target.jjtGetNumChildren() > 1){
             //Array access (array must itself be initialized)
             if(target_symbol.type == Symbol.t_variable_ninit){
-                throw new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node);
+                Analyzer.throwException( new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node));
+                return null;
             }
             helper3 = Analyzer.getExpression((SimpleNode)target.jjtGetChild(1), current_scope);
             if(!helper3.return_type.equals("int")){
-                throw new IncompatibleException("Array access must be int, not "+helper3.return_type,attr_node);
+                Analyzer.throwException( new IncompatibleException("Array access must be int, not "+helper3.return_type,attr_node));
+                return null;
             }
             if(!helper1.return_type.equals("int[]")){
-                throw new IncompatibleException("Arrays must be of type int[], and not "+helper1.return_type,attr_node);
+                Analyzer.throwException( new IncompatibleException("Arrays must be of type int[], and not "+helper1.return_type,attr_node));
+                return null;
             }
             helper1.return_type = "int";    //Arrays con only be of type int, so the required return_type for the left needs to be int now
         }
@@ -522,7 +580,8 @@ V    Undefined indexes;
         helper2 = Analyzer.getExpression((SimpleNode)attr_node.jjtGetChild(1), current_scope);
 
         if(!helper1.return_type.equals(helper2.return_type)){
-            throw new IncompatibleException(helper1.return_type+" is incompatible with "+helper2.return_type, attr_node);
+            Analyzer.throwException( new IncompatibleException(helper1.return_type+" is incompatible with "+helper2.return_type, attr_node));
+            return null;
         }
         this_attr.addChild(helper1);
         if(helper3 != null){
@@ -531,7 +590,8 @@ V    Undefined indexes;
         this_attr.addChild(helper2);
         
         if(attr_node.jjtGetNumChildren() != 2) {
-            throw new RuntimeException("Wrong number of children on attribution "+attr_node.jjtGetNumChildren());
+            Analyzer.throwException( new RuntimeException("Wrong number of children on attribution "+attr_node.jjtGetNumChildren()));
+            return null;
         }
         return this_attr;
     }
@@ -556,7 +616,8 @@ V    Undefined indexes;
 
         helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);           //While head condition
         if(helper.return_type != "boolean"){
-            throw new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", while_structure_node);
+            Analyzer.throwException( new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", while_structure_node));
+            return null;
         }
         this_while.addChild(helper);
 
@@ -590,7 +651,8 @@ V    Undefined indexes;
 
         helper = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), current_scope);   //If head condition
         if(helper.return_type != "boolean"){
-            throw new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", if_structure_node);
+            Analyzer.throwException(new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", if_structure_node));
+            return null;
         }
         this_if.addChild(helper);
 
@@ -623,7 +685,8 @@ V    Undefined indexes;
         }else if(statement_node.id == JMMParserTreeConstants.JJTDIRECTEXPRESSION){
             return Analyzer.getExpression(statement_node, current_scope);
         }else{
-            throw new RuntimeException("Unrecognized token "+statement_node.id);
+            Analyzer.throwException( new RuntimeException("Unrecognized token "+statement_node.id));
+            return null;
         }
     }
     /**
@@ -641,7 +704,8 @@ V    Undefined indexes;
 
         helper_symbol = current_scope.table.getSymbol(this_variable.name);
         if(helper_symbol != null){
-            throw new DuplicateException("Variable already present", decl_node);
+            Analyzer.throwException( new DuplicateException("variable already present", decl_node));
+            return;
         }
         //System.out.println("Variable declared: "+this_variable.data+" "+this_variable.name);
         checkType((String)this_variable.data, current_scope, decl_node);
@@ -719,7 +783,8 @@ V    Undefined indexes;
             }else if(help_node.id == JMMParserTreeConstants.JJTRETURN){         //Method return expression
                 Expression h = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), this_method);
                 if(!return_type.equals(h.return_type)){
-                    throw new IncompatibleException("Incompatible return type, can't convert from "+h.return_type+" to "+return_type, method_node);
+                    Analyzer.throwException( new IncompatibleException("Incompatible return type, can't convert from "+h.return_type+" to "+return_type, method_node));
+                    return;
                 }
                 Expression helper = new Expression(parent);
                 helper.expression_type = Expression.t_return;
@@ -732,6 +797,9 @@ V    Undefined indexes;
             }else{                                                              //Get statements
                 this_method.structures.add(Analyzer.getStatement(help_node, this_method));
             }
+        }
+        if(!return_type.equals("void")){        //If this code runs, it means no return statement exists
+            Analyzer.throwException( new IncompatibleException("Non void method, must return "+return_type, method_node));
         }
     }
     /**
@@ -762,7 +830,8 @@ V    Undefined indexes;
             class_defs = ((SimpleNode)help_node.jjtGetChild(1)).image;
             helper = (TreeNode)root_scope.getSymbol(((SimpleNode)help_node.jjtGetChild(1)).image);
             if(helper == null){
-                throw new UndeclaredException("Undefined "+((SimpleNode)help_node.jjtGetChild(1)).image, class_node);
+                Analyzer.throwException(new UndeclaredException(((SimpleNode)help_node.jjtGetChild(1)).image, class_node));
+                return null;
             }
             for(Symbol s : helper.table.symbols.values()){
                 class_treenode.addSymbol(s, class_node);
@@ -796,7 +865,8 @@ V    Undefined indexes;
             }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){             //Get main
                 Analyzer.getMethod(help_node, true, class_treenode, true);
             }else{
-                throw new RuntimeException("1Unrecognized token "+help_node.id);
+                Analyzer.throwException( new RuntimeException("1Unrecognized token "+help_node.id));
+                return null;
             }
             if(i == node_children){
                 break;
@@ -813,7 +883,8 @@ V    Undefined indexes;
             }else if(help_node.id == JMMParserTreeConstants.JJTMAINMETHOD){             //Get main
                 Analyzer.getMethod(help_node, true, class_treenode, false);
             }else{
-                throw new RuntimeException("2Unrecognized token "+help_node.id);
+                Analyzer.throwException( new RuntimeException("2Unrecognized token "+help_node.id));
+                return null;
             }
             if(i == node_children){
                 break;
@@ -942,8 +1013,11 @@ V    Undefined indexes;
      */
     public static TreeNode analyze(TreeNode tree_root, SimpleNode root, String filename){
         SimpleNode node;
+        TreeNode classnode;
         int i;
 
+        Analyzer.thrown_exceptions = new RuntimeException[Analyzer.max_exceptions];
+        Analyzer.current_exceptions = 0;
         System.out.println("Analyzer starting on "+filename);
         
         if(root.id != JMMParserTreeConstants.JJTSTART){
@@ -965,7 +1039,29 @@ V    Undefined indexes;
         
         
         System.out.println("\n");
-        return Analyzer.getClass(node, tree_root);
+        try{
+            classnode = Analyzer.getClass(node, tree_root);
+        }catch(Exception ex){
+            if(Analyzer.current_exceptions != 0){
+                System.out.println("Semantic exceptions: "+Analyzer.current_exceptions);
+                for(i = 0; i < Analyzer.current_exceptions; i++){
+                    System.out.println(Analyzer.thrown_exceptions[i]);
+                }
+                throw new RuntimeException("Semantic error");
+            }else{
+                System.out.println(Analyzer.current_exceptions);
+                throw ex;
+            }
+        }
+        if(Analyzer.current_exceptions != 0){
+            System.out.println("Semantic exceptions: "+Analyzer.current_exceptions);
+            for(i = 0; i < Analyzer.current_exceptions; i++){
+                System.out.println(Analyzer.thrown_exceptions[i]);
+            }
+            throw new RuntimeException("Semantic error");
+        }
+
+        return classnode;
     }
 
 }
