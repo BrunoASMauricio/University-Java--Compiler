@@ -2,8 +2,6 @@ import java.util.ArrayList;
 /*
 OPTIMIZATIONS
 Constant push depends on the constant size, best instruction is selected
-
-
 */
 public class Jasminify {
     public static int stack_index;

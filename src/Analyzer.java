@@ -5,33 +5,6 @@ public class Analyzer {
     public static final int max_exceptions = 4;
     public static int current_exceptions;
     public static Exception[] thrown_exceptions;
-    /*
-Errors to detect
-
-V   Invalid Type
-V   Invalid return type
-V   Undefined variable name (on the current scope)
-V   Arithmetic and lessthan opertions must only be performed on two int type variables
-V   Logical expressions (ifs, whiles and boolean ands) must only be performed on booleans
-V   Attribution compatibility
-V   Array access must be with int return type
-V   Method name and signature incompatibility
-V    Undeclared variable
-X    Reserved identifier misuse.
-V    Multiple declaration of variable in a scope.
-V    Accessing an out of scope variable. (undeclared variables or methods)
-V    Duplicate functions;
-V    Function type mismatch;
-V    Function does not return when it should;
-V    Wrong number of arguments for a function;
-V    Wrong type of arguments;
-V    Undefined arguments;
-V    Type mismatches;
-V    Variables previously defined as other types;
-V    Confusion between arrays and variables;
-V    Undefined arrays;
-V    Undefined indexes;
-    */
     public static void throwException(RuntimeException ex){
         if(Analyzer.current_exceptions < Analyzer.max_exceptions){
             Analyzer.thrown_exceptions[Analyzer.current_exceptions++] = ex;
@@ -1035,7 +1008,6 @@ V    Undefined indexes;
         }
         
         
-        System.out.println("\n");
         try{
             classnode = Analyzer.getClass(node, tree_root);
         }catch(Exception ex){
