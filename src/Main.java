@@ -77,7 +77,7 @@ public class Main {
         //                      USE THE Scope TREE TO GENERATE JASMIN CODE
 
         try{
-            //Jasminify.start(semantic_file_root, semantic_class_root);
+            Jasminify.start(semantic_file_root, semantic_class_root);
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);

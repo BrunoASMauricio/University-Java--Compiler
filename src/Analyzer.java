@@ -105,11 +105,11 @@ V    Undefined indexes;
         expr.nested_structures.add(rhs);
         
         if(!lhs.return_type.equals(rhs.return_type)){
-            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+lhs.return_type, expr_node));
             return;
         }else{//Only accept int return types
             if(!(lhs.return_type.equals("int"))){
-                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+rhs, expr_node));
+                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
                 return;
             }
         }
@@ -134,8 +134,9 @@ V    Undefined indexes;
             Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
             return;
         }else{
+            // 1 && true is valid????
             if(!checkBasicType(lhs.return_type)){
-                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
+                Analyzer.throwException(new IncompatibleException("Cannot perform boolean operation on type: "+lhs.return_type, expr_node));
                 return;
             }
         }
@@ -161,7 +162,7 @@ V    Undefined indexes;
             return;
         }else{
             if(!lhs.return_type.equals("int")){
-                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
+                Analyzer.throwException(new IncompatibleException("Cannot perform logic operation on type: "+lhs.return_type, expr_node));
                 return;
             }
         }
@@ -229,10 +230,6 @@ V    Undefined indexes;
         Expression this_expr;
         
         helper = (SimpleNode)follow_node.jjtGetChild(0);
-        if(parent_scope == null){
-            Analyzer.throwException(new RuntimeException("Invalid scope"));
-            return null;
-        }
         this_expr = new Expression(parent_scope);
         switch(follow_node.id){
             case JMMParserTreeConstants.JJTARRAYACCESS:
@@ -243,6 +240,10 @@ V    Undefined indexes;
                     this_expr.expression_type = Expression.t_access_length;
                     this_expr.return_type = "int";
                 }else{
+                    if(parent_scope == null){
+                        Analyzer.throwException(new RuntimeException("Invalid scope"));
+                        return null;
+                    }
                     if(follow_node.jjtGetNumChildren() == 2){
                         this_expr.expression_type = Expression.t_method_access;
                         String signature = getMethodSignature(follow_node, scope, this_expr);
@@ -340,8 +341,8 @@ V    Undefined indexes;
                 expr.used_symbol = helper_symbol;
                 switch(helper_symbol.type){
                     case Symbol.t_variable_ninit:
-                        Analyzer.throwException(new UninitializedException("Variable "+helper_symbol.name+" not initialized ", expr_node));
-                        return null;
+                        System.out.println("WARNING: Variable "+helper_symbol.name+" may not have been initialized");
+                        //Analyzer.throwException(new UninitializedException("Variable  not initialized ", expr_node));
                     case Symbol.t_variable_init:
                         expr.return_type = (String)helper_symbol.data;
                         break;
@@ -384,7 +385,6 @@ V    Undefined indexes;
                     break;
                 }
                 expr.is_new = true;
-                System.out.println(expr);
             //The next two cases start from a scope and follow it (down, unless they come across another identifier access)
             case JMMParserTreeConstants.JJTIDENTIFIERACCESS:
                 //Get and use "remote"/higher scope/symbol
@@ -395,9 +395,6 @@ V    Undefined indexes;
                         expr.expression_type = Expression.t_method_access;
                         
                         String signature = getMethodSignature(expr_node, current_scope, null);
-                        System.out.println("\t\t\t"+signature);
-                        
-                        //System.out.println("Fetching method "+signature);
                         
                         expr.used_symbol = getByIdentifier(signature, current_scope, expr_node);
                         helper_al = ((ArrayList<String>)(expr.used_symbol.data));
@@ -429,13 +426,13 @@ V    Undefined indexes;
                             helper_scope = (TreeNode)(expr.used_symbol);
                         }else{
                             if(expr.used_symbol.type == Symbol.t_variable_ninit){
-                                Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
-                                return null;
+                                System.out.println("WARNING: Variable "+expr.used_symbol.name+" may not have been initialized");
+                                //Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
                             }
                             static_access = false;
                             //If the return type isn't a class type, scope is inexistent
                             if(checkBasicType((String)expr.used_symbol.data)){
-                                helper_scope = current_scope;
+                                helper_scope = null;
                             }else{
                                 helper_scope = (TreeNode)getByIdentifier((String)expr.used_symbol.data, current_scope, expr_node);
                                 //expr.used_symbol = helper_scope;
@@ -468,8 +465,8 @@ V    Undefined indexes;
                     //Variable access
                     expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
                     if(expr.used_symbol.type == Symbol.t_variable_ninit){
-                        Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
-                        return null;
+                        System.out.println("WARNING: Variable "+expr.used_symbol.name+" may not have been initialized");
+                        //Analyzer.throwException(new UninitializedException("Variable "+expr.used_symbol.name+" not initialized ",expr_node));
                     }
                     expr.expression_type = Expression.t_access;
                     if(expr.used_symbol.type == Symbol.t_class){
@@ -561,8 +558,8 @@ V    Undefined indexes;
         if(target.jjtGetNumChildren() > 1){
             //Array access (array must itself be initialized)
             if(target_symbol.type == Symbol.t_variable_ninit){
-                Analyzer.throwException( new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node));
-                return null;
+                System.out.println("WARNING: Variable "+target_symbol.name+" may not have been initialized");
+                //Analyzer.throwException( new UninitializedException("Variable "+target_symbol.name+" not initialized ",attr_node));
             }
             helper3 = Analyzer.getExpression((SimpleNode)target.jjtGetChild(1), current_scope);
             if(!helper3.return_type.equals("int")){

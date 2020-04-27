@@ -187,7 +187,11 @@ public class Jasminify {
                             writeExpression((Expression)str, method);
                         }
                         if(expr.used_symbol.type != Symbol.t_class){
-                            System.out.println("invokevirtual "+expr.used_symbol.name+"/"+((JasminMethod)helper_expr.used_symbol).jasmin_signature);
+                            if(expr.used_symbol instanceof JasminMethod){
+                                System.out.println("invokevirtual "+expr.used_symbol.name+"/"+((JasminMethod)helper_expr.used_symbol).jasmin_signature);
+                            }else{
+                                System.out.println(expr.used_symbol.name+".LENGTH");
+                            }
                         }else{      //Is static, must be from import
                             System.out.println("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
                         }

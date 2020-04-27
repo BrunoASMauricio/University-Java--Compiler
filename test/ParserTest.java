@@ -146,12 +146,13 @@ public class ParserTest {
     public void testvar_undef() {
         test("fixtures/public/fail/semantic/var_undef.jmm", true);
     }
-
+/*
+No slack o professor disse que uma variavel nao inicializada da warning e nao erro/excecao
     @Test
     public void testvarNotInit() {
         test("fixtures/public/fail/semantic/varNotInit.jmm", true);
     }
-
+*/
     @Test
     public void testmiss_type() {
         test("fixtures/public/fail/semantic/extra/miss_type.jmm", true);
