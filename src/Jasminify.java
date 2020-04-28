@@ -5,7 +5,13 @@ Constant push depends on the constant size, best instruction is selected
 */
 public class Jasminify {
     public static int stack_index;
-
+    public static String out;
+    public static void writeln(String in){
+        out += in + "\n";
+    }
+    public static void write(String in){
+        out += in;
+    }
     public static String getType(String type){
         String ret = "";
         switch(type){
@@ -56,37 +62,37 @@ public class Jasminify {
     public static void writeReturn(JasminMethod method_node, String return_type){
         switch(return_type){
             case "int":
-                System.out.println("ireturn");
+                Jasminify.writeln("ireturn");
                 break;
             case "int[]":
-                System.out.println("");
+                Jasminify.writeln("");
             case "String":
-                System.out.println("");
+                Jasminify.writeln("");
             case "String[]":
-                System.out.println("");
+                Jasminify.writeln("");
             case "boolean":
-                System.out.println("");
+                Jasminify.writeln("");
             case "void":
-                System.out.println("return");
+                Jasminify.writeln("return");
                 break;
             default:                //If the return is none of the above, it MUST be an object reference
-                System.out.println("areturn");
+                Jasminify.writeln("areturn");
         }
     }
 
     public static void writePushConstant(int pushed_const){
         if(pushed_const == -1){
-            System.out.println("iconst_m1");            
+            Jasminify.writeln("iconst_m1");            
         }else if(pushed_const < 0){                     //All negatives except -1
-            System.out.println("Dont know how to push: "+pushed_const);
+            Jasminify.writeln("Dont know how to push: "+pushed_const);
         }else if(pushed_const < 6){                     //From 0 to 5
-            System.out.println("iconst_"+pushed_const);
+            Jasminify.writeln("iconst_"+pushed_const);
         }else if(pushed_const < 256){
-            System.out.println("bipush "+pushed_const); //less than 1 byte, load byte
+            Jasminify.writeln("bipush "+pushed_const); //less than 1 byte, load byte
         }else if(pushed_const < 65536){
-            System.out.println("sipush "+pushed_const); //less than 2 bytes, load 2 bytes
+            Jasminify.writeln("sipush "+pushed_const); //less than 2 bytes, load 2 bytes
         }else{
-            System.out.println("ldc "+pushed_const);
+            Jasminify.writeln("ldc "+pushed_const);
         }
     }
 
@@ -94,13 +100,13 @@ public class Jasminify {
         switch(expr.return_type){
             case "int":
                 if(expr.used_symbol.Jvarindex < 4){
-                    System.out.println("istore_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                    Jasminify.writeln("istore_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
                 }else{
-                    System.out.println("istore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                    Jasminify.writeln("istore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
                 }
                 break;
             default:
-                System.out.println("astore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                Jasminify.writeln("astore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
         }
     }
 
@@ -111,13 +117,13 @@ public class Jasminify {
         switch(type){
             case "int":
                 if(expr.used_symbol.Jvarindex < 4){
-                    System.out.println("iload_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                    Jasminify.writeln("iload_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
                 }else{
-                    System.out.println("iload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                    Jasminify.writeln("iload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
                 }
                 break;
             case "instance":
-                System.out.println("aload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+                Jasminify.writeln("aload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
         }
     }
     /**
@@ -136,32 +142,32 @@ public class Jasminify {
             case Expression.t_sub:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-                System.out.println("isub");
+                Jasminify.writeln("isub");
                 break;
             case Expression.t_add:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-                System.out.println("iadd");
+                Jasminify.writeln("iadd");
                 break;
             case Expression.t_div:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-                System.out.println("idiv");
+                Jasminify.writeln("idiv");
                 break;
             case Expression.t_mul:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-                System.out.println("imul");
+                Jasminify.writeln("imul");
                 break;
             case Expression.t_method_access:
                 if(expr.is_new){
-                    System.out.println("new "+expr.used_symbol.name);
-                    System.out.println("dup");
-                    //System.out.println("astore ");
-                    System.out.println("invokespecial "+expr.used_symbol.name+"/<init>()V");
+                    Jasminify.writeln("new "+expr.used_symbol.name);
+                    Jasminify.writeln("dup");
+                    //Jasminify.writeln("astore ");
+                    Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
 
                 }else{
-                    System.out.println("WELL WELL WELL");
+                    Jasminify.writeln("WELL WELL WELL");
                 }
                 break;
             case Expression.t_access:
@@ -170,7 +176,7 @@ public class Jasminify {
                         if(expr.used_symbol == null || expr.used_symbol.Jvarindex == -1){
                             throw new RuntimeException("Uninitialized index");
                         }
-                        //System.out.println("\t;loading "+expr.used_symbol.name+" V");
+                        //Jasminify.writeln("\t;loading "+expr.used_symbol.name+" V");
                         Jasminify.loadVariable(expr, "int");
                         break;
                     case 1:
@@ -186,12 +192,12 @@ public class Jasminify {
                         }
                         if(expr.used_symbol.type != Symbol.t_class){
                             if(expr.used_symbol instanceof JasminMethod){
-                                System.out.println("invokevirtual "+expr.used_symbol.name+"/"+((JasminMethod)helper_expr.used_symbol).jasmin_signature);
+                                Jasminify.writeln("invokevirtual "+expr.used_symbol.name+"/"+((JasminMethod)helper_expr.used_symbol).jasmin_signature);
                             }else{
-                                System.out.println(expr.used_symbol.name+".LENGTH");
+                                Jasminify.writeln(expr.used_symbol.name+".LENGTH");
                             }
                         }else{      //Is static, must be from import
-                            System.out.println("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
+                            Jasminify.writeln("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
                         }
                         break;
                     default:
@@ -214,7 +220,7 @@ public class Jasminify {
                         }
                         Jasminify.storeVariable(helper0, method);
                     }else{
-                        System.out.println("\t\tCANT PARSE TYPE "+helper0.type+" YET");
+                        Jasminify.writeln("\t\tCANT PARSE TYPE "+helper0.type+" YET");
                     }
                 }
                 break;
@@ -240,21 +246,21 @@ public class Jasminify {
         int start;
         
         if(method_node.name.equals("main")){    //Generate normal/main method head
-            System.out.println(".method public static main([Ljava/lang/String;)V");
+            Jasminify.writeln(".method public static main([Ljava/lang/String;)V");
             arg_amm = 1;
         }else{
             if(method_node.type == Symbol.t_method_instance){
-                System.out.print(".method public ");
+                Jasminify.write(".method public ");
             }else{
-                System.out.print(".method public static ");
+                Jasminify.write(".method public static ");
             }
             arg_amm = ((ArrayList<String>)method_node.data).size();           //Last types is return type
-            System.out.println(method_node.jasmin_signature);
+            Jasminify.writeln(method_node.jasmin_signature);
         }
 
         method_node.locals_index = arg_amm;   //Set stack and locals limit
-        System.out.println(".limit stack 99");//                                    NEED TO CALCULATE DEEPEST DEPTH
-        System.out.println(".limit locals "+method_node.table.getSize());
+        Jasminify.writeln(".limit stack 99");//                                    NEED TO CALCULATE DEEPEST DEPTH
+        Jasminify.writeln(".limit locals "+method_node.table.getSize());
         
         if(method_node.type == Symbol.t_method_instance){
             start = 1;      //Instance methods have at 0 the This and at 1 the first local variable
@@ -277,7 +283,7 @@ public class Jasminify {
         if(method_node.returned == false){
             Jasminify.writeReturn(method_node, "void");
         }
-        System.out.println(".end method");
+        Jasminify.writeln(".end method");
     }
     static void start(TreeNode root, TreeNode class_node){
         if(class_node == null){
@@ -286,22 +292,22 @@ public class Jasminify {
 
         Jasminify.stack_index = 0;
 
-        System.out.println(".class public "+class_node.name);
+        Jasminify.writeln(".class public "+class_node.name);
         if(class_node.data == null){
-            System.out.println(".super java/lang/Object");
+            Jasminify.writeln(".super java/lang/Object");
         }else{
-            System.out.println(".super "+class_node.data);
+            Jasminify.writeln(".super "+class_node.data);
         }
 
-        System.out.println(".method public<init>()V");
-        System.out.println("aload_0");
+        Jasminify.writeln(".method public<init>()V");
+        Jasminify.writeln("aload_0");
         if(class_node.data == null){
-            System.out.println("invokenonvirtual java/lang/Object/<init>()V");
+            Jasminify.writeln("invokenonvirtual java/lang/Object/<init>()V");
         }else{
-            System.out.println("invokenonvirtual "+class_node.data+"/<init>()V");
+            Jasminify.writeln("invokenonvirtual "+class_node.data+"/<init>()V");
         }
-        System.out.println("return");
-        System.out.println(".end method");
+        Jasminify.writeln("return");
+        Jasminify.writeln(".end method");
 
         for(TreeNode method: class_node.children){
             Jasminify.setJasminSignature((JasminMethod)method);

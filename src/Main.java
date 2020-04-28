@@ -1,5 +1,6 @@
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.PrintWriter;
 
 public class Main {
 
@@ -88,8 +89,11 @@ public class Main {
         try{
             Jasminify.start(semantic_file_root, semantic_class_root);
             if(v > 2){
-
+                System.out.println(Jasminify.out);
             }
+            PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
+            writer.println(Jasminify.out);
+            writer.close();
         }catch(Exception ex){
             System.out.println("Unhandled exception");
             System.out.println(ex);
