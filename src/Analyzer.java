@@ -611,10 +611,13 @@ public class Analyzer {
         int node_children;
         Expression helper;
         Structure this_if;
+        ArrayList<Structure> cond_if_else;
 
         i = 0;
         help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
         node_children = if_structure_node.jjtGetNumChildren();
+        cond_if_else = new ArrayList<Structure>();
+
 
         this_if = new Structure(current_scope);
         this_if.type = Structure.t_if;
@@ -624,18 +627,27 @@ public class Analyzer {
             Analyzer.throwException(new IncompatibleException("Cannot convert from "+helper.return_type+" to boolean", if_structure_node));
             return null;
         }
-        this_if.addChild(helper);
+
+        cond_if_else.add(helper);
+        //cond_if_else.add(0, new Structure(current_scope));
+        cond_if_else.add(new Structure(current_scope));
+        cond_if_else.add(new Structure(current_scope));
+        
+        //this_if.addChild(helper);
 
         while(i < node_children && ((SimpleNode)if_structure_node.jjtGetChild(i)).id != JMMParserTreeConstants.JJTELSESTRUCTURE){   //If body statements
             help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
-            this_if.addChild(Analyzer.getStatement(help_node, current_scope));
+            //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
+            cond_if_else.get(1).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
         }
         i++;
     
         while(i < node_children){                                                               //Else body statements
             help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
-            this_if.addChild(Analyzer.getStatement(help_node, current_scope));
+            //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
+            cond_if_else.get(2).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
         }
+        this_if.nested_structures = cond_if_else;
 
         return this_if;
     }

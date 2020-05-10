@@ -89,20 +89,19 @@ public class Main {
         try{
             Jasminify.start(semantic_file_root, semantic_class_root);
             if(v > 2){
-                System.out.println(Jasminify.out);
+                System.out.println("\n"+Jasminify.out);
             }
             PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
             writer.println(Jasminify.out);
             writer.close();
         }catch(Exception ex){
             System.out.println("Unhandled exception");
-            System.out.println(ex);
+            //System.out.println(Jasminify.out);
             ex.printStackTrace(); 
             //throw new RuntimeException("Jasmin error");
         }
         //*
-
-        System.out.println();
+        System.out.println("COMPILATION SUCCESSFUL");
 	}
 	
 }

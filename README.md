@@ -35,6 +35,7 @@ Working | Custom Test <br> Exists | Description
 [V] | [X] | Array access to non array variable
 [X] | [X] | Possible uninitialization of variable due to control flow
 [X] | [X] | Constructor cannot be called without new
+[X] | [X] | .length cannot be used on non array
 [V] | [X] | Class cannot be used as a variable name
 [V] | [X] | Main used inside a method
 [?] | [X] | Method returning array is directly accessed (ex: "M()[0]")
@@ -44,6 +45,15 @@ Working | Custom Test <br> Exists | Description
 [X] | [X] | String concatenation [EXTRA]
 [X] | [X] | Non existent extends
 [X] | [X] | Reserved identifier misuse
+[X] | [X] | Constructor with arguments
+
+### Optimizations
+
+[X] Array of size 1 as an array
+[X] Liveliness analysis for register allocation
+[X] Register selection priority for loop control or body variables (more accessed)
+
+
 
 
 ### Logical Structure

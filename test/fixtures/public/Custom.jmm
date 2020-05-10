@@ -4,15 +4,10 @@ class Simple {
 	public static void main(String[] args) {
 		int a;
 		int b;
-		Simple simple;
-		int c;
-        		
+
         a = 30;
 		b = 0-10;
-        simple = new Simple();
-		c = simple.add(a,b);
-        io.println(c);
-	}	
+	}
     public int add(int a, int b){
 		return a+b;
 	}

@@ -6,11 +6,16 @@ Constant push depends on the constant size, best instruction is selected
 public class Jasminify {
     public static int stack_index;
     public static String out;
+    public static int control_index;
     public static void writeln(String in){
         out += in + "\n";
     }
     public static void write(String in){
         out += in;
+    }
+    public static String getIndex(){
+        control_index++;
+        return ""+(control_index-1);
     }
     public static String getType(String type){
         String ret = "";
@@ -31,7 +36,9 @@ public class Jasminify {
             case "boolean":
                 break;
             default:
-                throw new RuntimeException("Dunno how to jasminfy "+type);
+                //throw new RuntimeException("Dunno how to jasminfy "+type);
+                ret+=/*"Dunno how to jasminfy "+*/"[L"+type+";";
+                //rec([LSimple;)[LSimple;
         }
         return ret;
     }
@@ -55,8 +62,9 @@ public class Jasminify {
         return sig;
     }
 
-    public static void setJasminSignature(JasminMethod method_node){
+    public static void setJasminSignature(JasminMethod method_node, TreeNode class_node){
         method_node.jasmin_signature = Jasminify.getJasminSignature(method_node);
+        method_node.jasmin_class = class_node.name;
     }
     
     public static void writeReturn(JasminMethod method_node, String return_type){
@@ -65,13 +73,21 @@ public class Jasminify {
                 Jasminify.writeln("ireturn");
                 break;
             case "int[]":
-                Jasminify.writeln("");
+                //Jasminify.writeln("INT[]");
+                Jasminify.writeln("areturn");
+                break;
             case "String":
-                Jasminify.writeln("");
+                //Jasminify.writeln("STR");
+                Jasminify.writeln("areturn");
+                break;
             case "String[]":
-                Jasminify.writeln("");
+                //Jasminify.writeln("STR[]");
+                Jasminify.writeln("areturn");
+                break;
             case "boolean":
-                Jasminify.writeln("");
+                //Jasminify.writeln("BOOL");
+                Jasminify.writeln("ireturn");
+                break;
             case "void":
                 Jasminify.writeln("return");
                 break;
@@ -110,11 +126,11 @@ public class Jasminify {
         }
     }
 
-    public static void loadVariable(Expression expr, String type){
+    public static void loadVariable(Expression expr){
         if(expr.used_symbol.Jvarindex < 0){
             throw new RuntimeException("Negative index is unacceptable "+expr.used_symbol.Jvarindex);
         }
-        switch(type){
+        switch(expr.return_type){
             case "int":
                 if(expr.used_symbol.Jvarindex < 4){
                     Jasminify.writeln("iload_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
@@ -122,8 +138,9 @@ public class Jasminify {
                     Jasminify.writeln("iload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
                 }
                 break;
-            case "instance":
+            default:
                 Jasminify.writeln("aload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+            
         }
     }
     /**
@@ -133,6 +150,7 @@ public class Jasminify {
      */
     public static void writeExpression(Expression expr, JasminMethod method){
         Expression helper_expr;
+        String jump_ind;
         switch(expr.expression_type){
             case Expression.t_constant:
                 if(expr.return_type == "int"){
@@ -159,6 +177,26 @@ public class Jasminify {
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
                 Jasminify.writeln("imul");
                 break;
+            case Expression.t_lessthan:
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
+                jump_ind = Jasminify.getIndex();
+                Jasminify.writeln("if_icmpgt is_false_"+jump_ind);
+                Jasminify.writeln("iconst_1");
+                Jasminify.writeln("goto end_cond"+jump_ind);
+                Jasminify.writeln("is_false_"+jump_ind+":");
+                Jasminify.writeln("iconst_0");
+                Jasminify.writeln("end_cond"+jump_ind+":");
+                break;
+            case Expression.t_return:
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+                //Return
+                method.returned = true;
+                Jasminify.writeReturn(method, expr.return_type);
+                break;
+            case Expression.t_int_array:
+            
+                break;
             case Expression.t_method_access:
                 if(expr.is_new){
                     Jasminify.writeln("new "+expr.used_symbol.name);
@@ -167,8 +205,12 @@ public class Jasminify {
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
 
                 }else{
-                    Jasminify.writeln("WELL WELL WELL");
+                    Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
+                    //invokevirtual Simple/add(II)I
                 }
+                break;
+            case Expression.t_access_length:
+                Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol)+"/"+"length()I");
                 break;
             case Expression.t_access:
                 switch(expr.nested_structures.size()){
@@ -177,43 +219,55 @@ public class Jasminify {
                             throw new RuntimeException("Uninitialized index");
                         }
                         //Jasminify.writeln("\t;loading "+expr.used_symbol.name+" V");
-                        Jasminify.loadVariable(expr, "int");
-                        break;
-                    case 1:
-                        //Method access (through an instance variable or static class)
-                        helper_expr = (Expression)expr.nested_structures.get(0);
-                        
-                        if(expr.used_symbol.type != Symbol.t_class){    //Instances need to be loaded
-                            Jasminify.loadVariable(expr,"instance");
-                        }
-
-                        for(Structure str : helper_expr.nested_structures){
-                            writeExpression((Expression)str, method);
-                        }
-                        if(expr.used_symbol.type != Symbol.t_class){
-                            if(expr.used_symbol instanceof JasminMethod){
-                                Jasminify.writeln("invokevirtual "+expr.used_symbol.name+"/"+((JasminMethod)helper_expr.used_symbol).jasmin_signature);
-                            }else{
-                                Jasminify.writeln(expr.used_symbol.name+".LENGTH");
-                            }
-                        }else{      //Is static, must be from import
-                            Jasminify.writeln("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
-                        }
+                        Jasminify.loadVariable(expr);
                         break;
                     default:
-                        throw new RuntimeException("Check this scenario "+expr.nested_structures.size());
+                        //Method access (through an instance variable or static class)                        
+                        if(expr.used_symbol.type != Symbol.t_class){    //Instances need to be loaded
+                            Jasminify.loadVariable(expr);
+                        }
+                        for(Structure call: expr.nested_structures){
+                            helper_expr = (Expression)call;
+
+                            for(Structure str : helper_expr.nested_structures){
+                                writeExpression((Expression)str, method);
+                            }
+                            //Jasminify.writeln(">> "+((Expression)str).used_symbol.name);
+
+                            if(expr.used_symbol.type != Symbol.t_class){
+                                writeExpression(helper_expr, method);
+                            }else{      //Is static, must be from import
+                                Jasminify.writeln("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
+                            }
+                        }
+
+                        break;
                 }
+                break;
+            default:
+                //Jasminify.writeln("CANNOT PARSE "+expr.expression_type+" YET");
         }
     }
-    public static void writeStructure(Structure str, JasminMethod method){
+    public static void evalCond(Expression expr, String jump_ind, JasminMethod method){
+        if(expr.expression_type == Expression.t_lessthan){                                   //For a single less than, we can do this directly
+            Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+            Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
+            Jasminify.writeln("if_icmpgt else_"+jump_ind);
+        }else{                                                                                  //For Boolean value of false (int value of 0)
+            Jasminify.writeExpression(expr, method);
+            Jasminify.writeln("ifeq else_"+jump_ind);    
+        }
+    }
+    public static void writeStructure(Structure struct, JasminMethod method){
         Expression helper0;
         Expression helper1;
-        switch(str.type){
+        String jump_ind;
+        switch(struct.type){
             case Structure.t_attribution:
-                if(str.nested_structures.size() == 2){  //Simple variable attribution
-                    helper0 = (Expression)str.nested_structures.get(0);
-                    helper1 = (Expression)str.nested_structures.get(1);
-                    writeExpression(helper1, method);
+                if(struct.nested_structures.size() == 2){  //Simple variable attribution
+                    helper0 = (Expression)struct.nested_structures.get(0);
+                    helper1 = (Expression)struct.nested_structures.get(1);
+                    Jasminify.writeExpression(helper1, method);
                     if(helper0.expression_type == Expression.t_access){
                         if(helper0.used_symbol.Jvarindex == -1){
                             helper0.used_symbol.Jvarindex = method.locals_index++;
@@ -225,18 +279,35 @@ public class Jasminify {
                 }
                 break;
             case Structure.t_expression:
-                helper0 = ((Expression)str);
-                switch(helper0.expression_type){
-                    case Expression.t_access:
-                        Jasminify.writeExpression(helper0, method);
-
-                        break;
-                    case Expression.t_return:
-                        writeExpression((Expression)helper0.nested_structures.get(0), method);
-                        //Return
-                        method.returned = true;
-                        Jasminify.writeReturn(method, helper0.return_type);
+                Jasminify.writeExpression((Expression)struct, method);
+                break;
+            case Structure.t_while:
+                jump_ind = Jasminify.getIndex();
+                Jasminify.writeln("while_"+jump_ind+":");
+                Jasminify.evalCond((Expression)struct.nested_structures.get(0), jump_ind, method);
+                for(Structure if_bd : struct.nested_structures){
+                    Jasminify.writeStructure(if_bd, method);
                 }
+                Jasminify.writeln("goto while_"+jump_ind);
+
+                Jasminify.writeln("else_"+jump_ind+":");
+                
+                break;
+            case Structure.t_if:
+                jump_ind = Jasminify.getIndex();
+                Jasminify.evalCond((Expression)struct.nested_structures.get(0), jump_ind, method);
+                
+                for(Structure if_bd : struct.nested_structures.get(1).nested_structures){
+                    Jasminify.writeStructure(if_bd, method);
+                }
+                Jasminify.writeln("goto endif_"+jump_ind);
+
+                Jasminify.writeln("else_"+jump_ind+":");
+                for(Structure if_bd : struct.nested_structures.get(2).nested_structures){
+                    Jasminify.writeStructure(if_bd, method);
+                }
+                Jasminify.writeln("endif_"+jump_ind+":");
+                break;
             default:
         }
     }
@@ -260,7 +331,7 @@ public class Jasminify {
 
         method_node.locals_index = arg_amm;   //Set stack and locals limit
         Jasminify.writeln(".limit stack 99");//                                    NEED TO CALCULATE DEEPEST DEPTH
-        Jasminify.writeln(".limit locals "+method_node.table.getSize());
+        Jasminify.writeln(".limit locals "+(1+arg_amm+method_node.table.getSize()));
         
         if(method_node.type == Symbol.t_method_instance){
             start = 1;      //Instance methods have at 0 the This and at 1 the first local variable
@@ -275,6 +346,7 @@ public class Jasminify {
 
         for(Structure s: method_node.structures){           //Parse inner structures
             Jasminify.writeStructure(s, method_node);
+            Jasminify.writeln("");
         }
 
         for(int i = start, j = 0; i < method_node.variables.length; i++, j++){  //Free all variable indexes
@@ -289,8 +361,10 @@ public class Jasminify {
         if(class_node == null){
             throw new RuntimeException("No class found");
         }
+        Jasminify.out = "";
 
         Jasminify.stack_index = 0;
+        Jasminify.control_index = 0;
 
         Jasminify.writeln(".class public "+class_node.name);
         if(class_node.data == null){
@@ -299,7 +373,7 @@ public class Jasminify {
             Jasminify.writeln(".super "+class_node.data);
         }
 
-        Jasminify.writeln(".method public<init>()V");
+        Jasminify.writeln(".method <init>()V");
         Jasminify.writeln("aload_0");
         if(class_node.data == null){
             Jasminify.writeln("invokenonvirtual java/lang/Object/<init>()V");
@@ -310,7 +384,7 @@ public class Jasminify {
         Jasminify.writeln(".end method");
 
         for(TreeNode method: class_node.children){
-            Jasminify.setJasminSignature((JasminMethod)method);
+            Jasminify.setJasminSignature((JasminMethod)method, class_node);
         }
 
         for(TreeNode method: class_node.children){

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class JasminMethod extends TreeNode{
     public Symbol[] variables;
     public String jasmin_signature;
+    public String jasmin_class;
     public int locals_index;
     public boolean returned;
     public JasminMethod(TreeNode scope){

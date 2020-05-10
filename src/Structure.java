@@ -32,17 +32,28 @@ public class Structure {
         this.nested_structures.add(child_structure);
     }
     public void evalSt(int depth){
+        String ident = new String();
         for(int i = 0; i < depth; i++){
-            System.out.print(" ");
+            //System.out.print(" ");
+            ident+=" ";
         }
-        System.out.print("Structure Type: ");
+        System.out.print(ident+"Structure Type: ");
         switch(this.type){
             case t_unset:
                 System.out.print("WARNING Unset structure");
                 break;
             case t_if:
-                System.out.print("IF");
-                break;
+                System.out.println("IF");
+                this.nested_structures.get(0).evalSt(depth+1);
+                System.out.println(ident+"IF BODY");
+                for(Structure if_bd : this.nested_structures.get(1).nested_structures){
+                    if_bd.evalSt(depth+1);
+                }
+                System.out.println(ident+"ELSE BODY");
+                for(Structure if_bd : this.nested_structures.get(2).nested_structures){
+                    if_bd.evalSt(depth+1);
+                }
+                return;
             case t_while:
                 System.out.print("WHILE");
                 break;
