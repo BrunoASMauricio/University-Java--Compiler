@@ -106,9 +106,9 @@ public class Jasminify {
             Jasminify.writeln("Dont know how to push: "+pushed_const);
         }else if(pushed_const < 6){                     //From 0 to 5
             Jasminify.writeln("iconst_"+pushed_const);
-        }else if(pushed_const < 256){
+        }else if(pushed_const < 128){
             Jasminify.writeln("bipush "+pushed_const); //less than 1 byte, load byte
-        }else if(pushed_const < 65536){
+        }else if(pushed_const < 32768){
             Jasminify.writeln("sipush "+pushed_const); //less than 2 bytes, load 2 bytes
         }else{
             Jasminify.writeln("ldc "+pushed_const);
@@ -238,7 +238,15 @@ public class Jasminify {
                     Jasminify.writeln("dup");
                     //Jasminify.writeln("astore ");
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
-
+                    for(Structure another_method : expr.nested_structures){
+                        Jasminify.this_loaded = true;
+                        //helper0 = (Expression)expr.nested_structures.get(0);
+                        helper0 = (Expression)another_method;
+                        for(Structure str : helper0.nested_structures){
+                            writeExpression((Expression)str, method);
+                        }
+                        Jasminify.writeExpression(helper0, method);
+                    }
                 }else{
                     //There are no static methods being evaluated
                     //if(method.type == Symbol.t_method_static){}

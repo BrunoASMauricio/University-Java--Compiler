@@ -102,7 +102,7 @@ public class Main {
             System.out.println("Unhandled exception");
             //System.out.println(Jasminify.out);
             ex.printStackTrace(); 
-            //throw new RuntimeException("Jasmin error");
+            throw new RuntimeException("Jasmin error");
         }
         //*
         System.out.println("COMPILATION SUCCESSFUL");
