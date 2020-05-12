@@ -607,6 +607,7 @@ public class Analyzer {
      */
     public static Structure getIf(SimpleNode if_structure_node, TreeNode current_scope){
         SimpleNode help_node;
+        SimpleNode help_node1;
         int i;
         int node_children;
         Expression helper;
@@ -640,13 +641,18 @@ public class Analyzer {
             //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
             cond_if_else.get(1).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
         }
-        i++;
-    
-        while(i < node_children){                                                               //Else body statements
-            help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
-            //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
-            cond_if_else.get(2).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
+        //Parse else
+        if(((SimpleNode)if_structure_node.jjtGetChild(i)).id == JMMParserTreeConstants.JJTELSESTRUCTURE){
+            help_node1 = ((SimpleNode)if_structure_node.jjtGetChild(i));
+            node_children = help_node1.jjtGetNumChildren();
+            i = 0;
+            while(i < node_children){
+                help_node = (SimpleNode)help_node1.jjtGetChild(i++);
+                //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
+                cond_if_else.get(2).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
+            }
         }
+
         this_if.nested_structures = cond_if_else;
 
         return this_if;
@@ -676,13 +682,14 @@ public class Analyzer {
      * @param decl_node The AST node
      * @param current_scope The current scope
      */
-    public static void getVarDecl(SimpleNode decl_node, TreeNode current_scope){
+    public static void getVarDecl(SimpleNode decl_node, TreeNode current_scope, String type){
         Symbol this_variable = new Symbol();
         Symbol helper_symbol;
 
         this_variable.name = ((SimpleNode)decl_node.jjtGetChild(1)).image;
         this_variable.data = ((SimpleNode)decl_node.jjtGetChild(0)).image;
         this_variable.type = Symbol.t_variable_ninit;
+        this_variable.Jvartype = type;
 
         helper_symbol = current_scope.table.getSymbol(this_variable.name);
         if(helper_symbol != null){
@@ -745,8 +752,11 @@ public class Analyzer {
             types.add("void");      //Still need to add void as the return type
         }
         this_method.data = types;
-        for(Symbol s: argument_variables){          //Add argument variables as symbols
-            this_method.addSymbol(s, method_node);
+        for(int j = 0; j < argument_variables.size(); j++){
+            helper_symbol = argument_variables.get(j);
+            helper_symbol.Jvartype = "local";
+            helper_symbol.Jvarindex = j+1;
+            this_method.addSymbol(helper_symbol, method_node);
         }
         
         if(only_head == true){
@@ -761,7 +771,7 @@ public class Analyzer {
             help_node = (SimpleNode) method_node.jjtGetChild(i++);
 
             if(help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
-                Analyzer.getVarDecl(help_node, this_method);
+                Analyzer.getVarDecl(help_node, this_method, "local");
             }else if(help_node.id == JMMParserTreeConstants.JJTRETURN){         //Method return expression
                 Expression h = Analyzer.getExpression((SimpleNode)help_node.jjtGetChild(0), this_method);
                 if(!return_type.equals(h.return_type)){
@@ -836,7 +846,7 @@ public class Analyzer {
         help_node = (SimpleNode) class_node.jjtGetChild(i++);
 
         while(i < node_children && help_node.id == JMMParserTreeConstants.JJTVARDECLARATION){
-            Analyzer.getVarDecl(help_node, class_treenode);
+            Analyzer.getVarDecl(help_node, class_treenode, "class");
             help_node = (SimpleNode) class_node.jjtGetChild(i++);
         }
         method_start = i-1;
@@ -885,14 +895,15 @@ public class Analyzer {
         SimpleNode help_node;
         int i;
         TreeNode this_class_treenode;        //Imported class
-        Symbol this_import_method;        //Imported method
-        Symbol this_constructor;        //Imported method
+        TreeNode this_import_method;        //Imported method
+        TreeNode this_constructor;        //Imported method
         ArrayList<String> types;
         ArrayList<String> names;
 
-        this_import_method = new Symbol();
-        this_constructor = new Symbol();
+
         this_class_treenode = new TreeNode(root_scope);
+        this_import_method = new JasminMethod(this_class_treenode);
+        this_constructor = new JasminMethod(this_class_treenode);
         types = new ArrayList<String>();
         names = new ArrayList<String>();
         node_children = import_node.jjtGetNumChildren();
@@ -952,7 +963,6 @@ public class Analyzer {
                 types.add(this_import_method.name); //Assume it returns the object if no other return type is present
             }
             this_import_method.data = types;
-            
             try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
                 root_scope.addSymbol(this_import_method, import_node);
             }catch(DuplicateException ex){
@@ -978,7 +988,7 @@ public class Analyzer {
             this_import_method.data = types;
             
             try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
-                this_class_treenode.addSymbol(this_import_method, import_node);
+                this_class_treenode.addChild(this_import_method, import_node);
             }catch(DuplicateException ex){
                 System.out.println("WARNING duplicate import on line "+import_node.firstToken.beginLine);
             }

@@ -1122,7 +1122,7 @@ void Negate(): {/*@bgen(jjtree) Negate */
 {/*@bgen(jjtree) Negate */
     try {
 /*@egen*/
-    <NOT> Expression()/*@bgen(jjtree)*/
+    <NOT> Node()/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);

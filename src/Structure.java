@@ -34,7 +34,6 @@ public class Structure {
     public void evalSt(int depth){
         String ident = new String();
         for(int i = 0; i < depth; i++){
-            //System.out.print(" ");
             ident+=" ";
         }
         System.out.print(ident+"Structure Type: ");

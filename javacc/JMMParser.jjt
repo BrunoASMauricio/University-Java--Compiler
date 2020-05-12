@@ -409,7 +409,7 @@ void New(): {}
 
 void Negate(): {}
 {
-    <NOT> Expression()
+    <NOT> Node()
 }
 
 void Node()#void: {}

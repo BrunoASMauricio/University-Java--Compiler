@@ -4,12 +4,28 @@ class Simple {
 	public static void main(String[] args) {
 		int a;
 		int b;
+		int c;
+		Simple d;
+		int[] e;
 
-        a = 30;
+		e = new int[2+4];
+
+		e[0] = 2;
+		//a = e[1-1];
+
+		d = new Simple();
+        
+		d = d.rec(d).rec(d);
+
+		a = 30;
 		b = 0-10;
+		c = d.add(a,b);
 	}
     public int add(int a, int b){
 		return a+b;
+	}
+	public Simple rec(Simple x){
+		return x;
 	}
 }
 /*

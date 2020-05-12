@@ -15,14 +15,15 @@ public class Symbol {
     public int type;                    //Symbol type
     public Object data;                 //The specified types' data
 
-    public Object Jdata;                //Data required by Jasmin
+    public String Jfielddsignature;                //Data required by Jasmin
     public int Jvarindex;               //Jasmin symbol index in stack
+    public String Jvartype;               //field or local variable
     public Symbol(){
         this.signature = null;
         this.name = null;
         this.type = Symbol.t_unset;
         this.data = null;
-        this.Jdata = null;
+        this.Jfielddsignature = null;
         this.Jvarindex = -1;
     }
     /*

@@ -7,6 +7,7 @@ public class Jasminify {
     public static int stack_index;
     public static String out;
     public static int control_index;
+    public static int fields_index;
     public static void writeln(String in){
         out += in + "\n";
     }
@@ -34,6 +35,7 @@ public class Jasminify {
                 ret += "V";
                 break;
             case "boolean":
+                ret += "I";
                 break;
             default:
                 //throw new RuntimeException("Dunno how to jasminfy "+type);
@@ -112,35 +114,43 @@ public class Jasminify {
         }
     }
 
-    public static void storeVariable(Expression expr, JasminMethod method){
-        switch(expr.return_type){
-            case "int":
-                if(expr.used_symbol.Jvarindex < 4){
-                    Jasminify.writeln("istore_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-                }else{
-                    Jasminify.writeln("istore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-                }
-                break;
-            default:
-                Jasminify.writeln("astore "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-        }
-    }
-
-    public static void loadVariable(Expression expr){
+    public static void handleVariable(Expression expr, String type){
         if(expr.used_symbol.Jvarindex < 0){
             throw new RuntimeException("Negative index is unacceptable "+expr.used_symbol.Jvarindex);
         }
-        switch(expr.return_type){
+        switch((String)expr.used_symbol.data){
             case "int":
-                if(expr.used_symbol.Jvarindex < 4){
-                    Jasminify.writeln("iload_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-                }else{
-                    Jasminify.writeln("iload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-                }
+                Jasminify.write("i");
+
                 break;
             default:
-                Jasminify.writeln("aload "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
-            
+                Jasminify.write("a");
+        }
+        Jasminify.write(type);
+        if(expr.used_symbol.Jvarindex < 4){
+            Jasminify.writeln("_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+        }else{
+            Jasminify.writeln(" "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+        }
+    }
+
+    public static void storeVariable(Expression expr, JasminMethod method){
+        if(expr.used_symbol.Jvarindex == -1){
+            expr.used_symbol.Jvarindex = method.locals_index++;
+        }
+        handleVariable(expr, "store");
+
+    }
+
+    public static void loadVariable(Expression expr){
+        if(expr.used_symbol.Jvartype == null){
+            System.out.println("WTFWTF "+expr.used_symbol.name);
+        }
+        if(expr.used_symbol.Jvartype.equals("class")){
+            Jasminify.writeln("aload_0");
+            Jasminify.writeln("getfield "+expr.used_symbol.Jfielddsignature);    
+        }else{
+            handleVariable(expr, "load");
         }
     }
     /**
@@ -149,12 +159,26 @@ public class Jasminify {
      * @param scope
      */
     public static void writeExpression(Expression expr, JasminMethod method){
-        Expression helper_expr;
+        Expression helper0;
+        Expression helper1;
         String jump_ind;
+        Jasminify.writeln("; "+expr.expression_type);
         switch(expr.expression_type){
             case Expression.t_constant:
-                if(expr.return_type == "int"){
-                    Jasminify.writePushConstant((Integer)expr.value);
+                //if(expr.return_type == "int"){
+                switch(expr.return_type){
+                    case "int":
+                        Jasminify.writePushConstant((Integer)expr.value);
+                        break;
+                    case "boolean":
+                        if((Boolean)expr.value){
+                            Jasminify.writePushConstant(1);
+                        }else{
+                            Jasminify.writePushConstant(0);
+                        }
+                        break;
+                    default:
+                        Jasminify.writeln("CANT GET COSNTANT TYPE YET ");
                 }
                 break;
             case Expression.t_sub:
@@ -188,6 +212,11 @@ public class Jasminify {
                 Jasminify.writeln("iconst_0");
                 Jasminify.writeln("end_cond"+jump_ind+":");
                 break;
+            case Expression.t_and:
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
+                Jasminify.writeln("iand");
+                break;
             case Expression.t_return:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 //Return
@@ -195,7 +224,11 @@ public class Jasminify {
                 Jasminify.writeReturn(method, expr.return_type);
                 break;
             case Expression.t_int_array:
-            
+                if(expr.nested_structures.size() != 1){
+                    Jasminify.writeln("WRONG SIZE "+expr.nested_structures.size());
+                }
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+                Jasminify.writeln("newarray int");
                 break;
             case Expression.t_method_access:
                 if(expr.is_new){
@@ -205,54 +238,82 @@ public class Jasminify {
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
 
                 }else{
+                    Jasminify.writeln(";>>"+expr.used_symbol.name);
+
                     Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
                     //invokevirtual Simple/add(II)I
                 }
                 break;
             case Expression.t_access_length:
+                //arraylength
+                Jasminify.writeln(";>>>"+expr.used_symbol.name);
+
                 Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol)+"/"+"length()I");
                 break;
             case Expression.t_access:
                 switch(expr.nested_structures.size()){
                     case 0:
-                        if(expr.used_symbol == null || expr.used_symbol.Jvarindex == -1){
-                            throw new RuntimeException("Uninitialized index");
-                        }
-                        //Jasminify.writeln("\t;loading "+expr.used_symbol.name+" V");
                         Jasminify.loadVariable(expr);
                         break;
                     default:
-                        //Method access (through an instance variable or static class)                        
-                        if(expr.used_symbol.type != Symbol.t_class){    //Instances need to be loaded
+                        if(expr.used_symbol == null){
+                            break;
+                        }
+                        if(expr.used_symbol.type != Symbol.t_class){    //Instances and arrays need to be loaded
                             Jasminify.loadVariable(expr);
                         }
                         for(Structure call: expr.nested_structures){
-                            helper_expr = (Expression)call;
-
-                            for(Structure str : helper_expr.nested_structures){
-                                writeExpression((Expression)str, method);
-                            }
-                            //Jasminify.writeln(">> "+((Expression)str).used_symbol.name);
-
-                            if(expr.used_symbol.type != Symbol.t_class){
-                                writeExpression(helper_expr, method);
-                            }else{      //Is static, must be from import
-                                Jasminify.writeln("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper_expr.used_symbol));
+                            helper0 = (Expression)call;
+                            switch(helper0.expression_type){
+                                case Expression.t_method_access:        //Method access (through an instance variable or static class)                        
+                                    //Load arguments
+                                    for(Structure str : helper0.nested_structures){
+                                        writeExpression((Expression)str, method);
+                                    }
+                                    
+                                    if(expr.used_symbol.type != Symbol.t_class){
+                                        writeExpression(helper0, method);
+                                    }else{      //Is static, must be from import
+                                        Jasminify.writeln("invokestatic "+expr.used_symbol.name+"/"+getJasminSignature(helper0.used_symbol));
+                                    }
+                                    break;
+                                case Expression.t_array_access:
+                                    Jasminify.writeExpression((Expression)helper0.nested_structures.get(0), method);
+                                    Jasminify.writeln("iaload");
+                                    break;
+                                case Expression.t_access_length:
+                                    Jasminify.writeln("arraylength");
+                                    break;
+                                default:
+                                    Jasminify.writeln("; UNEXPECTED ACCESS TYPE "+helper0.expression_type);
                             }
                         }
 
                         break;
                 }
                 break;
+            case Expression.t_array_access:
+                Jasminify.writeln("NOT supposed to happen");
+                /*helper0 = (Expression)expr.nested_structures.get(0);
+                helper1 = (Expression)expr.nested_structures.get(1);
+
+                Jasminify.loadVariable(helper0);
+                Jasminify.writeExpression(helper1, method);
+                Jasminify.writeln("iaload");*/
+                break;
+            case Expression.t_negate:
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
+                Jasminify.writeln("ineg");
+                break;
             default:
-                //Jasminify.writeln("CANNOT PARSE "+expr.expression_type+" YET");
+                Jasminify.writeln("CANNOT PARSE "+expr.expression_type+" YET");
         }
     }
     public static void evalCond(Expression expr, String jump_ind, JasminMethod method){
         if(expr.expression_type == Expression.t_lessthan){                                   //For a single less than, we can do this directly
             Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
             Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-            Jasminify.writeln("if_icmpgt else_"+jump_ind);
+            Jasminify.writeln("if_icmpge else_"+jump_ind);
         }else{                                                                                  //For Boolean value of false (int value of 0)
             Jasminify.writeExpression(expr, method);
             Jasminify.writeln("ifeq else_"+jump_ind);    
@@ -261,21 +322,47 @@ public class Jasminify {
     public static void writeStructure(Structure struct, JasminMethod method){
         Expression helper0;
         Expression helper1;
+        Expression helper2;
         String jump_ind;
         switch(struct.type){
             case Structure.t_attribution:
-                if(struct.nested_structures.size() == 2){  //Simple variable attribution
-                    helper0 = (Expression)struct.nested_structures.get(0);
-                    helper1 = (Expression)struct.nested_structures.get(1);
-                    Jasminify.writeExpression(helper1, method);
-                    if(helper0.expression_type == Expression.t_access){
-                        if(helper0.used_symbol.Jvarindex == -1){
-                            helper0.used_symbol.Jvarindex = method.locals_index++;
+                switch(struct.nested_structures.size()){
+                    case 2:  //Simple variable attribution
+                        helper0 = (Expression)struct.nested_structures.get(0);
+                        helper1 = (Expression)struct.nested_structures.get(1);
+                        
+                        if(helper0.used_symbol.Jvartype.equals("class")){
+                            Jasminify.writeln("aload_0");
+                            Jasminify.writeExpression(helper1, method);
+                            Jasminify.writeln("putfield "+helper0.used_symbol.Jfielddsignature);
+                        }else{
+                            Jasminify.writeExpression(helper1, method);
+                            if(helper0.expression_type == Expression.t_access){
+                                Jasminify.storeVariable(helper0, method);
+                            }else{
+                                Jasminify.writeln("\t\tCANT PARSE TYPE "+helper0.type+" YET");
+                            }
                         }
-                        Jasminify.storeVariable(helper0, method);
-                    }else{
-                        Jasminify.writeln("\t\tCANT PARSE TYPE "+helper0.type+" YET");
-                    }
+                        break;
+                    case 3:
+                        helper0 = (Expression)struct.nested_structures.get(0);
+                        helper1 = (Expression)struct.nested_structures.get(1);
+                        helper2 = (Expression)struct.nested_structures.get(2);
+                        //Load arrayref
+                        Jasminify.loadVariable(helper0);
+                        /*if(helper0.expression_type == Expression.t_access){
+                        }else{
+                            Jasminify.writeln(";\t\tCANT PARSE TYPE "+helper0.expression_type+" YET");
+                        }*/
+                        //Load index
+                        Jasminify.writeExpression((Expression)helper1.nested_structures.get(0), method);
+                        //Load value
+                        Jasminify.writeExpression(helper2, method);
+                        Jasminify.writeln("iastore");
+
+                        break;
+                    default:
+                        Jasminify.writeln("; WEIRD NUMBER OF CHILDREN "+struct.nested_structures.size()+"");
                 }
                 break;
             case Structure.t_expression:
@@ -285,8 +372,10 @@ public class Jasminify {
                 jump_ind = Jasminify.getIndex();
                 Jasminify.writeln("while_"+jump_ind+":");
                 Jasminify.evalCond((Expression)struct.nested_structures.get(0), jump_ind, method);
-                for(Structure if_bd : struct.nested_structures){
-                    Jasminify.writeStructure(if_bd, method);
+                Jasminify.writeln("");
+
+                for(int i = 1; i < struct.nested_structures.size(); i++){
+                    Jasminify.writeStructure(struct.nested_structures.get(i), method);
                 }
                 Jasminify.writeln("goto while_"+jump_ind);
 
@@ -303,6 +392,7 @@ public class Jasminify {
                 Jasminify.writeln("goto endif_"+jump_ind);
 
                 Jasminify.writeln("else_"+jump_ind+":");
+                Jasminify.writeln("; "+struct.nested_structures.get(2).nested_structures.size());
                 for(Structure if_bd : struct.nested_structures.get(2).nested_structures){
                     Jasminify.writeStructure(if_bd, method);
                 }
@@ -310,6 +400,7 @@ public class Jasminify {
                 break;
             default:
         }
+        Jasminify.writeln("");
     }
 
     public static void writeMethod(JasminMethod method_node){
@@ -325,14 +416,13 @@ public class Jasminify {
             }else{
                 Jasminify.write(".method public static ");
             }
-            arg_amm = ((ArrayList<String>)method_node.data).size();           //Last types is return type
+            arg_amm = ((ArrayList<String>)method_node.data).size()-1;           //Last types is return type
             Jasminify.writeln(method_node.jasmin_signature);
         }
 
-        method_node.locals_index = arg_amm;   //Set stack and locals limit
+        method_node.locals_index = arg_amm+1;   //Locals begin after the arguments
         Jasminify.writeln(".limit stack 99");//                                    NEED TO CALCULATE DEEPEST DEPTH
-        Jasminify.writeln(".limit locals "+(1+arg_amm+method_node.table.getSize()));
-        
+        Jasminify.writeln(".limit locals "+(1+arg_amm+method_node.table.getSize()));    //this + arguments + declared local variables
         if(method_node.type == Symbol.t_method_instance){
             start = 1;      //Instance methods have at 0 the This and at 1 the first local variable
         }else{
@@ -364,6 +454,7 @@ public class Jasminify {
         Jasminify.out = "";
 
         Jasminify.stack_index = 0;
+        Jasminify.fields_index = 0;
         Jasminify.control_index = 0;
 
         Jasminify.writeln(".class public "+class_node.name);
@@ -371,6 +462,13 @@ public class Jasminify {
             Jasminify.writeln(".super java/lang/Object");
         }else{
             Jasminify.writeln(".super "+class_node.data);
+        }
+        //Set fields
+        for(Symbol symb : class_node.table.symbols.values()){
+            if(symb.type == Symbol.t_variable_init || symb.type == Symbol.t_variable_ninit){
+                symb.Jfielddsignature = class_node.name+"/f_"+symb.name+" "+getType((String)symb.data);
+                Jasminify.writeln(".field public f_"+symb.name+" "+getType((String)symb.data));
+            }
         }
 
         Jasminify.writeln(".method <init>()V");
@@ -382,9 +480,20 @@ public class Jasminify {
         }
         Jasminify.writeln("return");
         Jasminify.writeln(".end method");
-
+        //Set method jasmin signatures
         for(TreeNode method: class_node.children){
             Jasminify.setJasminSignature((JasminMethod)method, class_node);
+        }
+        //Set import method jasmin signatures
+        for(TreeNode other_class_node: root.children){
+            if(other_class_node.name.equals(class_node.name)){
+                continue;
+            }
+
+            for(TreeNode method: other_class_node.children){
+                Jasminify.writeln("; "+method.name+"/"+other_class_node.name);
+                Jasminify.setJasminSignature((JasminMethod)method, other_class_node);
+            }
         }
 
         for(TreeNode method: class_node.children){

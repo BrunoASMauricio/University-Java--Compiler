@@ -1,4 +1,4980 @@
-Parsing file ./test/fixtures/public/FindMaximum.jmm
+Parsing file ./test/fixtures/public/Life.jmm
 Parser starting
-Analyzer starting on ./test/fixtures/public/FindMaximum.jmm
+0 START
+  1 ImportDeclaration
+    2 STATIC
+    2 [ID: io] 
+    2 [ID: read] 
+    2 IMPORTMETHOD
+    2 RETURN
+      3 [Type: int] 
+  1 ImportDeclaration
+    2 STATIC
+    2 [ID: io] 
+    2 [ID: println] 
+    2 IMPORTMETHOD
+  1 ImportDeclaration
+    2 STATIC
+    2 [ID: io] 
+    2 [ID: print] 
+    2 IMPORTMETHOD
+    2 [Type: int] 
+  1 ClassDeclaration
+    2 ClassHead
+      3 [ID: Life] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: UNDERPOP_LIM] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: OVERPOP_LIM] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: REPRODUCE_NUM] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: LOOPS_PER_MS] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: xMax] 
+    2 VarDeclaration
+      3 [Type: int] 
+      3 [ID: yMax] 
+    2 VarDeclaration
+      3 [Type: int[]] 
+      3 [ID: field] 
+    2 MainMethod
+      3 [ID: a] 
+      3 VarDeclaration
+        4 [Type: Life] 
+        4 [ID: l] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: unused] 
+      3 Attribution
+        4 Target
+          5 [ID: l] 
+        4 New
+          5 [ID: Life] 
+          5 SelectorArguments
+      3 DIRECTEXPRESSION
+        4 IdentifierAccess
+          5 [ID: l] 
+          5 SELECTOR
+            6 [ID: init] 
+            6 SelectorArguments
+      3 WhileStructure
+        4 WhileHead
+          5 [Boolean Constant: true] 
+        4 DIRECTEXPRESSION
+          5 IdentifierAccess
+            6 [ID: l] 
+            6 SELECTOR
+              7 [ID: printField] 
+              7 SelectorArguments
+        4 DIRECTEXPRESSION
+          5 IdentifierAccess
+            6 [ID: l] 
+            6 SELECTOR
+              7 [ID: update] 
+              7 SelectorArguments
+        4 Attribution
+          5 Target
+            6 [ID: unused] 
+          5 IdentifierAccess
+            6 [ID: io] 
+            6 SELECTOR
+              7 [ID: read] 
+              7 SelectorArguments
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: init] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: lineLenA] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: lineLen] 
+      3 Attribution
+        4 Target
+          5 [ID: lineLenA] 
+        4 New
+          5 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: UNDERPOP_LIM] 
+        4 [Int Constant: 2] 
+      3 Attribution
+        4 Target
+          5 [ID: OVERPOP_LIM] 
+        4 [Int Constant: 3] 
+      3 Attribution
+        4 Target
+          5 [ID: REPRODUCE_NUM] 
+        4 [Int Constant: 3] 
+      3 Attribution
+        4 Target
+          5 [ID: LOOPS_PER_MS] 
+        4 [Int Constant: 225000] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: field] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: lineLenA] 
+      3 Attribution
+        4 Target
+          5 [ID: lineLen] 
+        4 IdentifierAccess
+          5 [ID: lineLenA] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: xMax] 
+        4 SUB
+          5 IdentifierAccess
+            6 [ID: lineLen] 
+          5 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: yMax] 
+        4 SUB
+          5 DIV
+            6 IdentifierAccess
+              7 [ID: field] 
+              7 SELECTOR
+                8 LENGTH
+            6 IdentifierAccess
+              7 [ID: lineLen] 
+          5 [Int Constant: 1] 
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: int[]] 
+        4 [ID: field] 
+        4 [Type: int[]] 
+        4 [ID: lineLen] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: field] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+        4 New
+          5 [Int Constant: 100] 
+      3 Attribution
+        4 Target
+          5 [ID: lineLen] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 [Int Constant: 10] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 2] 
+        4 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 3] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 4] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 5] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 6] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 7] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 8] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 9] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 10] 
+        4 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 11] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 12] 
+        4 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 13] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 14] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 15] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 16] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 17] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 18] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 19] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 20] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 21] 
+        4 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 22] 
+        4 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 23] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 24] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 25] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 26] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 27] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 28] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 29] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 30] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 31] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 32] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 33] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 34] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 35] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 36] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 37] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 38] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 39] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 40] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 41] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 42] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 43] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 44] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 45] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 46] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 47] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 48] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 49] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 50] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 51] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 52] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 53] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 54] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 55] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 56] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 57] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 58] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 59] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 60] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 61] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 62] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 63] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 64] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 65] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 66] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 67] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 68] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 69] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 70] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 71] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 72] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 73] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 74] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 75] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 76] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 77] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 78] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 79] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 80] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 81] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 82] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 83] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 84] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 85] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 86] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 87] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 88] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 89] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 90] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 91] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 92] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 93] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 94] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 95] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 96] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 97] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 98] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+          5 ArrayAccess
+            6 [Int Constant: 99] 
+        4 [Int Constant: 0] 
+      3 RETURN
+        4 IdentifierAccess
+          5 [ID: field] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: update] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: i] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: cur] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: neighN] 
+      3 VarDeclaration
+        4 [Type: boolean] 
+        4 [ID: goodPop] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: newField] 
+      3 Attribution
+        4 Target
+          5 [ID: newField] 
+        4 New
+          5 IdentifierAccess
+            6 [ID: field] 
+            6 SELECTOR
+              7 LENGTH
+      3 Attribution
+        4 Target
+          5 [ID: i] 
+        4 [Int Constant: 0] 
+      3 WhileStructure
+        4 WhileHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 IdentifierAccess
+              7 [ID: field] 
+              7 SELECTOR
+                8 LENGTH
+        4 Attribution
+          5 Target
+            6 [ID: cur] 
+          5 IdentifierAccess
+            6 [ID: field] 
+            6 ArrayAccess
+              7 IdentifierAccess
+                8 [ID: i] 
+        4 Attribution
+          5 Target
+            6 [ID: neighN] 
+          5 THIS
+            6 SELECTOR
+              7 [ID: getLiveNeighborN] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: i] 
+        4 IfStructure
+          5 IfHead
+            6 Negate
+              7 LESSTHAN
+                8 IdentifierAccess
+                  9 [ID: cur] 
+                8 [Int Constant: 1] 
+          5 Attribution
+            6 Target
+              7 [ID: goodPop] 
+            6 AND
+              7 THIS
+                8 SELECTOR
+                  9 [ID: ge] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: neighN] 
+                    10 IdentifierAccess
+                      11 [ID: UNDERPOP_LIM] 
+              7 THIS
+                8 SELECTOR
+                  9 [ID: le] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: neighN] 
+                    10 IdentifierAccess
+                      11 [ID: OVERPOP_LIM] 
+          5 IfStructure
+            6 IfHead
+              7 Negate
+                8 IdentifierAccess
+                  9 [ID: goodPop] 
+            6 Attribution
+              7 Target
+                8 [ID: newField] 
+                8 ArrayAccess
+                  9 IdentifierAccess
+                    10 [ID: i] 
+              7 [Int Constant: 0] 
+            6 ElseStructure
+              7 Attribution
+                8 Target
+                  9 [ID: newField] 
+                  9 ArrayAccess
+                    10 IdentifierAccess
+                      11 [ID: i] 
+                8 IdentifierAccess
+                  9 [ID: field] 
+                  9 ArrayAccess
+                    10 IdentifierAccess
+                      11 [ID: i] 
+          5 ElseStructure
+            6 IfStructure
+              7 IfHead
+                8 THIS
+                  9 SELECTOR
+                    10 [ID: eq] 
+                    10 SelectorArguments
+                      11 IdentifierAccess
+                        12 [ID: neighN] 
+                      11 IdentifierAccess
+                        12 [ID: REPRODUCE_NUM] 
+              7 Attribution
+                8 Target
+                  9 [ID: newField] 
+                  9 ArrayAccess
+                    10 IdentifierAccess
+                      11 [ID: i] 
+                8 [Int Constant: 1] 
+              7 ElseStructure
+                8 Attribution
+                  9 Target
+                    10 [ID: newField] 
+                    10 ArrayAccess
+                      11 IdentifierAccess
+                        12 [ID: i] 
+                  9 IdentifierAccess
+                    10 [ID: field] 
+                    10 ArrayAccess
+                      11 IdentifierAccess
+                        12 [ID: i] 
+        4 Attribution
+          5 Target
+            6 [ID: i] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: field] 
+        4 IdentifierAccess
+          5 [ID: newField] 
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: printField] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: i] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: j] 
+      3 Attribution
+        4 Target
+          5 [ID: i] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: j] 
+        4 [Int Constant: 0] 
+      3 WhileStructure
+        4 WhileHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 IdentifierAccess
+              7 [ID: field] 
+              7 SELECTOR
+                8 LENGTH
+        4 IfStructure
+          5 IfHead
+            6 THIS
+              7 SELECTOR
+                8 [ID: gt] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: j] 
+                  9 IdentifierAccess
+                    10 [ID: xMax] 
+          5 DIRECTEXPRESSION
+            6 IdentifierAccess
+              7 [ID: io] 
+              7 SELECTOR
+                8 [ID: println] 
+                8 SelectorArguments
+          5 Attribution
+            6 Target
+              7 [ID: j] 
+            6 [Int Constant: 0] 
+          5 ElseStructure
+        4 DIRECTEXPRESSION
+          5 IdentifierAccess
+            6 [ID: io] 
+            6 SELECTOR
+              7 [ID: print] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: field] 
+                  9 ArrayAccess
+                    10 IdentifierAccess
+                      11 [ID: i] 
+        4 Attribution
+          5 Target
+            6 [ID: i] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 [Int Constant: 1] 
+        4 Attribution
+          5 Target
+            6 [ID: j] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: j] 
+            6 [Int Constant: 1] 
+      3 DIRECTEXPRESSION
+        4 IdentifierAccess
+          5 [ID: io] 
+          5 SELECTOR
+            6 [ID: println] 
+            6 SelectorArguments
+      3 DIRECTEXPRESSION
+        4 IdentifierAccess
+          5 [ID: io] 
+          5 SELECTOR
+            6 [ID: println] 
+            6 SelectorArguments
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: int] 
+        4 [ID: trIdx] 
+        4 [Type: int] 
+        4 [ID: x] 
+        4 [Type: int] 
+        4 [ID: y] 
+      3 RETURN
+        4 ADD
+          5 IdentifierAccess
+            6 [ID: x] 
+          5 MUL
+            6 ADD
+              7 IdentifierAccess
+                8 [ID: xMax] 
+              7 [Int Constant: 1] 
+            6 IdentifierAccess
+              7 [ID: y] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: int[]] 
+        4 [ID: cartIdx] 
+        4 [Type: int] 
+        4 [ID: absPos] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: x] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: y] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: xLim] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: ret] 
+      3 Attribution
+        4 Target
+          5 [ID: xLim] 
+        4 ADD
+          5 IdentifierAccess
+            6 [ID: xMax] 
+          5 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: y] 
+        4 DIV
+          5 IdentifierAccess
+            6 [ID: absPos] 
+          5 IdentifierAccess
+            6 [ID: xLim] 
+      3 Attribution
+        4 Target
+          5 [ID: x] 
+        4 SUB
+          5 IdentifierAccess
+            6 [ID: absPos] 
+          5 MUL
+            6 IdentifierAccess
+              7 [ID: y] 
+            6 IdentifierAccess
+              7 [ID: xLim] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+        4 New
+          5 [Int Constant: 2] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 IdentifierAccess
+          5 [ID: x] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+        4 IdentifierAccess
+          5 [ID: y] 
+      3 RETURN
+        4 IdentifierAccess
+          5 [ID: ret] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: int[]] 
+        4 [ID: getNeighborCoords] 
+        4 [Type: int] 
+        4 [ID: absPos] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: x] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: y] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: upX] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: upY] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: downX] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: downY] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: cart] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: ret] 
+      3 Attribution
+        4 Target
+          5 [ID: cart] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: cartIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: absPos] 
+      3 Attribution
+        4 Target
+          5 [ID: x] 
+        4 IdentifierAccess
+          5 [ID: cart] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: y] 
+        4 IdentifierAccess
+          5 [ID: cart] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+      3 IfStructure
+        4 IfHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: x] 
+            6 IdentifierAccess
+              7 [ID: xMax] 
+        4 Attribution
+          5 Target
+            6 [ID: downX] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: x] 
+            6 [Int Constant: 1] 
+        4 IfStructure
+          5 IfHead
+            6 THIS
+              7 SELECTOR
+                8 [ID: gt] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: x] 
+                  9 [Int Constant: 0] 
+          5 Attribution
+            6 Target
+              7 [ID: upX] 
+            6 SUB
+              7 IdentifierAccess
+                8 [ID: x] 
+              7 [Int Constant: 1] 
+          5 ElseStructure
+            6 Attribution
+              7 Target
+                8 [ID: upX] 
+              7 IdentifierAccess
+                8 [ID: xMax] 
+        4 ElseStructure
+          5 Attribution
+            6 Target
+              7 [ID: downX] 
+            6 [Int Constant: 0] 
+          5 Attribution
+            6 Target
+              7 [ID: upX] 
+            6 SUB
+              7 IdentifierAccess
+                8 [ID: x] 
+              7 [Int Constant: 1] 
+      3 IfStructure
+        4 IfHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: y] 
+            6 IdentifierAccess
+              7 [ID: yMax] 
+        4 Attribution
+          5 Target
+            6 [ID: downY] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: y] 
+            6 [Int Constant: 1] 
+        4 IfStructure
+          5 IfHead
+            6 THIS
+              7 SELECTOR
+                8 [ID: gt] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: y] 
+                  9 [Int Constant: 0] 
+          5 Attribution
+            6 Target
+              7 [ID: upY] 
+            6 SUB
+              7 IdentifierAccess
+                8 [ID: y] 
+              7 [Int Constant: 1] 
+          5 ElseStructure
+            6 Attribution
+              7 Target
+                8 [ID: upY] 
+              7 IdentifierAccess
+                8 [ID: yMax] 
+        4 ElseStructure
+          5 Attribution
+            6 Target
+              7 [ID: downY] 
+            6 [Int Constant: 0] 
+          5 Attribution
+            6 Target
+              7 [ID: upY] 
+            6 SUB
+              7 IdentifierAccess
+                8 [ID: y] 
+              7 [Int Constant: 1] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+        4 New
+          5 [Int Constant: 8] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: x] 
+              7 IdentifierAccess
+                8 [ID: upY] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: upX] 
+              7 IdentifierAccess
+                8 [ID: upY] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 2] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: upX] 
+              7 IdentifierAccess
+                8 [ID: y] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 3] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: upX] 
+              7 IdentifierAccess
+                8 [ID: downY] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 4] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: x] 
+              7 IdentifierAccess
+                8 [ID: downY] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 5] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: downX] 
+              7 IdentifierAccess
+                8 [ID: downY] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 6] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: downX] 
+              7 IdentifierAccess
+                8 [ID: y] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+          5 ArrayAccess
+            6 [Int Constant: 7] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: trIdx] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: downX] 
+              7 IdentifierAccess
+                8 [ID: upY] 
+      3 RETURN
+        4 IdentifierAccess
+          5 [ID: ret] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: int] 
+        4 [ID: getLiveNeighborN] 
+        4 [Type: int] 
+        4 [ID: absPos] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: neigh] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: i] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: ret] 
+      3 Attribution
+        4 Target
+          5 [ID: ret] 
+        4 [Int Constant: 0] 
+      3 Attribution
+        4 Target
+          5 [ID: neigh] 
+        4 THIS
+          5 SELECTOR
+            6 [ID: getNeighborCoords] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: absPos] 
+      3 Attribution
+        4 Target
+          5 [ID: i] 
+        4 [Int Constant: 0] 
+      3 WhileStructure
+        4 WhileHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 IdentifierAccess
+              7 [ID: neigh] 
+              7 SELECTOR
+                8 LENGTH
+        4 IfStructure
+          5 IfHead
+            6 THIS
+              7 SELECTOR
+                8 [ID: ne] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: field] 
+                    10 ArrayAccess
+                      11 IdentifierAccess
+                        12 [ID: neigh] 
+                        12 ArrayAccess
+                          13 IdentifierAccess
+                            14 [ID: i] 
+                  9 [Int Constant: 0] 
+          5 Attribution
+            6 Target
+              7 [ID: ret] 
+            6 ADD
+              7 IdentifierAccess
+                8 [ID: ret] 
+              7 [Int Constant: 1] 
+          5 ElseStructure
+        4 Attribution
+          5 Target
+            6 [ID: i] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 [Int Constant: 1] 
+      3 RETURN
+        4 IdentifierAccess
+          5 [ID: ret] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: busyWait] 
+        4 [Type: int] 
+        4 [ID: ms] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: i] 
+      3 VarDeclaration
+        4 [Type: int] 
+        4 [ID: n] 
+      3 Attribution
+        4 Target
+          5 [ID: n] 
+        4 MUL
+          5 IdentifierAccess
+            6 [ID: ms] 
+          5 IdentifierAccess
+            6 [ID: LOOPS_PER_MS] 
+      3 Attribution
+        4 Target
+          5 [ID: i] 
+        4 [Int Constant: 0] 
+      3 WhileStructure
+        4 WhileHead
+          5 LESSTHAN
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 IdentifierAccess
+              7 [ID: n] 
+        4 Attribution
+          5 Target
+            6 [ID: i] 
+          5 ADD
+            6 IdentifierAccess
+              7 [ID: i] 
+            6 [Int Constant: 1] 
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: eq] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 AND
+          5 Negate
+            6 THIS
+              7 SELECTOR
+                8 [ID: lt] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: a] 
+                  9 IdentifierAccess
+                    10 [ID: b] 
+          5 Negate
+            6 THIS
+              7 SELECTOR
+                8 [ID: lt] 
+                8 SelectorArguments
+                  9 IdentifierAccess
+                    10 [ID: b] 
+                  9 IdentifierAccess
+                    10 [ID: a] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: ne] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 Negate
+          5 THIS
+            6 SELECTOR
+              7 [ID: eq] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: a] 
+                8 IdentifierAccess
+                  9 [ID: b] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: lt] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 LESSTHAN
+          5 IdentifierAccess
+            6 [ID: a] 
+          5 IdentifierAccess
+            6 [ID: b] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: le] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 Negate
+          5 AND
+            6 Negate
+              7 THIS
+                8 SELECTOR
+                  9 [ID: lt] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: a] 
+                    10 IdentifierAccess
+                      11 [ID: b] 
+            6 Negate
+              7 THIS
+                8 SELECTOR
+                  9 [ID: eq] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: a] 
+                    10 IdentifierAccess
+                      11 [ID: b] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: gt] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 Negate
+          5 THIS
+            6 SELECTOR
+              7 [ID: le] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: a] 
+                8 IdentifierAccess
+                  9 [ID: b] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: boolean] 
+        4 [ID: ge] 
+        4 [Type: int] 
+        4 [ID: a] 
+        4 [Type: int] 
+        4 [ID: b] 
+      3 RETURN
+        4 Negate
+          5 AND
+            6 Negate
+              7 THIS
+                8 SELECTOR
+                  9 [ID: gt] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: a] 
+                    10 IdentifierAccess
+                      11 [ID: b] 
+            6 Negate
+              7 THIS
+                8 SELECTOR
+                  9 [ID: eq] 
+                  9 SelectorArguments
+                    10 IdentifierAccess
+                      11 [ID: a] 
+                    10 IdentifierAccess
+                      11 [ID: b] 
+Analyzer starting on ./test/fixtures/public/Life.jmm
+
+"import""static"<ID>"."<ID>"("")""void"
+
+"import""static"<ID>"."<ID>"("")""void"
+
+"import""static"<ID>"."<ID>"(""int"")""void"
+
+"import""static"<ID>"."<ID>"(""int"")""void"
+WARNING, variable already available in scope: "field"
+Node Depth 0
+Node Symbol: 
+Symbol 
+	Name root
+	Type 5
+	Signature null
+
+Nmb children 2
+Symbol Table: 
+Symbol 
+	Name io
+	Type 0
+	Signature io
+
+Symbol 
+	Name io
+	Type 1
+	Signature io()
+
+Symbol 
+	Name Life
+	Type 1
+	Signature Life()
+
+Symbol 
+	Name Life
+	Type 0
+	Signature Life
+
+Structures (0): 
+
+
+
+Node Depth 1
+Node Symbol: 
+Symbol 
+	Name io
+	Type 0
+	Signature io
+
+Nmb children 3
+Symbol Table: 
+Symbol 
+	Name read
+	Type 2
+	Signature read()
+
+Symbol 
+	Name println
+	Type 2
+	Signature println()
+
+Symbol 
+	Name print
+	Type 2
+	Signature print(int)
+
+Structures (0): 
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name read
+	Type 2
+	Signature read()
+
+Nmb children 0
+Symbol Table: 
+Structures (0): 
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name println
+	Type 2
+	Signature println()
+
+Nmb children 0
+Symbol Table: 
+Structures (0): 
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name print
+	Type 2
+	Signature print(int)
+
+Nmb children 0
+Symbol Table: 
+Structures (0): 
+
+
+
+Node Depth 1
+Node Symbol: 
+Symbol 
+	Name Life
+	Type 0
+	Signature Life
+
+Nmb children 16
+Symbol Table: 
+Symbol 
+	Name UNDERPOP_LIM
+	Type 4
+	Signature UNDERPOP_LIM
+
+Symbol 
+	Name OVERPOP_LIM
+	Type 4
+	Signature OVERPOP_LIM
+
+Symbol 
+	Name REPRODUCE_NUM
+	Type 4
+	Signature REPRODUCE_NUM
+
+Symbol 
+	Name LOOPS_PER_MS
+	Type 4
+	Signature LOOPS_PER_MS
+
+Symbol 
+	Name xMax
+	Type 4
+	Signature xMax
+
+Symbol 
+	Name yMax
+	Type 4
+	Signature yMax
+
+Symbol 
+	Name field
+	Type 4
+	Signature field
+
+Symbol 
+	Name main
+	Type 2
+	Signature main(String[])
+
+Symbol 
+	Name init
+	Type 1
+	Signature init()
+
+Symbol 
+	Name field
+	Type 1
+	Signature field(int[])
+
+Symbol 
+	Name update
+	Type 1
+	Signature update()
+
+Symbol 
+	Name printField
+	Type 1
+	Signature printField()
+
+Symbol 
+	Name trIdx
+	Type 1
+	Signature trIdx(int,int)
+
+Symbol 
+	Name cartIdx
+	Type 1
+	Signature cartIdx(int)
+
+Symbol 
+	Name getNeighborCoords
+	Type 1
+	Signature getNeighborCoords(int)
+
+Symbol 
+	Name getLiveNeighborN
+	Type 1
+	Signature getLiveNeighborN(int)
+
+Symbol 
+	Name busyWait
+	Type 1
+	Signature busyWait(int)
+
+Symbol 
+	Name eq
+	Type 1
+	Signature eq(int,int)
+
+Symbol 
+	Name ne
+	Type 1
+	Signature ne(int,int)
+
+Symbol 
+	Name lt
+	Type 1
+	Signature lt(int,int)
+
+Symbol 
+	Name le
+	Type 1
+	Signature le(int,int)
+
+Symbol 
+	Name gt
+	Type 1
+	Signature gt(int,int)
+
+Symbol 
+	Name ge
+	Type 1
+	Signature ge(int,int)
+
+Structures (0): 
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name main
+	Type 2
+	Signature main(String[])
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name l
+	Type 4
+	Signature l
+
+Symbol 
+	Name unused
+	Type 4
+	Signature unused
+
+Structures (3): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol l return type Life
+    Structure Type: Expression: NEW METHOD ACCESS Symbol Life() return type Life
+     Structure Type: Expression: WARNING Unset expression return type Life
+   Structure Type: Expression: ACCESS Symbol l return type boolean
+    Structure Type: Expression: METHOD ACCESS Symbol init() return type boolean
+   Structure Type: WHILE
+    Structure Type: Expression: CONSTANT return type boolean
+    Structure Type: Expression: ACCESS Symbol l return type boolean
+     Structure Type: Expression: METHOD ACCESS Symbol printField() return type boolean
+    Structure Type: Expression: ACCESS Symbol l return type boolean
+     Structure Type: Expression: METHOD ACCESS Symbol update() return type boolean
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol unused return type int
+     Structure Type: Expression: ACCESS Symbol io return type int
+      Structure Type: Expression: METHOD ACCESS Symbol read() return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name init
+	Type 1
+	Signature init()
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name lineLenA
+	Type 4
+	Signature lineLenA
+
+Symbol 
+	Name lineLen
+	Type 4
+	Signature lineLen
+
+Structures (10): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol lineLenA return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol UNDERPOP_LIM return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol OVERPOP_LIM return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol REPRODUCE_NUM return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol LOOPS_PER_MS return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int[]
+    Structure Type: Expression: ACCESS return type int[]
+     Structure Type: Expression: METHOD ACCESS Symbol field(int[]) return type int[]
+      Structure Type: Expression: ACCESS Symbol lineLenA return type int[]
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol lineLen return type int
+    Structure Type: Expression: ACCESS Symbol lineLenA return type int
+     Structure Type: Expression: ARRAY ACCESS return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol xMax return type int
+    Structure Type: Expression: SUB return type int
+     Structure Type: Expression: ACCESS Symbol lineLen return type int
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol yMax return type int
+    Structure Type: Expression: SUB return type int
+     Structure Type: Expression: DIV return type int
+      Structure Type: Expression: ACCESS Symbol field return type int
+       Structure Type: Expression: LENGTH return type int
+      Structure Type: Expression: ACCESS Symbol lineLen return type int
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: CONSTANT return type boolean
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name field
+	Type 1
+	Signature field(int[])
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name lineLen
+	Type 4
+	Signature lineLen
+
+Symbol 
+	Name field
+	Type 4
+	Signature field
+
+Structures (103): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol lineLen return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: RETURN Symbol field return type int[]
+    Structure Type: Expression: ACCESS Symbol field return type int[]
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name update
+	Type 1
+	Signature update()
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name i
+	Type 4
+	Signature i
+
+Symbol 
+	Name cur
+	Type 4
+	Signature cur
+
+Symbol 
+	Name neighN
+	Type 4
+	Signature neighN
+
+Symbol 
+	Name goodPop
+	Type 4
+	Signature goodPop
+
+Symbol 
+	Name newField
+	Type 4
+	Signature newField
+
+Structures (5): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol newField return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: ACCESS Symbol field return type int
+      Structure Type: Expression: LENGTH return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: WHILE
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ACCESS Symbol field return type int
+      Structure Type: Expression: LENGTH return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol cur return type int
+     Structure Type: Expression: ACCESS Symbol field return type int
+      Structure Type: Expression: ARRAY ACCESS return type int
+       Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol neighN return type int
+     Structure Type: Expression: ACCESS return type int
+      Structure Type: Expression: METHOD ACCESS Symbol getLiveNeighborN(int) return type int
+       Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: IF
+     Structure Type: Expression: NEGATE return type boolean
+      Structure Type: Expression: LESSTHAN return type boolean
+       Structure Type: Expression: ACCESS Symbol cur return type int
+       Structure Type: Expression: CONSTANT return type int
+    IF BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol goodPop return type boolean
+      Structure Type: Expression: AND return type boolean
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol ge(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol neighN return type int
+         Structure Type: Expression: ACCESS Symbol UNDERPOP_LIM return type int
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol le(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol neighN return type int
+         Structure Type: Expression: ACCESS Symbol OVERPOP_LIM return type int
+     Structure Type: IF
+      Structure Type: Expression: NEGATE return type boolean
+       Structure Type: Expression: ACCESS Symbol goodPop return type boolean
+     IF BODY
+      Structure Type: ATTRIBUTION
+       Structure Type: Expression: ACCESS Symbol newField return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: ACCESS Symbol i return type int
+       Structure Type: Expression: CONSTANT return type int
+     ELSE BODY
+      Structure Type: ATTRIBUTION
+       Structure Type: Expression: ACCESS Symbol newField return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: ACCESS Symbol i return type int
+       Structure Type: Expression: ACCESS Symbol field return type int
+        Structure Type: Expression: ARRAY ACCESS return type int
+         Structure Type: Expression: ACCESS Symbol i return type int
+    ELSE BODY
+     Structure Type: IF
+      Structure Type: Expression: ACCESS return type boolean
+       Structure Type: Expression: METHOD ACCESS Symbol eq(int,int) return type boolean
+        Structure Type: Expression: ACCESS Symbol neighN return type int
+        Structure Type: Expression: ACCESS Symbol REPRODUCE_NUM return type int
+     IF BODY
+      Structure Type: ATTRIBUTION
+       Structure Type: Expression: ACCESS Symbol newField return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: ACCESS Symbol i return type int
+       Structure Type: Expression: CONSTANT return type int
+     ELSE BODY
+      Structure Type: ATTRIBUTION
+       Structure Type: Expression: ACCESS Symbol newField return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: ACCESS Symbol i return type int
+       Structure Type: Expression: ACCESS Symbol field return type int
+        Structure Type: Expression: ARRAY ACCESS return type int
+         Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol i return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol field return type int[]
+    Structure Type: Expression: ACCESS Symbol newField return type int[]
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: CONSTANT return type boolean
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name printField
+	Type 1
+	Signature printField()
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name i
+	Type 4
+	Signature i
+
+Symbol 
+	Name j
+	Type 4
+	Signature j
+
+Structures (6): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol j return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: WHILE
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ACCESS Symbol field return type int
+      Structure Type: Expression: LENGTH return type int
+    Structure Type: IF
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol gt(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol j return type int
+       Structure Type: Expression: ACCESS Symbol xMax return type int
+    IF BODY
+     Structure Type: Expression: ACCESS Symbol io return type void
+      Structure Type: Expression: METHOD ACCESS Symbol println() return type void
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol j return type int
+      Structure Type: Expression: CONSTANT return type int
+    ELSE BODY
+    Structure Type: Expression: ACCESS Symbol io return type void
+     Structure Type: Expression: METHOD ACCESS Symbol print(int) return type void
+      Structure Type: Expression: ACCESS Symbol field return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol i return type int
+      Structure Type: Expression: CONSTANT return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol j return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol j return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: ACCESS Symbol io return type void
+    Structure Type: Expression: METHOD ACCESS Symbol println() return type void
+   Structure Type: Expression: ACCESS Symbol io return type void
+    Structure Type: Expression: METHOD ACCESS Symbol println() return type void
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: CONSTANT return type boolean
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name trIdx
+	Type 1
+	Signature trIdx(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name x
+	Type 4
+	Signature x
+
+Symbol 
+	Name y
+	Type 4
+	Signature y
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type int
+    Structure Type: Expression: ADD return type int
+     Structure Type: Expression: ACCESS Symbol x return type int
+     Structure Type: Expression: MUL return type int
+      Structure Type: Expression: ADD return type int
+       Structure Type: Expression: ACCESS Symbol xMax return type int
+       Structure Type: Expression: CONSTANT return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name cartIdx
+	Type 1
+	Signature cartIdx(int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name absPos
+	Type 4
+	Signature absPos
+
+Symbol 
+	Name x
+	Type 4
+	Signature x
+
+Symbol 
+	Name y
+	Type 4
+	Signature y
+
+Symbol 
+	Name xLim
+	Type 4
+	Signature xLim
+
+Symbol 
+	Name ret
+	Type 4
+	Signature ret
+
+Structures (7): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol xLim return type int
+    Structure Type: Expression: ADD return type int
+     Structure Type: Expression: ACCESS Symbol xMax return type int
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol y return type int
+    Structure Type: Expression: DIV return type int
+     Structure Type: Expression: ACCESS Symbol absPos return type int
+     Structure Type: Expression: ACCESS Symbol xLim return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol x return type int
+    Structure Type: Expression: SUB return type int
+     Structure Type: Expression: ACCESS Symbol absPos return type int
+     Structure Type: Expression: MUL return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+      Structure Type: Expression: ACCESS Symbol xLim return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS Symbol x return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS Symbol y return type int
+   Structure Type: Expression: RETURN Symbol ret return type int[]
+    Structure Type: Expression: ACCESS Symbol ret return type int[]
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name getNeighborCoords
+	Type 1
+	Signature getNeighborCoords(int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name absPos
+	Type 4
+	Signature absPos
+
+Symbol 
+	Name x
+	Type 4
+	Signature x
+
+Symbol 
+	Name y
+	Type 4
+	Signature y
+
+Symbol 
+	Name upX
+	Type 4
+	Signature upX
+
+Symbol 
+	Name upY
+	Type 4
+	Signature upY
+
+Symbol 
+	Name downX
+	Type 4
+	Signature downX
+
+Symbol 
+	Name downY
+	Type 4
+	Signature downY
+
+Symbol 
+	Name cart
+	Type 4
+	Signature cart
+
+Symbol 
+	Name ret
+	Type 4
+	Signature ret
+
+Structures (15): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol cart return type int[]
+    Structure Type: Expression: ACCESS return type int[]
+     Structure Type: Expression: METHOD ACCESS Symbol cartIdx(int) return type int[]
+      Structure Type: Expression: ACCESS Symbol absPos return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol x return type int
+    Structure Type: Expression: ACCESS Symbol cart return type int
+     Structure Type: Expression: ARRAY ACCESS return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol y return type int
+    Structure Type: Expression: ACCESS Symbol cart return type int
+     Structure Type: Expression: ARRAY ACCESS return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: IF
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol x return type int
+     Structure Type: Expression: ACCESS Symbol xMax return type int
+   IF BODY
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol downX return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol x return type int
+      Structure Type: Expression: CONSTANT return type int
+    Structure Type: IF
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol gt(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol x return type int
+       Structure Type: Expression: CONSTANT return type int
+    IF BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol upX return type int
+      Structure Type: Expression: SUB return type int
+       Structure Type: Expression: ACCESS Symbol x return type int
+       Structure Type: Expression: CONSTANT return type int
+    ELSE BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol upX return type int
+      Structure Type: Expression: ACCESS Symbol xMax return type int
+   ELSE BODY
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol downX return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol upX return type int
+     Structure Type: Expression: SUB return type int
+      Structure Type: Expression: ACCESS Symbol x return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: IF
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol y return type int
+     Structure Type: Expression: ACCESS Symbol yMax return type int
+   IF BODY
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol downY return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+      Structure Type: Expression: CONSTANT return type int
+    Structure Type: IF
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol gt(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol y return type int
+       Structure Type: Expression: CONSTANT return type int
+    IF BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol upY return type int
+      Structure Type: Expression: SUB return type int
+       Structure Type: Expression: ACCESS Symbol y return type int
+       Structure Type: Expression: CONSTANT return type int
+    ELSE BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol upY return type int
+      Structure Type: Expression: ACCESS Symbol yMax return type int
+   ELSE BODY
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol downY return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol upY return type int
+     Structure Type: Expression: SUB return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol x return type int
+      Structure Type: Expression: ACCESS Symbol upY return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol upX return type int
+      Structure Type: Expression: ACCESS Symbol upY return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol upX return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol upX return type int
+      Structure Type: Expression: ACCESS Symbol downY return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol x return type int
+      Structure Type: Expression: ACCESS Symbol downY return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol downX return type int
+      Structure Type: Expression: ACCESS Symbol downY return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol downX return type int
+      Structure Type: Expression: ACCESS Symbol y return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: ACCESS return type int
+     Structure Type: Expression: METHOD ACCESS Symbol trIdx(int,int) return type int
+      Structure Type: Expression: ACCESS Symbol downX return type int
+      Structure Type: Expression: ACCESS Symbol upY return type int
+   Structure Type: Expression: RETURN Symbol ret return type int[]
+    Structure Type: Expression: ACCESS Symbol ret return type int[]
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name getLiveNeighborN
+	Type 1
+	Signature getLiveNeighborN(int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name absPos
+	Type 4
+	Signature absPos
+
+Symbol 
+	Name neigh
+	Type 4
+	Signature neigh
+
+Symbol 
+	Name i
+	Type 4
+	Signature i
+
+Symbol 
+	Name ret
+	Type 4
+	Signature ret
+
+Structures (5): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol ret return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol neigh return type int[]
+    Structure Type: Expression: ACCESS return type int[]
+     Structure Type: Expression: METHOD ACCESS Symbol getNeighborCoords(int) return type int[]
+      Structure Type: Expression: ACCESS Symbol absPos return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: WHILE
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ACCESS Symbol neigh return type int
+      Structure Type: Expression: LENGTH return type int
+    Structure Type: IF
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol ne(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol field return type int
+        Structure Type: Expression: ARRAY ACCESS return type int
+         Structure Type: Expression: ACCESS Symbol neigh return type int
+          Structure Type: Expression: ARRAY ACCESS return type int
+           Structure Type: Expression: ACCESS Symbol i return type int
+       Structure Type: Expression: CONSTANT return type int
+    IF BODY
+     Structure Type: ATTRIBUTION
+      Structure Type: Expression: ACCESS Symbol ret return type int
+      Structure Type: Expression: ADD return type int
+       Structure Type: Expression: ACCESS Symbol ret return type int
+       Structure Type: Expression: CONSTANT return type int
+    ELSE BODY
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol i return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: RETURN Symbol ret return type int
+    Structure Type: Expression: ACCESS Symbol ret return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name busyWait
+	Type 1
+	Signature busyWait(int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name ms
+	Type 4
+	Signature ms
+
+Symbol 
+	Name i
+	Type 4
+	Signature i
+
+Symbol 
+	Name n
+	Type 4
+	Signature n
+
+Structures (4): 
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol n return type int
+    Structure Type: Expression: MUL return type int
+     Structure Type: Expression: ACCESS Symbol ms return type int
+     Structure Type: Expression: ACCESS Symbol LOOPS_PER_MS return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: WHILE
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ACCESS Symbol n return type int
+    Structure Type: ATTRIBUTION
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol i return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: CONSTANT return type boolean
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name eq
+	Type 1
+	Signature eq(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: AND return type boolean
+     Structure Type: Expression: NEGATE return type boolean
+      Structure Type: Expression: ACCESS return type boolean
+       Structure Type: Expression: METHOD ACCESS Symbol lt(int,int) return type boolean
+        Structure Type: Expression: ACCESS Symbol a return type int
+        Structure Type: Expression: ACCESS Symbol b return type int
+     Structure Type: Expression: NEGATE return type boolean
+      Structure Type: Expression: ACCESS return type boolean
+       Structure Type: Expression: METHOD ACCESS Symbol lt(int,int) return type boolean
+        Structure Type: Expression: ACCESS Symbol b return type int
+        Structure Type: Expression: ACCESS Symbol a return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name ne
+	Type 1
+	Signature ne(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: NEGATE return type boolean
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol eq(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol a return type int
+       Structure Type: Expression: ACCESS Symbol b return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name lt
+	Type 1
+	Signature lt(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: LESSTHAN return type boolean
+     Structure Type: Expression: ACCESS Symbol a return type int
+     Structure Type: Expression: ACCESS Symbol b return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name le
+	Type 1
+	Signature le(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: NEGATE return type boolean
+     Structure Type: Expression: AND return type boolean
+      Structure Type: Expression: NEGATE return type boolean
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol lt(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol a return type int
+         Structure Type: Expression: ACCESS Symbol b return type int
+      Structure Type: Expression: NEGATE return type boolean
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol eq(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol a return type int
+         Structure Type: Expression: ACCESS Symbol b return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name gt
+	Type 1
+	Signature gt(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: NEGATE return type boolean
+     Structure Type: Expression: ACCESS return type boolean
+      Structure Type: Expression: METHOD ACCESS Symbol le(int,int) return type boolean
+       Structure Type: Expression: ACCESS Symbol a return type int
+       Structure Type: Expression: ACCESS Symbol b return type int
+
+
+
+Node Depth 2
+Node Symbol: 
+Symbol 
+	Name ge
+	Type 1
+	Signature ge(int,int)
+
+Nmb children 0
+Symbol Table: 
+Symbol 
+	Name a
+	Type 4
+	Signature a
+
+Symbol 
+	Name b
+	Type 4
+	Signature b
+
+Structures (1): 
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: NEGATE return type boolean
+     Structure Type: Expression: AND return type boolean
+      Structure Type: Expression: NEGATE return type boolean
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol gt(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol a return type int
+         Structure Type: Expression: ACCESS Symbol b return type int
+      Structure Type: Expression: NEGATE return type boolean
+       Structure Type: Expression: ACCESS return type boolean
+        Structure Type: Expression: METHOD ACCESS Symbol eq(int,int) return type boolean
+         Structure Type: Expression: ACCESS Symbol a return type int
+         Structure Type: Expression: ACCESS Symbol b return type int
+
+
+
+
+.class public Life
+.super java/lang/Object
+.field public f_UNDERPOP_LIM I
+.field public f_OVERPOP_LIM I
+.field public f_REPRODUCE_NUM I
+.field public f_LOOPS_PER_MS I
+.field public f_xMax I
+.field public f_yMax I
+.field public f_field [I
+.method <init>()V
+aload_0
+invokenonvirtual java/lang/Object/<init>()V
+return
+.end method
+; read/io
+; println/io
+; print/io
+.method public static main([Ljava/lang/String;)V
+.limit stack 99
+.limit locals 5
+; 10
+new Life
+dup
+invokespecial Life/<init>()V
+astore_2		;l
+
+
+; 8
+aload_2		;l
+; 10
+;>>init
+invokevirtual Life/init()I
+
+
+while_0:
+; 7
+iconst_1
+ifeq else_0
+
+; 8
+aload_2		;l
+; 10
+;>>printField
+invokevirtual Life/printField()I
+
+; 8
+aload_2		;l
+; 10
+;>>update
+invokevirtual Life/update()I
+
+; 8
+invokestatic io/read()I
+istore_3		;unused
+
+goto while_0
+else_0:
+
+
+return
+.end method
+.method public init()I
+.limit stack 99
+.limit locals 3
+; 12
+; 7
+iconst_1
+newarray int
+astore_1		;lineLenA
+
+
+aload_0
+; 7
+iconst_2
+putfield Life/f_UNDERPOP_LIM I
+
+
+aload_0
+; 7
+iconst_3
+putfield Life/f_OVERPOP_LIM I
+
+
+aload_0
+; 7
+iconst_3
+putfield Life/f_REPRODUCE_NUM I
+
+
+aload_0
+; 7
+ldc 225000
+putfield Life/f_LOOPS_PER_MS I
+
+
+aload_0
+; 8
+putfield Life/f_field [I
+
+
+; 8
+aload_1		;lineLenA
+; 7
+iconst_0
+iaload
+istore_2		;lineLen
+
+
+aload_0
+; 6
+; 8
+iload_2		;lineLen
+; 7
+iconst_1
+isub
+putfield Life/f_xMax I
+
+
+aload_0
+; 6
+; 4
+; 8
+aload_0
+getfield Life/f_field [I
+arraylength
+; 8
+iload_2		;lineLen
+idiv
+; 7
+iconst_1
+isub
+putfield Life/f_yMax I
+
+
+; 13
+; 7
+iconst_1
+ireturn
+
+
+.end method
+.method public field([I)[I
+.limit stack 99
+.limit locals 4
+; 12
+; 7
+bipush 100
+newarray int
+astore_2		;field
+
+
+aload_1		;lineLen
+; 7
+iconst_0
+; 7
+bipush 10
+iastore
+
+
+aload_2		;field
+; 7
+iconst_0
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+iconst_1
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+iconst_2
+; 7
+iconst_1
+iastore
+
+
+aload_2		;field
+; 7
+iconst_3
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+iconst_4
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+iconst_5
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 6
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 7
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 8
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 9
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 10
+; 7
+iconst_1
+iastore
+
+
+aload_2		;field
+; 7
+bipush 11
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 12
+; 7
+iconst_1
+iastore
+
+
+aload_2		;field
+; 7
+bipush 13
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 14
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 15
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 16
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 17
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 18
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 19
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 20
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 21
+; 7
+iconst_1
+iastore
+
+
+aload_2		;field
+; 7
+bipush 22
+; 7
+iconst_1
+iastore
+
+
+aload_2		;field
+; 7
+bipush 23
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 24
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 25
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 26
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 27
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 28
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 29
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 30
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 31
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 32
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 33
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 34
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 35
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 36
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 37
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 38
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 39
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 40
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 41
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 42
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 43
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 44
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 45
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 46
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 47
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 48
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 49
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 50
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 51
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 52
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 53
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 54
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 55
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 56
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 57
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 58
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 59
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 60
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 61
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 62
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 63
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 64
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 65
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 66
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 67
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 68
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 69
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 70
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 71
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 72
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 73
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 74
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 75
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 76
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 77
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 78
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 79
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 80
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 81
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 82
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 83
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 84
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 85
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 86
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 87
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 88
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 89
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 90
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 91
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 92
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 93
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 94
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 95
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 96
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 97
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 98
+; 7
+iconst_0
+iastore
+
+
+aload_2		;field
+; 7
+bipush 99
+; 7
+iconst_0
+iastore
+
+
+; 13
+; 8
+aload_2		;field
+areturn
+
+
+.end method
+.method public update()I
+.limit stack 99
+.limit locals 6
+; 12
+; 8
+aload_0
+getfield Life/f_field [I
+arraylength
+newarray int
+astore_1		;newField
+
+
+; 7
+iconst_0
+istore_2		;i
+
+
+while_1:
+; 8
+iload_2		;i
+; 8
+aload_0
+getfield Life/f_field [I
+arraylength
+if_icmpge else_1
+
+; 8
+aload_0
+getfield Life/f_field [I
+; 8
+iload_2		;i
+iaload
+istore_3		;cur
+
+; 8
+istore 4		;neighN
+
+; 0
+; 1
+; 8
+iload_3		;cur
+; 7
+iconst_1
+if_icmpgt is_false_3
+iconst_1
+goto end_cond3
+is_false_3:
+iconst_0
+end_cond3:
+ineg
+ifeq else_2
+; 2
+; 8
+; 8
+iand
+astore 5		;goodPop
+
+; 0
+; 8
+aload 5		;goodPop
+ineg
+ifeq else_4
+aload_1		;newField
+; 8
+iload_2		;i
+; 7
+iconst_0
+iastore
+
+goto endif_4
+else_4:
+; 1
+aload_1		;newField
+; 8
+iload_2		;i
+; 8
+aload_0
+getfield Life/f_field [I
+; 8
+iload_2		;i
+iaload
+iastore
+
+endif_4:
+
+goto endif_2
+else_2:
+; 1
+; 8
+ifeq else_5
+aload_1		;newField
+; 8
+iload_2		;i
+; 7
+iconst_1
+iastore
+
+goto endif_5
+else_5:
+; 1
+aload_1		;newField
+; 8
+iload_2		;i
+; 8
+aload_0
+getfield Life/f_field [I
+; 8
+iload_2		;i
+iaload
+iastore
+
+endif_5:
+
+endif_2:
+
+; 3
+; 8
+iload_2		;i
+; 7
+iconst_1
+iadd
+istore_2		;i
+
+goto while_1
+else_1:
+
+
+aload_0
+; 8
+aload_1		;newField
+putfield Life/f_field [I
+
+
+; 13
+; 7
+iconst_1
+ireturn
+
+
+.end method
+.method public printField()I
+.limit stack 99
+.limit locals 3
+; 7
+iconst_0
+istore_1		;i
+
+
+; 7
+iconst_0
+istore_2		;j
+
+
+while_6:
+; 8
+iload_1		;i
+; 8
+aload_0
+getfield Life/f_field [I
+arraylength
+if_icmpge else_6
+
+; 8
+ifeq else_7
+; 8
+invokestatic io/println()V
+
+; 7
+iconst_0
+istore_2		;j
+
+goto endif_7
+else_7:
+; 0
+endif_7:
+
+; 8
+; 8
+aload_0
+getfield Life/f_field [I
+; 8
+iload_1		;i
+iaload
+invokestatic io/print(I)V
+
+; 3
+; 8
+iload_1		;i
+; 7
+iconst_1
+iadd
+istore_1		;i
+
+; 3
+; 8
+iload_2		;j
+; 7
+iconst_1
+iadd
+istore_2		;j
+
+goto while_6
+else_6:
+
+
+; 8
+invokestatic io/println()V
+
+
+; 8
+invokestatic io/println()V
+
+
+; 13
+; 7
+iconst_1
+ireturn
+
+
+.end method
+.method public trIdx(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 3
+; 8
+iload_1		;x
+; 5
+; 3
+; 8
+aload_0
+getfield Life/f_xMax I
+; 7
+iconst_1
+iadd
+; 8
+iload_2		;y
+imul
+iadd
+ireturn
+
+
+.end method
+.method public cartIdx(I)[I
+.limit stack 99
+.limit locals 7
+; 3
+; 8
+aload_0
+getfield Life/f_xMax I
+; 7
+iconst_1
+iadd
+istore_2		;xLim
+
+
+; 4
+; 8
+iload_1		;absPos
+; 8
+iload_2		;xLim
+idiv
+istore_3		;y
+
+
+; 6
+; 8
+iload_1		;absPos
+; 5
+; 8
+iload_3		;y
+; 8
+iload_2		;xLim
+imul
+isub
+istore 4		;x
+
+
+; 12
+; 7
+iconst_2
+newarray int
+astore 5		;ret
+
+
+aload 5		;ret
+; 7
+iconst_0
+; 8
+iload 4		;x
+iastore
+
+
+aload 5		;ret
+; 7
+iconst_1
+; 8
+iload_3		;y
+iastore
+
+
+; 13
+; 8
+aload 5		;ret
+areturn
+
+
+.end method
+.method public getNeighborCoords(I)[I
+.limit stack 99
+.limit locals 11
+; 8
+astore_2		;cart
+
+
+; 8
+aload_2		;cart
+; 7
+iconst_0
+iaload
+istore_3		;x
+
+
+; 8
+aload_2		;cart
+; 7
+iconst_1
+iaload
+istore 4		;y
+
+
+; 8
+iload_3		;x
+; 8
+aload_0
+getfield Life/f_xMax I
+if_icmpge else_8
+; 3
+; 8
+iload_3		;x
+; 7
+iconst_1
+iadd
+istore 5		;downX
+
+; 8
+ifeq else_9
+; 6
+; 8
+iload_3		;x
+; 7
+iconst_1
+isub
+istore 6		;upX
+
+goto endif_9
+else_9:
+; 1
+; 8
+aload_0
+getfield Life/f_xMax I
+istore 6		;upX
+
+endif_9:
+
+goto endif_8
+else_8:
+; 2
+; 7
+iconst_0
+istore 5		;downX
+
+; 6
+; 8
+iload_3		;x
+; 7
+iconst_1
+isub
+istore 6		;upX
+
+endif_8:
+
+
+; 8
+iload 4		;y
+; 8
+aload_0
+getfield Life/f_yMax I
+if_icmpge else_10
+; 3
+; 8
+iload 4		;y
+; 7
+iconst_1
+iadd
+istore 7		;downY
+
+; 8
+ifeq else_11
+; 6
+; 8
+iload 4		;y
+; 7
+iconst_1
+isub
+istore 8		;upY
+
+goto endif_11
+else_11:
+; 1
+; 8
+aload_0
+getfield Life/f_yMax I
+istore 8		;upY
+
+endif_11:
+
+goto endif_10
+else_10:
+; 2
+; 7
+iconst_0
+istore 7		;downY
+
+; 6
+; 8
+iload 4		;y
+; 7
+iconst_1
+isub
+istore 8		;upY
+
+endif_10:
+
+
+; 12
+; 7
+bipush 8
+newarray int
+astore 9		;ret
+
+
+aload 9		;ret
+; 7
+iconst_0
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+iconst_1
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+iconst_2
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+iconst_3
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+iconst_4
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+iconst_5
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+bipush 6
+; 8
+iastore
+
+
+aload 9		;ret
+; 7
+bipush 7
+; 8
+iastore
+
+
+; 13
+; 8
+aload 9		;ret
+areturn
+
+
+.end method
+.method public getLiveNeighborN(I)I
+.limit stack 99
+.limit locals 6
+; 7
+iconst_0
+istore_2		;ret
+
+
+; 8
+astore_3		;neigh
+
+
+; 7
+iconst_0
+istore 4		;i
+
+
+while_12:
+; 8
+iload 4		;i
+; 8
+aload_3		;neigh
+arraylength
+if_icmpge else_12
+
+; 8
+ifeq else_13
+; 3
+; 8
+iload_2		;ret
+; 7
+iconst_1
+iadd
+istore_2		;ret
+
+goto endif_13
+else_13:
+; 0
+endif_13:
+
+; 3
+; 8
+iload 4		;i
+; 7
+iconst_1
+iadd
+istore 4		;i
+
+goto while_12
+else_12:
+
+
+; 13
+; 8
+iload_2		;ret
+ireturn
+
+
+.end method
+.method public busyWait(I)I
+.limit stack 99
+.limit locals 5
+; 5
+; 8
+iload_1		;ms
+; 8
+aload_0
+getfield Life/f_LOOPS_PER_MS I
+imul
+istore_2		;n
+
+
+; 7
+iconst_0
+istore_3		;i
+
+
+while_14:
+; 8
+iload_3		;i
+; 8
+iload_2		;n
+if_icmpge else_14
+
+; 3
+; 8
+iload_3		;i
+; 7
+iconst_1
+iadd
+istore_3		;i
+
+goto while_14
+else_14:
+
+
+; 13
+; 7
+iconst_1
+ireturn
+
+
+.end method
+.method public eq(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 2
+; 0
+; 8
+ineg
+; 0
+; 8
+ineg
+iand
+ireturn
+
+
+.end method
+.method public ne(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 0
+; 8
+ineg
+ireturn
+
+
+.end method
+.method public lt(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 1
+; 8
+iload_1		;a
+; 8
+iload_2		;b
+if_icmpgt is_false_15
+iconst_1
+goto end_cond15
+is_false_15:
+iconst_0
+end_cond15:
+ireturn
+
+
+.end method
+.method public le(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 0
+; 2
+; 0
+; 8
+ineg
+; 0
+; 8
+ineg
+iand
+ineg
+ireturn
+
+
+.end method
+.method public gt(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 0
+; 8
+ineg
+ireturn
+
+
+.end method
+.method public ge(II)I
+.limit stack 99
+.limit locals 5
+; 13
+; 0
+; 2
+; 0
+; 8
+ineg
+; 0
+; 8
+ineg
+iand
+ineg
+ireturn
+
+
+.end method
+
 COMPILATION SUCCESSFUL

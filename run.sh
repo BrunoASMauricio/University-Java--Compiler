@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 
+
 if [ -d "./run_tmp" ]; then
     rm -f ./run_tmp/*
 else
@@ -27,9 +28,10 @@ if [ ! -f $1 ]; then
     exit -1
 fi
 
+JavaC=/usr/lib/jvm/java-13-openjdk/bin/java
 
 #Build compiler
-gradle build &> ./run_tmp/gradle_output
+gradle --info build &> ./run_tmp/gradle_output
 if [ $2 -gt 0 ]; then
     cat ./run_tmp/gradle_output
 fi
@@ -40,18 +42,21 @@ fi
 echo GRADLE SUCCESSFUL
 
 #Run compiler
-java -jar comp2020-2i.jar $1 -v=$3 &> ./run_tmp/compiler_output
+$JavaC -jar comp2020-2i.jar $1 -v=$3 &> ./run_tmp/compiler_output
 cat ./run_tmp/compiler_output
 if ! cat ./run_tmp/compiler_output | grep -q 'COMPILATION SUCCESSFUL'; then
     echo COMPILATION FAILED
     exit -1
 fi
+mv JasminOut.j ./run_tmp
 
 #Run Jasmin
-java -jar jasmin.jar JasminOut.j &> ./run_tmp/jasmin_output
+$JavaC -jar jasmin.jar ./run_tmp/JasminOut.j &> ./run_tmp/jasmin_output
+#java -jar jasmin.jar ./run_tmp/JasminOut.j &> ./run_tmp/jasmin_output
 if [ $2 -gt 1 ]; then
     cat ./run_tmp/jasmin_output
 fi
+
 if ! cat ./run_tmp/jasmin_output | grep -q 'Generated:'; then
     echo JASMIN FAILED
     exit -1
@@ -61,9 +66,14 @@ echo JASMIN SUCCESSFUL
 Class="$(cat ./run_tmp/jasmin_output | sed 's/Generated: //' | sed 's/.class//')"
 echo Class: $Class
 
-java $Class &> ./run_tmp/java_output
+cp -r build/resources/test/fixtures/libs/compiled/* ./run_tmp
+mv $Class.class ./run_tmp
 
-if ! cat ./run_tmp/java_output | grep -q 'Exception in thread'; then
+cd run_tmp
+
+$JavaC $Class &> ./java_output
+
+if ! cat ./java_output | grep -q 'Exception in thread' && ! cat ./java_output | grep -q 'Error'; then
     echo JAVA SUCCESSFUL
 else
     echo JAVA FAILED
