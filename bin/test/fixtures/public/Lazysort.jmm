@@ -25,25 +25,14 @@ class Lazysort extends Quicksort {
     }
 
     public boolean quicksort(int[] L) {
-        /*
         boolean lazy;
-        if ( MathUtils.random(0, 5) < 4 ) {
+        if ( false) {
             this.beLazy(L);
-            lazy = true;
         }
         else {
-            lazy = false;
         }
         
-        if ( lazy ) {
-            lazy = !lazy;
-        }
-        else {
-            lazy = this.quicksort(L, 0, L.length - 1);
-        }
         
-        return lazy;
-        */
         return true;
     }
     

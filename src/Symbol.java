@@ -14,7 +14,7 @@ public class Symbol {
     public String name;                 //Symbol name
     public int type;                    //Symbol type
     public Object data;                 //The specified types' data
-
+    //Code generation vars
     public String Jfielddsignature;                //Data required by Jasmin
     public int Jvarindex;               //Jasmin symbol index in stack
     public String Jvartype;               //field or local variable

@@ -80,7 +80,7 @@ else
 fi
 
 if [ $2 -gt 2 ]; then
-    cat ./run_tmp/java_output
+    cat ./java_output
 fi
 
 

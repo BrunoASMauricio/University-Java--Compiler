@@ -261,6 +261,7 @@ public class Analyzer {
         TreeNode helper_scope;
         Boolean static_access;
         String str_helper;
+        SimpleNode helper_node;
 
         node_children = expr_node.jjtGetNumChildren();
         i = 0;
@@ -358,25 +359,28 @@ public class Analyzer {
                     break;
                 }
                 expr.is_new = true;
+
+                if(node_children <= 1){
+                    throw new RuntimeException("Not supposed to hacve these "+node_children);
+                }
             //The next two cases start from a scope and follow it (down, unless they come across another identifier access)
             case JMMParserTreeConstants.JJTIDENTIFIERACCESS:
                 //Get and use "remote"/higher scope/symbol
-                i = 1;
                 if(node_children > 1){
                     //Started with a method (normally, being static or non static depends on the current method, but since methods must be non static, assume non static)
-                    if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS || expr_node.id == JMMParserTreeConstants.JJTNEW){
+                    //The new clause extends downwards for non array new
+                    if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS){
                         expr.expression_type = Expression.t_method_access;
                         
-                        String signature = getMethodSignature(expr_node, current_scope, null);
+                        String signature = getMethodSignature(expr_node, current_scope, expr);
                         
                         expr.used_symbol = getByIdentifier(signature, current_scope, expr_node);
                         helper_al = ((ArrayList<String>)(expr.used_symbol.data));
-                        //System.out.println("method returns "+expr.used_symbol.name+" "+helper_al.get(helper_al.size()-1));
-                        helper_expression = new Expression(current_scope);
-                        helper_expression.return_type = helper_al.get(helper_al.size()-1);
-                        i++;
                         
-                        expr.addChild(helper_expression);
+                        //helper_expression = new Expression(current_scope);
+                        //helper_expression.return_type = helper_al.get(helper_al.size()-1);
+                        
+                        //expr.addChild(helper_expression);
 
                         static_access = false;
                         //See if the return type is a class, or not
@@ -391,7 +395,10 @@ public class Analyzer {
                             }
                         }
 
+                        expr.return_type = helper_al.get(helper_al.size()-1);
+                        i = 2;
                     }else{
+                        i = 1;
                         expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
                         //Type of access
                         if(expr.used_symbol.type == Symbol.t_class){
@@ -418,22 +425,24 @@ public class Analyzer {
                             return null;
                         }
                     }
-                    
-                    while(i < node_children){
-                        helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, static_access, current_scope);
-                        expr.addChild(helper_expression);
-                        static_access = false;
-                        if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
-                            helper_scope = null;
-                        }else{
-                            helper_scope = (TreeNode)current_scope.getSymbol(helper_expression.return_type);
-                            if(helper_scope.type != Symbol.t_class){
-                                Analyzer.throwException(new RuntimeException("Undefined beahaviour "+helper_expression.return_type));
-                                return null;
+                    //If there are more nodes to be parsed, it must be SELECTOR nodes
+                    if(i < node_children){
+                        while(i < node_children){
+                            helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, static_access, current_scope);
+                            expr.addChild(helper_expression);
+                            static_access = false;
+                            if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
+                                helper_scope = null;
+                            }else{
+                                helper_scope = (TreeNode)current_scope.getSymbol(helper_expression.return_type);
+                                if(helper_scope.type != Symbol.t_class){
+                                    Analyzer.throwException(new RuntimeException("Undefined beahaviour "+helper_expression.return_type));
+                                    return null;
+                                }
                             }
                         }
+                        expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                     }
-                    expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                 }else{
                     //Variable access
                     expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);

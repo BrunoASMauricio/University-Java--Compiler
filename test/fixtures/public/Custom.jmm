@@ -1,7 +1,69 @@
 import static io.println(int);
 
 class Simple {
+	/*
+	public boolean agua(int a){
+		io.println(4);
+		return true;
+	}
+	public boolean terra(int a){
+		int b;
+
+		io.println(3);
+		b = 4;
+		agua(b);
+		return true;
+	}
+	public boolean ar(){
+		io.println(2);
+		this.terra(2);
+		return true;
+	}
+	*/
+	
+    public boolean eq(int a, int b) {
+		return (!this.lt(a, b) && !this.lt(b, a));
+	}
+	
+	public boolean ne(int a, int b) {
+		return (!this.eq(a, b));
+	}
+	
+    public boolean lt(int a, int b) {
+		return (a < b);
+    }
+    
+    public boolean le(int a, int b) {
+		return !(!this.lt(a, b) && !this.eq(a, b));
+    }
+    
+    public boolean gt(int a, int b) {
+		return (!this.le(a, b));
+    }
+    
+    public boolean ge(int a, int b) {
+		return !(!this.gt(a, b) && !this.eq(a, b));
+	}
+    
 	public static void main(String[] args) {
+		Simple k;
+		int a;
+		int b;
+
+		k = new Simple();
+		//k.ar();
+
+		a = 2;
+		b = 2;
+
+		if(k.eq(a,b)){
+			io.println(1);
+		}else{
+			io.println(0);
+		}
+
+
+		/*
 		int a;
 		int b;
 		int c;
@@ -20,13 +82,16 @@ class Simple {
 		a = 30;
 		b = 0-10;
 		c = d.add(a,b);
+		*/
 	}
+	/*
     public int add(int a, int b){
 		return a+b;
 	}
 	public Simple rec(Simple x){
 		return x;
 	}
+	*/
 }
 /*
 ; <- this is a comment in jasmin
