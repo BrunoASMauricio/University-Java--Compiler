@@ -136,7 +136,10 @@ Parser starting
                 8 [ID: c] 
       3 DIRECTEXPRESSION
         4 IdentifierAccess
-          5 [ID: b] 
+          5 [ID: a] 
+          5 SELECTOR
+            6 [ID: getQuicky] 
+            6 SelectorArguments
           5 SELECTOR
             6 [ID: printL] 
             6 SelectorArguments
@@ -278,7 +281,10 @@ Parser starting
                 8 [ID: c] 
       3 DIRECTEXPRESSION
         4 IdentifierAccess
-          5 [ID: b] 
+          5 [ID: a] 
+          5 SELECTOR
+            6 [ID: getQuicky] 
+            6 SelectorArguments
           5 SELECTOR
             6 [ID: printL] 
             6 SelectorArguments
@@ -548,7 +554,8 @@ Structures (9):
    Structure Type: Expression: ACCESS Symbol a return type boolean
     Structure Type: Expression: METHOD ACCESS Symbol printL(int[]) return type boolean
      Structure Type: Expression: ACCESS Symbol c return type int[]
-   Structure Type: Expression: ACCESS Symbol b return type boolean
+   Structure Type: Expression: ACCESS Symbol a return type boolean
+    Structure Type: Expression: METHOD ACCESS Symbol getQuicky() return type Quicksort
     Structure Type: Expression: METHOD ACCESS Symbol printL(int[]) return type boolean
      Structure Type: Expression: ACCESS Symbol c return type int[]
 
@@ -694,7 +701,9 @@ pop
 
 
 ; 8
-aload_3		;b
+aload_2		;a
+; 10
+invokevirtual Scoped/getQuicky()LQuicksort;
 ; 8
 aload 4		;c
 ; 10

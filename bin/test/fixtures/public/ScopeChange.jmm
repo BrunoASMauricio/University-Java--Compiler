@@ -14,7 +14,7 @@ class Scoped {
     }
     public Quicksort getQuicky(){
         Quicksort b;
-        
+
         b = new Quicksort();
         
         return b;
@@ -34,7 +34,7 @@ class Scoped {
         c[3] = 1;
 
         a.printL(c);
-        b.printL(c);
+        a.getQuicky().printL(c);
     }
 }
 /*
