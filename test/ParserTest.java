@@ -52,11 +52,6 @@ public class ParserTest {
             fail();
         }
     }
-    /*
-    
-    ONLY SEMANTIC FAILURES DONT ASSERT CORRECTLY, EVERYTHING BELLOW WAS COMMENTED TO ALLOW CORRECT COMPILATION (A SINGLE ASSERT FAILURE STOPS THE PROCESS)
-    
-    */
     
     @Test
     public void testLife() {

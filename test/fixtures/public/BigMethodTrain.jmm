@@ -1,0 +1,20 @@
+import static io.println(int);
+/*
+This test serves to verify that the compiler is properly
+parsing the method calls and their arguments
+*/
+class Train {
+    int sz;
+    public Train Tchoo(int b){
+        Train a;
+        a = new Train();
+        io.println(b);
+        return a;
+    }
+	public static void main(String[] args) {
+        Train a;
+        a = new Train();
+        a = a.Tchoo(1).Tchoo(2).Tchoo(3).Tchoo(4).Tchoo(5);
+    }
+
+}

@@ -19,6 +19,14 @@ class Scoped {
     }
     public Quicksort getQuicky(){
         Quicksort b;
+        int[] c;
+        
+        c = new int[4];
+        c[0] = 5;
+        c[1] = 6;
+        c[2] = 6;
+        c[3] = 5;
+        printL(c);
 
         b = new Quicksort();
         

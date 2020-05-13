@@ -8,7 +8,7 @@ public class Jasminify {
     public static String out;
     public static int control_index;
     public static int fields_index;
-    public static boolean this_loaded;
+    public static boolean ref_loaded;
     public static void writeln(String in){
         out += in + "\n";
     }
@@ -41,7 +41,6 @@ public class Jasminify {
             default:
                 //throw new RuntimeException("Dunno how to jasminfy "+type);
                 ret+=/*"Dunno how to jasminfy "+*/"L"+type+";";
-                //rec([LSimple;)[LSimple;
         }
         return ret;
     }
@@ -76,19 +75,15 @@ public class Jasminify {
                 Jasminify.writeln("ireturn");
                 break;
             case "int[]":
-                //Jasminify.writeln("INT[]");
                 Jasminify.writeln("areturn");
                 break;
             case "String":
-                //Jasminify.writeln("STR");
                 Jasminify.writeln("areturn");
                 break;
             case "String[]":
-                //Jasminify.writeln("STR[]");
                 Jasminify.writeln("areturn");
                 break;
             case "boolean":
-                //Jasminify.writeln("BOOL");
                 Jasminify.writeln("ireturn");
                 break;
             case "void":
@@ -239,7 +234,7 @@ public class Jasminify {
                     //Jasminify.writeln("astore ");
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
                     for(Structure another_method : expr.nested_structures){
-                        Jasminify.this_loaded = true;
+                        Jasminify.ref_loaded = true;
                         //helper0 = (Expression)expr.nested_structures.get(0);
                         helper0 = (Expression)another_method;
                         for(Structure str : helper0.nested_structures){
@@ -254,9 +249,10 @@ public class Jasminify {
                     //IF IN INSTANCE AND DIRECT ACCESS
 
                     if(!expr.is_new && expr.expression_type == Expression.t_method_access && expr.used_symbol.type == Symbol.t_method_instance){
-                        if(!Jasminify.this_loaded){
+                        Jasminify.writeln("; "+Jasminify.ref_loaded);
+                        if(!Jasminify.ref_loaded){
                             Jasminify.writeln("aload_0");
-                            Jasminify.this_loaded = false;
+                            Jasminify.ref_loaded = false;
                         }
                         /*for(Structure str : expr.nested_structures){
                             writeExpression((Expression)str, method);
@@ -286,9 +282,9 @@ public class Jasminify {
                     
                         if(expr.used_symbol == null){                   //It's a this access
                             Jasminify.writeln("aload_0");
-                            Jasminify.this_loaded = true;
+                            Jasminify.ref_loaded = true;
                         }else if(expr.used_symbol.type != Symbol.t_class){    //Instances and arrays need to be loaded
-                            Jasminify.this_loaded = true;
+                            Jasminify.ref_loaded = true;
                             Jasminify.loadVariable(expr);
                         }
                         
@@ -402,8 +398,27 @@ public class Jasminify {
             case Structure.t_expression:
                 //Little hack to find directly called methods
                 helper0 = (Expression)struct;
-                
-                Jasminify.writeExpression((Expression)struct, method);
+                if(helper0.expression_type == Expression.t_method_access){
+                    if(!helper0.is_new && helper0.used_symbol.type == Symbol.t_method_instance){
+                        Jasminify.writeln("; "+Jasminify.ref_loaded);
+                        if(!Jasminify.ref_loaded){
+                            Jasminify.writeln("aload_0");
+                            Jasminify.ref_loaded = false;
+                        }
+                        for(Structure str : helper0.nested_structures){
+                            writeExpression((Expression)str, method);
+                        }
+                    }
+                    //IF IN STATIC
+                    if(helper0.used_symbol.type == Symbol.t_method_instance){
+                        Jasminify.writeln("invokevirtual "+((JasminMethod)helper0.used_symbol).jasmin_class+"/"+((JasminMethod)helper0.used_symbol).jasmin_signature);
+                    }else{
+                        Jasminify.writeln("invokestatic "+((JasminMethod)helper0.used_symbol).jasmin_class+"/"+((JasminMethod)helper0.used_symbol).jasmin_signature);
+                    }
+                }else{
+                    Jasminify.writeExpression(helper0, method);
+                }
+                //Take care of unused returns
                 if((helper0.expression_type == Expression.t_method_access || helper0.expression_type == Expression.t_access) && !helper0.return_type.equals("void")){
                     Jasminify.writeln("pop");
                 }
@@ -444,6 +459,8 @@ public class Jasminify {
                 break;
             default:
         }
+        //Sometimes, references may be loaded but not used by a method, so we need to reset ref_loaded
+        Jasminify.ref_loaded = false;
         Jasminify.writeln("");
     }
 
