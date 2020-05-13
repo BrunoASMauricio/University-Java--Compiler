@@ -40,7 +40,7 @@ public class Jasminify {
                 break;
             default:
                 //throw new RuntimeException("Dunno how to jasminfy "+type);
-                ret+=/*"Dunno how to jasminfy "+*/"[L"+type+";";
+                ret+=/*"Dunno how to jasminfy "+*/"L"+type+";";
                 //rec([LSimple;)[LSimple;
         }
         return ret;
@@ -429,13 +429,17 @@ public class Jasminify {
                 for(Structure if_bd : struct.nested_structures.get(1).nested_structures){
                     Jasminify.writeStructure(if_bd, method);
                 }
-                Jasminify.writeln("goto endif_"+jump_ind);
-
-                Jasminify.writeln("else_"+jump_ind+":");
-                Jasminify.writeln("; "+struct.nested_structures.get(2).nested_structures.size());
-                for(Structure if_bd : struct.nested_structures.get(2).nested_structures){
-                    Jasminify.writeStructure(if_bd, method);
+                //Mandatory but empty else optimization
+                if(struct.nested_structures.get(2).nested_structures.size() == 0){
+                    Jasminify.writeln("else_"+jump_ind+":");
+                }else{
+                    Jasminify.writeln("goto endif_"+jump_ind);
+                    Jasminify.writeln("else_"+jump_ind+":");
+                    for(Structure if_bd : struct.nested_structures.get(2).nested_structures){
+                        Jasminify.writeStructure(if_bd, method);
+                    }
                 }
+                
                 Jasminify.writeln("endif_"+jump_ind+":");
                 break;
             default:

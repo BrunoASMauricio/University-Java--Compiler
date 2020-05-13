@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+#read -r input
+#printf "${input//%/%%}\n"
 
 if [ -d "./run_tmp" ]; then
     rm -f ./run_tmp/*
@@ -7,8 +9,8 @@ else
     mkdir ./run_tmp
 fi
 
-if [ $# != 3 ]; then
-    echo "Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY"
+if [ $# != 4 ]; then
+    echo "Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE"
     echo "FILE_PATH: the file to compile"
     echo "BASH_VERBOSITY: this scripts verbosity"
     echo "0: No output"
@@ -20,6 +22,7 @@ if [ $# != 3 ]; then
     echo "1: Only syntactic output"
     echo "2: Semantic output and higher"
     echo "3: jasmin output and higher"
+    echo "INTERACTIVE: == 1 to allow direct Java program interaction (no java output logging)"
     exit -1
 fi
 
@@ -71,17 +74,22 @@ mv $Class.class ./run_tmp
 
 cd run_tmp
 
-$JavaC $Class &> ./java_output
-
-if ! cat ./java_output | grep -q 'Exception in thread' && ! cat ./java_output | grep -q 'Error'; then
-    echo JAVA SUCCESSFUL
+if [ $4 -eq 1 ]; then
+    $JavaC $Class
 else
-    echo JAVA FAILED
+    $JavaC $Class &> ./java_output
+    if ! cat ./java_output | grep -q 'Exception in thread' && ! cat ./java_output | grep -q 'Error'; then
+        echo JAVA SUCCESSFUL
+    else
+        echo JAVA FAILED
+    fi
+
+    if [ $2 -gt 2 ]; then
+        cat ./java_output
+    fi
 fi
 
-if [ $2 -gt 2 ]; then
-    cat ./java_output
-fi
+
 
 
 #gradle build

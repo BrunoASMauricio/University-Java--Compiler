@@ -1,408 +1,290 @@
-Parsing file ./test/fixtures/public/MonteCarloPi.jmm
+Parsing file ./test/fixtures/public/ScopeChange.jmm
 Parser starting
 0 START
   1 ImportDeclaration
     2 STATIC
-    2 [ID: MathUtils] 
-    2 [ID: random] 
+    2 [ID: io] 
+    2 [ID: println] 
     2 IMPORTMETHOD
     2 [Type: int] 
-    2 [Type: int] 
-    2 RETURN
-      3 [Type: int] 
   1 ImportDeclaration
-    2 STATIC
-    2 [ID: ioPlus] 
-    2 [ID: requestNumber] 
+    2 [ID: Quicksort] 
+    2 [ID: printL] 
     2 IMPORTMETHOD
+    2 [Type: int[]] 
     2 RETURN
-      3 [Type: int] 
-  1 ImportDeclaration
-    2 STATIC
-    2 [ID: ioPlus] 
-    2 [ID: printResult] 
-    2 IMPORTMETHOD
-    2 [Type: int] 
+      3 [Type: boolean] 
   1 ClassDeclaration
     2 ClassHead
-      3 [ID: MonteCarloPi] 
+      3 [ID: Scoped] 
     2 NormalMethod
       3 MethodHead
         4 [Type: boolean] 
-        4 [ID: performSingleEstimate] 
+        4 [ID: printL] 
+        4 [Type: int[]] 
+        4 [ID: a] 
       3 VarDeclaration
         4 [Type: int] 
-        4 [ID: rand1] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: rand2] 
-      3 VarDeclaration
-        4 [Type: boolean] 
-        4 [ID: in_circle] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: squareDist] 
+        4 [ID: i] 
       3 Attribution
         4 Target
-          5 [ID: rand1] 
-        4 IdentifierAccess
-          5 [ID: MathUtils] 
-          5 SELECTOR
-            6 [ID: random] 
-            6 SelectorArguments
-              7 SUB
-                8 [Int Constant: 0] 
-                8 [Int Constant: 100] 
-              7 [Int Constant: 100] 
-      3 Attribution
-        4 Target
-          5 [ID: rand2] 
-        4 IdentifierAccess
-          5 [ID: MathUtils] 
-          5 SELECTOR
-            6 [ID: random] 
-            6 SelectorArguments
-              7 SUB
-                8 [Int Constant: 0] 
-                8 [Int Constant: 100] 
-              7 [Int Constant: 100] 
-      3 Attribution
-        4 Target
-          5 [ID: squareDist] 
-        4 DIV
-          5 ADD
-            6 MUL
-              7 IdentifierAccess
-                8 [ID: rand1] 
-              7 IdentifierAccess
-                8 [ID: rand1] 
-            6 MUL
-              7 IdentifierAccess
-                8 [ID: rand2] 
-              7 IdentifierAccess
-                8 [ID: rand2] 
-          5 [Int Constant: 100] 
-      3 IfStructure
-        4 IfHead
-          5 LESSTHAN
-            6 IdentifierAccess
-              7 [ID: squareDist] 
-            6 [Int Constant: 100] 
-        4 Attribution
-          5 Target
-            6 [ID: in_circle] 
-          5 [Boolean Constant: true] 
-        4 ElseStructure
-          5 Attribution
-            6 Target
-              7 [ID: in_circle] 
-            6 [Boolean Constant: false] 
-      3 RETURN
-        4 IdentifierAccess
-          5 [ID: in_circle] 
-    2 NormalMethod
-      3 MethodHead
-        4 [Type: int] 
-        4 [ID: estimatePi100] 
-        4 [Type: int] 
-        4 [ID: n] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: samples_in_circle] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: samples_so_far] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: pi_estimate] 
-      3 Attribution
-        4 Target
-          5 [ID: samples_so_far] 
-        4 [Int Constant: 0] 
-      3 Attribution
-        4 Target
-          5 [ID: samples_in_circle] 
+          5 [ID: i] 
         4 [Int Constant: 0] 
       3 WhileStructure
         4 WhileHead
           5 LESSTHAN
             6 IdentifierAccess
-              7 [ID: samples_so_far] 
-            6 IdentifierAccess
-              7 [ID: n] 
-        4 IfStructure
-          5 IfHead
-            6 THIS
-              7 SELECTOR
-                8 [ID: performSingleEstimate] 
-                8 SelectorArguments
-          5 Attribution
-            6 Target
-              7 [ID: samples_in_circle] 
-            6 ADD
-              7 IdentifierAccess
-                8 [ID: samples_in_circle] 
-              7 [Int Constant: 1] 
-          5 ElseStructure
+              7 [ID: i] 
+            6 [Int Constant: 4] 
+        4 DIRECTEXPRESSION
+          5 IdentifierAccess
+            6 [ID: io] 
+            6 SELECTOR
+              7 [ID: println] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: a] 
+                  9 ArrayAccess
+                    10 SUB
+                      11 [Int Constant: 3] 
+                      11 IdentifierAccess
+                        12 [ID: i] 
         4 Attribution
           5 Target
-            6 [ID: samples_so_far] 
+            6 [ID: i] 
           5 ADD
             6 IdentifierAccess
-              7 [ID: samples_so_far] 
+              7 [ID: i] 
             6 [Int Constant: 1] 
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: Quicksort] 
+        4 [ID: getQuicky] 
+      3 VarDeclaration
+        4 [Type: Quicksort] 
+        4 [ID: b] 
       3 Attribution
         4 Target
-          5 [ID: pi_estimate] 
-        4 DIV
-          5 MUL
-            6 [Int Constant: 400] 
-            6 IdentifierAccess
-              7 [ID: samples_in_circle] 
-          5 IdentifierAccess
-            6 [ID: n] 
+          5 [ID: b] 
+        4 New
+          5 [ID: Quicksort] 
+          5 SelectorArguments
       3 RETURN
         4 IdentifierAccess
-          5 [ID: pi_estimate] 
+          5 [ID: b] 
     2 MainMethod
       3 [ID: args] 
       3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: pi_estimate_times_100] 
+        4 [Type: Scoped] 
+        4 [ID: a] 
       3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: num_samples] 
+        4 [Type: Quicksort] 
+        4 [ID: b] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: c] 
       3 Attribution
         4 Target
-          5 [ID: num_samples] 
-        4 IdentifierAccess
-          5 [ID: ioPlus] 
-          5 SELECTOR
-            6 [ID: requestNumber] 
-            6 SelectorArguments
-      3 Attribution
-        4 Target
-          5 [ID: pi_estimate_times_100] 
+          5 [ID: a] 
         4 New
-          5 [ID: MonteCarloPi] 
+          5 [ID: Scoped] 
           5 SelectorArguments
-          5 SELECTOR
-            6 [ID: estimatePi100] 
-            6 SelectorArguments
-              7 IdentifierAccess
-                8 [ID: num_samples] 
+      3 Attribution
+        4 Target
+          5 [ID: b] 
+        4 New
+          5 [ID: Quicksort] 
+          5 SelectorArguments
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+        4 New
+          5 [Int Constant: 4] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 [Int Constant: 4] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+        4 [Int Constant: 3] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 2] 
+        4 [Int Constant: 2] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 3] 
+        4 [Int Constant: 1] 
       3 DIRECTEXPRESSION
         4 IdentifierAccess
-          5 [ID: ioPlus] 
+          5 [ID: a] 
           5 SELECTOR
-            6 [ID: printResult] 
+            6 [ID: printL] 
             6 SelectorArguments
               7 IdentifierAccess
-                8 [ID: pi_estimate_times_100] 
+                8 [ID: c] 
+      3 DIRECTEXPRESSION
+        4 IdentifierAccess
+          5 [ID: b] 
+          5 SELECTOR
+            6 [ID: printL] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: c] 
 0 START
   1 ImportDeclaration
     2 STATIC
-    2 [ID: MathUtils] 
-    2 [ID: random] 
+    2 [ID: io] 
+    2 [ID: println] 
     2 IMPORTMETHOD
     2 [Type: int] 
-    2 [Type: int] 
-    2 RETURN
-      3 [Type: int] 
   1 ImportDeclaration
-    2 STATIC
-    2 [ID: ioPlus] 
-    2 [ID: requestNumber] 
+    2 [ID: Quicksort] 
+    2 [ID: printL] 
     2 IMPORTMETHOD
+    2 [Type: int[]] 
     2 RETURN
-      3 [Type: int] 
-  1 ImportDeclaration
-    2 STATIC
-    2 [ID: ioPlus] 
-    2 [ID: printResult] 
-    2 IMPORTMETHOD
-    2 [Type: int] 
+      3 [Type: boolean] 
   1 ClassDeclaration
     2 ClassHead
-      3 [ID: MonteCarloPi] 
+      3 [ID: Scoped] 
     2 NormalMethod
       3 MethodHead
         4 [Type: boolean] 
-        4 [ID: performSingleEstimate] 
+        4 [ID: printL] 
+        4 [Type: int[]] 
+        4 [ID: a] 
       3 VarDeclaration
         4 [Type: int] 
-        4 [ID: rand1] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: rand2] 
-      3 VarDeclaration
-        4 [Type: boolean] 
-        4 [ID: in_circle] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: squareDist] 
+        4 [ID: i] 
       3 Attribution
         4 Target
-          5 [ID: rand1] 
-        4 IdentifierAccess
-          5 [ID: MathUtils] 
-          5 SELECTOR
-            6 [ID: random] 
-            6 SelectorArguments
-              7 SUB
-                8 [Int Constant: 0] 
-                8 [Int Constant: 100] 
-              7 [Int Constant: 100] 
-      3 Attribution
-        4 Target
-          5 [ID: rand2] 
-        4 IdentifierAccess
-          5 [ID: MathUtils] 
-          5 SELECTOR
-            6 [ID: random] 
-            6 SelectorArguments
-              7 SUB
-                8 [Int Constant: 0] 
-                8 [Int Constant: 100] 
-              7 [Int Constant: 100] 
-      3 Attribution
-        4 Target
-          5 [ID: squareDist] 
-        4 DIV
-          5 ADD
-            6 MUL
-              7 IdentifierAccess
-                8 [ID: rand1] 
-              7 IdentifierAccess
-                8 [ID: rand1] 
-            6 MUL
-              7 IdentifierAccess
-                8 [ID: rand2] 
-              7 IdentifierAccess
-                8 [ID: rand2] 
-          5 [Int Constant: 100] 
-      3 IfStructure
-        4 IfHead
-          5 LESSTHAN
-            6 IdentifierAccess
-              7 [ID: squareDist] 
-            6 [Int Constant: 100] 
-        4 Attribution
-          5 Target
-            6 [ID: in_circle] 
-          5 [Boolean Constant: true] 
-        4 ElseStructure
-          5 Attribution
-            6 Target
-              7 [ID: in_circle] 
-            6 [Boolean Constant: false] 
-      3 RETURN
-        4 IdentifierAccess
-          5 [ID: in_circle] 
-    2 NormalMethod
-      3 MethodHead
-        4 [Type: int] 
-        4 [ID: estimatePi100] 
-        4 [Type: int] 
-        4 [ID: n] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: samples_in_circle] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: samples_so_far] 
-      3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: pi_estimate] 
-      3 Attribution
-        4 Target
-          5 [ID: samples_so_far] 
-        4 [Int Constant: 0] 
-      3 Attribution
-        4 Target
-          5 [ID: samples_in_circle] 
+          5 [ID: i] 
         4 [Int Constant: 0] 
       3 WhileStructure
         4 WhileHead
           5 LESSTHAN
             6 IdentifierAccess
-              7 [ID: samples_so_far] 
-            6 IdentifierAccess
-              7 [ID: n] 
-        4 IfStructure
-          5 IfHead
-            6 THIS
-              7 SELECTOR
-                8 [ID: performSingleEstimate] 
-                8 SelectorArguments
-          5 Attribution
-            6 Target
-              7 [ID: samples_in_circle] 
-            6 ADD
-              7 IdentifierAccess
-                8 [ID: samples_in_circle] 
-              7 [Int Constant: 1] 
-          5 ElseStructure
+              7 [ID: i] 
+            6 [Int Constant: 4] 
+        4 DIRECTEXPRESSION
+          5 IdentifierAccess
+            6 [ID: io] 
+            6 SELECTOR
+              7 [ID: println] 
+              7 SelectorArguments
+                8 IdentifierAccess
+                  9 [ID: a] 
+                  9 ArrayAccess
+                    10 SUB
+                      11 [Int Constant: 3] 
+                      11 IdentifierAccess
+                        12 [ID: i] 
         4 Attribution
           5 Target
-            6 [ID: samples_so_far] 
+            6 [ID: i] 
           5 ADD
             6 IdentifierAccess
-              7 [ID: samples_so_far] 
+              7 [ID: i] 
             6 [Int Constant: 1] 
+      3 RETURN
+        4 [Boolean Constant: true] 
+    2 NormalMethod
+      3 MethodHead
+        4 [Type: Quicksort] 
+        4 [ID: getQuicky] 
+      3 VarDeclaration
+        4 [Type: Quicksort] 
+        4 [ID: b] 
       3 Attribution
         4 Target
-          5 [ID: pi_estimate] 
-        4 DIV
-          5 MUL
-            6 [Int Constant: 400] 
-            6 IdentifierAccess
-              7 [ID: samples_in_circle] 
-          5 IdentifierAccess
-            6 [ID: n] 
+          5 [ID: b] 
+        4 New
+          5 [ID: Quicksort] 
+          5 SelectorArguments
       3 RETURN
         4 IdentifierAccess
-          5 [ID: pi_estimate] 
+          5 [ID: b] 
     2 MainMethod
       3 [ID: args] 
       3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: pi_estimate_times_100] 
+        4 [Type: Scoped] 
+        4 [ID: a] 
       3 VarDeclaration
-        4 [Type: int] 
-        4 [ID: num_samples] 
+        4 [Type: Quicksort] 
+        4 [ID: b] 
+      3 VarDeclaration
+        4 [Type: int[]] 
+        4 [ID: c] 
       3 Attribution
         4 Target
-          5 [ID: num_samples] 
-        4 IdentifierAccess
-          5 [ID: ioPlus] 
-          5 SELECTOR
-            6 [ID: requestNumber] 
-            6 SelectorArguments
-      3 Attribution
-        4 Target
-          5 [ID: pi_estimate_times_100] 
+          5 [ID: a] 
         4 New
-          5 [ID: MonteCarloPi] 
+          5 [ID: Scoped] 
           5 SelectorArguments
-          5 SELECTOR
-            6 [ID: estimatePi100] 
-            6 SelectorArguments
-              7 IdentifierAccess
-                8 [ID: num_samples] 
+      3 Attribution
+        4 Target
+          5 [ID: b] 
+        4 New
+          5 [ID: Quicksort] 
+          5 SelectorArguments
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+        4 New
+          5 [Int Constant: 4] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 0] 
+        4 [Int Constant: 4] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 1] 
+        4 [Int Constant: 3] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 2] 
+        4 [Int Constant: 2] 
+      3 Attribution
+        4 Target
+          5 [ID: c] 
+          5 ArrayAccess
+            6 [Int Constant: 3] 
+        4 [Int Constant: 1] 
       3 DIRECTEXPRESSION
         4 IdentifierAccess
-          5 [ID: ioPlus] 
+          5 [ID: a] 
           5 SELECTOR
-            6 [ID: printResult] 
+            6 [ID: printL] 
             6 SelectorArguments
               7 IdentifierAccess
-                8 [ID: pi_estimate_times_100] 
-Analyzer starting on ./test/fixtures/public/MonteCarloPi.jmm
-
-"import""static"<ID>"."<ID>"(""int"")""void"
-
-"import""static"<ID>"."<ID>"(""int"")""void"
+                8 [ID: c] 
+      3 DIRECTEXPRESSION
+        4 IdentifierAccess
+          5 [ID: b] 
+          5 SELECTOR
+            6 [ID: printL] 
+            6 SelectorArguments
+              7 IdentifierAccess
+                8 [ID: c] 
+Analyzer starting on ./test/fixtures/public/ScopeChange.jmm
 Node Depth 0
 Node Symbol: 
 Symbol 
@@ -413,34 +295,34 @@ Symbol
 Nmb children 3
 Symbol Table: 
 Symbol 
-	Name MathUtils
+	Name io
 	Type 0
-	Signature MathUtils
+	Signature io
 
 Symbol 
-	Name MathUtils
+	Name io
 	Type 1
-	Signature MathUtils()
+	Signature io()
 
 Symbol 
-	Name ioPlus
+	Name Quicksort
 	Type 0
-	Signature ioPlus
+	Signature Quicksort
 
 Symbol 
-	Name ioPlus
+	Name Quicksort
 	Type 1
-	Signature ioPlus()
+	Signature Quicksort()
 
 Symbol 
-	Name MonteCarloPi
+	Name Scoped
 	Type 1
-	Signature MonteCarloPi()
+	Signature Scoped()
 
 Symbol 
-	Name MonteCarloPi
+	Name Scoped
 	Type 0
-	Signature MonteCarloPi
+	Signature Scoped
 
 Structures (0): 
 
@@ -449,16 +331,16 @@ Structures (0):
 Node Depth 1
 Node Symbol: 
 Symbol 
-	Name MathUtils
+	Name io
 	Type 0
-	Signature MathUtils
+	Signature io
 
 Nmb children 1
 Symbol Table: 
 Symbol 
-	Name random
+	Name println
 	Type 2
-	Signature random(int,int)
+	Signature println(int)
 
 Structures (0): 
 
@@ -467,9 +349,9 @@ Structures (0):
 Node Depth 2
 Node Symbol: 
 Symbol 
-	Name random
+	Name println
 	Type 2
-	Signature random(int,int)
+	Signature println(int)
 
 Nmb children 0
 Symbol Table: 
@@ -480,21 +362,16 @@ Structures (0):
 Node Depth 1
 Node Symbol: 
 Symbol 
-	Name ioPlus
+	Name Quicksort
 	Type 0
-	Signature ioPlus
+	Signature Quicksort
 
-Nmb children 2
+Nmb children 1
 Symbol Table: 
 Symbol 
-	Name requestNumber
-	Type 2
-	Signature requestNumber()
-
-Symbol 
-	Name printResult
-	Type 2
-	Signature printResult(int)
+	Name printL
+	Type 1
+	Signature printL(int[])
 
 Structures (0): 
 
@@ -503,22 +380,9 @@ Structures (0):
 Node Depth 2
 Node Symbol: 
 Symbol 
-	Name requestNumber
-	Type 2
-	Signature requestNumber()
-
-Nmb children 0
-Symbol Table: 
-Structures (0): 
-
-
-
-Node Depth 2
-Node Symbol: 
-Symbol 
-	Name printResult
-	Type 2
-	Signature printResult(int)
+	Name printL
+	Type 1
+	Signature printL(int[])
 
 Nmb children 0
 Symbol Table: 
@@ -529,21 +393,21 @@ Structures (0):
 Node Depth 1
 Node Symbol: 
 Symbol 
-	Name MonteCarloPi
+	Name Scoped
 	Type 0
-	Signature MonteCarloPi
+	Signature Scoped
 
 Nmb children 3
 Symbol Table: 
 Symbol 
-	Name performSingleEstimate
+	Name printL
 	Type 1
-	Signature performSingleEstimate()
+	Signature printL(int[])
 
 Symbol 
-	Name estimatePi100
+	Name getQuicky
 	Type 1
-	Signature estimatePi100(int)
+	Signature getQuicky()
 
 Symbol 
 	Name main
@@ -557,141 +421,67 @@ Structures (0):
 Node Depth 2
 Node Symbol: 
 Symbol 
-	Name performSingleEstimate
+	Name printL
 	Type 1
-	Signature performSingleEstimate()
+	Signature printL(int[])
 
 Nmb children 0
 Symbol Table: 
 Symbol 
-	Name rand1
+	Name a
 	Type 4
-	Signature rand1
+	Signature a
 
 Symbol 
-	Name rand2
+	Name i
 	Type 4
-	Signature rand2
+	Signature i
 
-Symbol 
-	Name in_circle
-	Type 4
-	Signature in_circle
-
-Symbol 
-	Name squareDist
-	Type 4
-	Signature squareDist
-
-Structures (5): 
+Structures (3): 
    Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol rand1 return type int
-    Structure Type: Expression: ACCESS Symbol MathUtils return type int
-     Structure Type: Expression: METHOD ACCESS Symbol random(int,int) return type int
-      Structure Type: Expression: SUB return type int
-       Structure Type: Expression: CONSTANT return type int
-       Structure Type: Expression: CONSTANT return type int
-      Structure Type: Expression: CONSTANT return type int
-   Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol rand2 return type int
-    Structure Type: Expression: ACCESS Symbol MathUtils return type int
-     Structure Type: Expression: METHOD ACCESS Symbol random(int,int) return type int
-      Structure Type: Expression: SUB return type int
-       Structure Type: Expression: CONSTANT return type int
-       Structure Type: Expression: CONSTANT return type int
-      Structure Type: Expression: CONSTANT return type int
-   Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol squareDist return type int
-    Structure Type: Expression: DIV return type int
-     Structure Type: Expression: ADD return type int
-      Structure Type: Expression: MUL return type int
-       Structure Type: Expression: ACCESS Symbol rand1 return type int
-       Structure Type: Expression: ACCESS Symbol rand1 return type int
-      Structure Type: Expression: MUL return type int
-       Structure Type: Expression: ACCESS Symbol rand2 return type int
-       Structure Type: Expression: ACCESS Symbol rand2 return type int
-     Structure Type: Expression: CONSTANT return type int
-   Structure Type: IF
+    Structure Type: Expression: ACCESS Symbol i return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: WHILE
     Structure Type: Expression: LESSTHAN return type boolean
-     Structure Type: Expression: ACCESS Symbol squareDist return type int
+     Structure Type: Expression: ACCESS Symbol i return type int
      Structure Type: Expression: CONSTANT return type int
-   IF BODY
+    Structure Type: Expression: ACCESS Symbol io return type void
+     Structure Type: Expression: METHOD ACCESS Symbol println(int) return type void
+      Structure Type: Expression: ACCESS Symbol a return type int
+       Structure Type: Expression: ARRAY ACCESS return type int
+        Structure Type: Expression: SUB return type int
+         Structure Type: Expression: CONSTANT return type int
+         Structure Type: Expression: ACCESS Symbol i return type int
     Structure Type: ATTRIBUTION
-     Structure Type: Expression: ACCESS Symbol in_circle return type boolean
-     Structure Type: Expression: CONSTANT return type boolean
-   ELSE BODY
-    Structure Type: ATTRIBUTION
-     Structure Type: Expression: ACCESS Symbol in_circle return type boolean
-     Structure Type: Expression: CONSTANT return type boolean
-   Structure Type: Expression: RETURN Symbol in_circle return type boolean
-    Structure Type: Expression: ACCESS Symbol in_circle return type boolean
+     Structure Type: Expression: ACCESS Symbol i return type int
+     Structure Type: Expression: ADD return type int
+      Structure Type: Expression: ACCESS Symbol i return type int
+      Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: RETURN return type boolean
+    Structure Type: Expression: CONSTANT return type boolean
 
 
 
 Node Depth 2
 Node Symbol: 
 Symbol 
-	Name estimatePi100
+	Name getQuicky
 	Type 1
-	Signature estimatePi100(int)
+	Signature getQuicky()
 
 Nmb children 0
 Symbol Table: 
 Symbol 
-	Name n
+	Name b
 	Type 4
-	Signature n
+	Signature b
 
-Symbol 
-	Name samples_in_circle
-	Type 4
-	Signature samples_in_circle
-
-Symbol 
-	Name samples_so_far
-	Type 4
-	Signature samples_so_far
-
-Symbol 
-	Name pi_estimate
-	Type 4
-	Signature pi_estimate
-
-Structures (5): 
+Structures (2): 
    Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol samples_so_far return type int
-    Structure Type: Expression: CONSTANT return type int
-   Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol samples_in_circle return type int
-    Structure Type: Expression: CONSTANT return type int
-   Structure Type: WHILE
-    Structure Type: Expression: LESSTHAN return type boolean
-     Structure Type: Expression: ACCESS Symbol samples_so_far return type int
-     Structure Type: Expression: ACCESS Symbol n return type int
-    Structure Type: IF
-     Structure Type: Expression: ACCESS return type boolean
-      Structure Type: Expression: METHOD ACCESS Symbol performSingleEstimate() return type boolean
-    IF BODY
-     Structure Type: ATTRIBUTION
-      Structure Type: Expression: ACCESS Symbol samples_in_circle return type int
-      Structure Type: Expression: ADD return type int
-       Structure Type: Expression: ACCESS Symbol samples_in_circle return type int
-       Structure Type: Expression: CONSTANT return type int
-    ELSE BODY
-    Structure Type: ATTRIBUTION
-     Structure Type: Expression: ACCESS Symbol samples_so_far return type int
-     Structure Type: Expression: ADD return type int
-      Structure Type: Expression: ACCESS Symbol samples_so_far return type int
-      Structure Type: Expression: CONSTANT return type int
-   Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol pi_estimate return type int
-    Structure Type: Expression: DIV return type int
-     Structure Type: Expression: MUL return type int
-      Structure Type: Expression: CONSTANT return type int
-      Structure Type: Expression: ACCESS Symbol samples_in_circle return type int
-     Structure Type: Expression: ACCESS Symbol n return type int
-   Structure Type: Expression: RETURN Symbol pi_estimate return type int
-    Structure Type: Expression: ACCESS Symbol pi_estimate return type int
+    Structure Type: Expression: ACCESS Symbol b return type Quicksort
+    Structure Type: Expression: NEW METHOD ACCESS Symbol Quicksort() return type Quicksort
+   Structure Type: Expression: RETURN Symbol b return type Quicksort
+    Structure Type: Expression: ACCESS Symbol b return type Quicksort
 
 
 
@@ -710,215 +500,206 @@ Symbol
 	Signature args
 
 Symbol 
-	Name pi_estimate_times_100
+	Name a
 	Type 4
-	Signature pi_estimate_times_100
+	Signature a
 
 Symbol 
-	Name num_samples
+	Name b
 	Type 4
-	Signature num_samples
+	Signature b
 
-Structures (3): 
+Symbol 
+	Name c
+	Type 4
+	Signature c
+
+Structures (9): 
    Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol num_samples return type int
-    Structure Type: Expression: ACCESS Symbol ioPlus return type int
-     Structure Type: Expression: METHOD ACCESS Symbol requestNumber() return type int
+    Structure Type: Expression: ACCESS Symbol a return type Scoped
+    Structure Type: Expression: NEW METHOD ACCESS Symbol Scoped() return type Scoped
    Structure Type: ATTRIBUTION
-    Structure Type: Expression: ACCESS Symbol pi_estimate_times_100 return type int
-    Structure Type: Expression: NEW METHOD ACCESS Symbol MonteCarloPi() return type int
-     Structure Type: Expression: METHOD ACCESS Symbol estimatePi100(int) return type int
-      Structure Type: Expression: ACCESS Symbol num_samples return type int
-   Structure Type: Expression: ACCESS Symbol ioPlus return type void
-    Structure Type: Expression: METHOD ACCESS Symbol printResult(int) return type void
-     Structure Type: Expression: ACCESS Symbol pi_estimate_times_100 return type int
+    Structure Type: Expression: ACCESS Symbol b return type Quicksort
+    Structure Type: Expression: NEW METHOD ACCESS Symbol Quicksort() return type Quicksort
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol c return type int[]
+    Structure Type: Expression: INT ARRAY return type int[]
+     Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol c return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol c return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol c return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: ATTRIBUTION
+    Structure Type: Expression: ACCESS Symbol c return type int
+    Structure Type: Expression: ARRAY ACCESS return type int
+     Structure Type: Expression: CONSTANT return type int
+    Structure Type: Expression: CONSTANT return type int
+   Structure Type: Expression: ACCESS Symbol a return type boolean
+    Structure Type: Expression: METHOD ACCESS Symbol printL(int[]) return type boolean
+     Structure Type: Expression: ACCESS Symbol c return type int[]
+   Structure Type: Expression: ACCESS Symbol b return type boolean
+    Structure Type: Expression: METHOD ACCESS Symbol printL(int[]) return type boolean
+     Structure Type: Expression: ACCESS Symbol c return type int[]
 
 
 
 
-.class public MonteCarloPi
+.class public Scoped
 .super java/lang/Object
 .method <init>()V
 aload_0
 invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
-; random/MathUtils
-; requestNumber/ioPlus
-; printResult/ioPlus
-.method public performSingleEstimate()Z
+; println/io
+; printL/Quicksort
+.method public printL([I)Z
 .limit stack 99
-.limit locals 5
-; 8
-; 6
+.limit locals 4
 ; 7
 iconst_0
-; 7
-bipush 100
-isub
-; 7
-bipush 100
-; 10
-invokestatic MathUtils/random(II)I
-istore_1		;rand1
+istore_2		;i
 
 
+while_0:
 ; 8
-; 6
+iload_2		;i
 ; 7
-iconst_0
-; 7
-bipush 100
-isub
-; 7
-bipush 100
-; 10
-invokestatic MathUtils/random(II)I
-istore_2		;rand2
-
-
-; 4
-; 3
-; 5
-; 8
-iload_1		;rand1
-; 8
-iload_1		;rand1
-imul
-; 5
-; 8
-iload_2		;rand2
-; 8
-iload_2		;rand2
-imul
-iadd
-; 7
-bipush 100
-idiv
-istore_3		;squareDist
-
-
-; 8
-iload_3		;squareDist
-; 7
-bipush 100
+iconst_4
 if_icmpge else_0
+
+; 8
+; 8
+aload_1		;a
+; 6
+; 7
+iconst_3
+; 8
+iload_2		;i
+isub
+iaload
+; 10
+invokestatic io/println(I)V
+
+; 3
+; 8
+iload_2		;i
 ; 7
 iconst_1
-istore 4		;in_circle
+iadd
+istore_2		;i
 
-goto endif_0
+goto while_0
 else_0:
-; 1
-; 7
-iconst_0
-istore 4		;in_circle
-
-endif_0:
 
 
 ; 13
-; 8
-iload 4		;in_circle
+; 7
+iconst_1
 ireturn
 
 
 .end method
-.method public estimatePi100(I)I
+.method public getQuicky()LQuicksort;
 .limit stack 99
-.limit locals 6
-; 7
-iconst_0
-istore_2		;samples_so_far
-
-
-; 7
-iconst_0
-istore_3		;samples_in_circle
-
-
-while_1:
-; 8
-iload_2		;samples_so_far
-; 8
-iload_1		;n
-if_icmpge else_1
-
-; 8
-aload_0
+.limit locals 2
 ; 10
-invokevirtual MonteCarloPi/performSingleEstimate()Z
-ifeq else_2
-; 3
-; 8
-iload_3		;samples_in_circle
-; 7
-iconst_1
-iadd
-istore_3		;samples_in_circle
-
-goto endif_2
-else_2:
-; 0
-endif_2:
-
-; 3
-; 8
-iload_2		;samples_so_far
-; 7
-iconst_1
-iadd
-istore_2		;samples_so_far
-
-goto while_1
-else_1:
-
-
-; 4
-; 5
-; 7
-sipush 400
-; 8
-iload_3		;samples_in_circle
-imul
-; 8
-iload_1		;n
-idiv
-istore 4		;pi_estimate
+new Quicksort
+dup
+invokespecial Quicksort/<init>()V
+astore_1		;b
 
 
 ; 13
 ; 8
-iload 4		;pi_estimate
-ireturn
+aload_1		;b
+areturn
 
 
 .end method
 .method public static main([Ljava/lang/String;)V
 .limit stack 99
-.limit locals 5
-; 8
+.limit locals 6
 ; 10
-invokestatic ioPlus/requestNumber()I
-istore_2		;num_samples
-
-
-; 10
-new MonteCarloPi
+new Scoped
 dup
-invokespecial MonteCarloPi/<init>()V
-; 8
-iload_2		;num_samples
+invokespecial Scoped/<init>()V
+astore_2		;a
+
+
 ; 10
-invokevirtual MonteCarloPi/estimatePi100(I)I
-istore_3		;pi_estimate_times_100
+new Quicksort
+dup
+invokespecial Quicksort/<init>()V
+astore_3		;b
+
+
+; 12
+; 7
+iconst_4
+newarray int
+astore 4		;c
+
+
+aload 4		;c
+; 7
+iconst_0
+; 7
+iconst_4
+iastore
+
+
+aload 4		;c
+; 7
+iconst_1
+; 7
+iconst_3
+iastore
+
+
+aload 4		;c
+; 7
+iconst_2
+; 7
+iconst_2
+iastore
+
+
+aload 4		;c
+; 7
+iconst_3
+; 7
+iconst_1
+iastore
 
 
 ; 8
+aload_2		;a
 ; 8
-iload_3		;pi_estimate_times_100
+aload 4		;c
 ; 10
-invokestatic ioPlus/printResult(I)V
+invokevirtual Scoped/printL([I)Z
+pop
+
+
+; 8
+aload_3		;b
+; 8
+aload 4		;c
+; 10
+invokevirtual Quicksort/printL([I)Z
+pop
 
 
 return

@@ -1,0 +1,64 @@
+import static io.println(int);
+import Quicksort.printL(int[]) boolean;
+class Scoped {
+    public boolean printL(int[] a){
+        int i;
+
+        i = 0;
+
+        while(i < 4){
+            io.println(a[3-i]);
+            i = i + 1;
+        }
+        return true;
+    }
+    public Quicksort getQuicky(){
+        Quicksort b;
+        
+        b = new Quicksort();
+        
+        return b;
+    }
+    public static void main(String[] args){
+        Scoped a;
+        Quicksort b;
+        int[] c;
+
+        a = new Scoped();
+        b = new Quicksort();
+        c = new int[4];
+
+        c[0] = 4;
+        c[1] = 3;
+        c[2] = 2;
+        c[3] = 1;
+
+        a.printL(c);
+        b.printL(c);
+    }
+}
+/*
+public class Quicksort {
+  public Quicksort();
+  public static void main(java.lang.String[]);
+  public boolean printL(int[]);
+  public boolean quicksort(int[]);
+  public boolean quicksort(int[], int, int);
+  public int partition(int[], int, int);
+}
+
+public class io {
+  static java.util.Vector Buffer;
+  static boolean init;
+  public io();
+  static final int read();
+  static final void print(java.lang.String, int);
+  static final void print(int);
+  static final void print(java.lang.String);
+  static final void println();
+  static final void println(java.lang.String, int);
+  static final void println(int);
+  static final void println(java.lang.String);
+  static {};
+}
+*/

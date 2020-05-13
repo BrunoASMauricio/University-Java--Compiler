@@ -49,10 +49,11 @@ Working | Custom Test <br> Exists | Description
 
 ### Optimizations
 
-[X] Array of size 1 as an array
+[X] Array of size 1 as a variable
 [X] Liveliness analysis for register allocation
 [X] Register selection priority for loop control or body variables (more accessed)
-
+[V] Empty else doesn't generate redundant jumps
+[V] Constant pushing instructions are optimized based on the size of the constant
 
 
 

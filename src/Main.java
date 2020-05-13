@@ -100,7 +100,6 @@ public class Main {
             writer.close();
         }catch(Exception ex){
             System.out.println("Unhandled exception");
-            //System.out.println(Jasminify.out);
             ex.printStackTrace(); 
             throw new RuntimeException("Jasmin error");
         }
