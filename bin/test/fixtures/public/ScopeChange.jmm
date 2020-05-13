@@ -1,5 +1,10 @@
 import static io.println(int);
 import Quicksort.printL(int[]) boolean;
+/*
+This test serves to verify that even if two methods
+have the same signature, the one being called is
+scope dependent
+*/
 class Scoped {
     public boolean printL(int[] a){
         int i;
