@@ -11,8 +11,8 @@ class Scoped {
 
         i = 0;
 
-        while(i < 4){
-            io.println(a[3-i]);
+        while(i < a.length){
+            io.println(a[a.length-1-i]);
             i = i + 1;
         }
         return true;
@@ -22,8 +22,8 @@ class Scoped {
         int[] c;
         
         c = new int[4];
-        c[0] = 5;
-        c[1] = 6;
+        c[0] = 8;
+        c[1] = 7;
         c[2] = 6;
         c[3] = 5;
         printL(c);
