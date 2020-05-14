@@ -1,5 +1,0 @@
-Parsing file ./test/fixtures/public/Life.jmm
-Parser starting
-Analyzer starting on ./test/fixtures/public/Life.jmm
-WARNING, variable already available in scope: "field"
-COMPILATION SUCCESSFUL
