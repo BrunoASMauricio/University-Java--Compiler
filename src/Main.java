@@ -95,14 +95,17 @@ public class Main {
             if(v > 2){
                 System.out.println("\n"+Jasminify.out);
             }
-            PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
-            writer.println(Jasminify.out);
-            writer.close();
         }catch(Exception ex){
+            Analyzer.throwAllExceptions();
             System.out.println("Unhandled exception");
             ex.printStackTrace(); 
             throw new RuntimeException("Jasmin error");
         }
+        Analyzer.throwAllExceptions();
+
+        PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
+        writer.println(Jasminify.out);
+        writer.close();
         //*
         System.out.println("COMPILATION SUCCESSFUL");
 	}

@@ -19,33 +19,28 @@ I haven't created any custom testing file yet, only temporarily altered other te
 
 Working | Custom Test <br> Exists | Description
 -|-|-
-[V] | [X] | Invalid variable type
-[V] | [X] | Invalid return type
-[V] | [X] | No return on non void method
-[V] | [X] | Undefined variable name on current scope
-[V] | [X] | Undefined/Invalid method signature (name + argument types)
-[V] | [X] | Undefined class (for static accesses)
-[V] | [X] | Static access to non static method and vice-versa
-[V] | [X] | Operation operator type conformity (boolean operations (and) require ints and return boolean, logic operations (less than) require ints and return boolean, and arithmetic operations require ints and return int)
-[V] | [X] | Control Structures (if and while) require boolean operator
-[V] | [X] | Attribution type compatibility
-[V] | [X] | Array indexing and accessing type compatibility (all int for j--)
-[V] | [X] | Duplicate variable declaration on the current scope
-[V] | [X] | Duplicate method signature
-[V] | [X] | Array access to non array variable
-[X] | [X] | Possible uninitialization of variable due to control flow
+[V] | [V] | Reserved identifier misuse
+[V] | [V] | Invalid variable type
+[V] | [V] | Invalid return type
+[V] | [V] | No return on non void method
+[V] | [V] | Undefined variable name on current scope
+[V] | [V] | Undefined/Invalid method signature (name + argument types)
+[V] | [V] | Operation operator type conformity (boolean operations (and) require ints and return boolean, logic operations (less than) require ints and return boolean, and arithmetic operations require ints and return int)
+[V] | [V] | Control Structures (if and while) require boolean operator
+[V] | [V] | Attribution type compatibility
+[V] | [V] | Array indexing and accessing type compatibility (all int for j--)
+[V] | [V] | Duplicate variable declaration on the current scope
+[V] | [V] | Duplicate method signature
+[V] | [V] | Method returning array is directly accessed (ex: "M()[0]")
+[V] | [V] | Call overloaded (imported or not) methods
+[?] | [V] | Call overloaded (imported or not) constructors
+[V] | [X] | Main used inside a method
+[?] | [X] | Static access to non static method and vice-versa
+[X] | [X] | Array access to non array variable
 [X] | [X] | Constructor cannot be called without new
 [X] | [X] | .length cannot be used on non array
-[V] | [X] | Class cannot be used as a variable name
-[V] | [X] | Main used inside a method
-[?] | [X] | Method returning array is directly accessed (ex: "M()[0]")
-[?] | [X] | "This" keyword cannot use method variables
-[?] | [X] | Call overloaded constructors
-[?] | [X] | Call overloaded imported constructors
-[X] | [X] | String concatenation [EXTRA]
-[X] | [X] | Non existent extends
-[X] | [X] | Reserved identifier misuse
-[X] | [X] | Constructor with arguments
+[?] | [X] | Constructor with arguments
+[X] | [X] | Possible uninitialization of variable due to control flow
 
 ### Optimizations
 

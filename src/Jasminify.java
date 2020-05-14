@@ -113,6 +113,8 @@ public class Jasminify {
     public static void handleVariable(Expression expr, String type){
         if(expr.used_symbol.Jvarindex < 0){
             throw new RuntimeException("Negative index is unacceptable "+expr.used_symbol.Jvarindex+" "+expr.used_symbol.name);
+            //Analyzer.throwException(new UndeclaredException("Undefined data type "+type, n));
+            //return;
         }
         switch((String)expr.used_symbol.data){
             case "boolean":
@@ -141,7 +143,7 @@ public class Jasminify {
 
     public static void loadVariable(Expression expr){
         if(expr.used_symbol.Jvartype == null){
-            System.out.println("WTFWTF "+expr.used_symbol.name);
+            System.out.println("SHOULD NOT HAPPEN "+expr.used_symbol.name);
         }
         if(expr.used_symbol.Jvartype.equals("class")){
             Jasminify.writeln("aload_0");

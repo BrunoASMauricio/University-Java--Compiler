@@ -141,7 +141,19 @@ public class Analyzer {
         }
         expr.return_type = "boolean";
     }
-
+    /*
+    Checks if an invalid array operation (access or length is occuring)
+    */
+    public static void parseArrayOperation(String return_type, SimpleNode node){
+        if(return_type != null && !return_type.equals("int[]")){
+            if(node.id == JMMParserTreeConstants.JJTARRAYACCESS){
+                Analyzer.throwException(new RuntimeException("Cant perform array access on "+return_type));
+            }
+            if(node.jjtGetNumChildren() > 0 && ((SimpleNode)node.jjtGetChild(0)).id == JMMParserTreeConstants.JJTLENGTH){
+                Analyzer.throwException(new RuntimeException("Cant perform array length access on "+return_type));
+            }
+        }
+    }
     /**
      * Handles Identifier() ( SelectorArguments() )? type nodes, and returns the signature
      * @param method_node AST Node where the method starts (the node that contains Identifier() ( SelectorArguments() )? as the  2 children)
@@ -397,6 +409,7 @@ public class Analyzer {
 
                         expr.return_type = helper_al.get(helper_al.size()-1);
                         i = 2;
+                        str_helper = expr.return_type;
                     }else{
                         i = 1;
                         expr.used_symbol = getByIdentifier(((SimpleNode)expr_node.jjtGetChild(0)).image, current_scope, expr_node);
@@ -424,11 +437,22 @@ public class Analyzer {
                             Analyzer.throwException(new RuntimeException("Wrong ammount of nodes"));
                             return null;
                         }
+                        str_helper = (String)expr.used_symbol.data;
                     }
+                    /*
+                    Expression expr;
+                    Symbol helper_symbol;
+                    Expression helper_expression;
+                    TreeNode helper_scope;
+                    SimpleNode helper_node;
+                    */
                     //If there are more nodes to be parsed, it must be SELECTOR nodes
                     if(i < node_children){
                         while(i < node_children){
-                            helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, static_access, current_scope);
+                            helper_node = (SimpleNode)expr_node.jjtGetChild(i++);
+                            Analyzer.parseArrayOperation(str_helper, helper_node);
+                            helper_expression = followScope(helper_node, helper_scope, static_access, current_scope);
+                            str_helper = helper_expression.return_type;
                             expr.addChild(helper_expression);
                             static_access = false;
                             if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
@@ -474,8 +498,11 @@ public class Analyzer {
                         return null;
                     }
                 }
+                str_helper = null;
                 while(i < node_children){
-                    helper_expression = followScope((SimpleNode)expr_node.jjtGetChild(i++), helper_scope, false,  current_scope);
+                    helper_node = (SimpleNode)expr_node.jjtGetChild(i++);
+                    Analyzer.parseArrayOperation(str_helper, helper_node);
+                    helper_expression = followScope(helper_node, helper_scope, false,  current_scope);
                     //helper_scope = helper_expression.used_symbol.scope;
                     if(checkBasicType(helper_expression.return_type) || helper_expression.return_type.equals("void")){
                         helper_scope = null;
@@ -487,6 +514,7 @@ public class Analyzer {
                         }
                     }
                     expr.addChild(helper_expression);
+                    str_helper = helper_expression.return_type;
                 }
                 expr.return_type = ((Expression)expr.nested_structures.get(expr.nested_structures.size()-1)).return_type;
                 break;
@@ -1006,6 +1034,15 @@ public class Analyzer {
             System.exit(-1);
         }
     }
+    public static void throwAllExceptions(){
+        if(Analyzer.current_exceptions != 0){
+            System.out.println("Semantic exceptions: "+Analyzer.current_exceptions);
+            for(int i = 0; i < Analyzer.current_exceptions; i++){
+                System.out.println(Analyzer.thrown_exceptions[i]);
+            }
+            throw new RuntimeException("Semantic error");
+        }
+    }
     /**
      * Fully semantically parse the program AST inside root into a HIR
      * @param root The AST root node
@@ -1017,6 +1054,7 @@ public class Analyzer {
         TreeNode classnode;
         int i;
 
+        classnode = null;
         Analyzer.thrown_exceptions = new RuntimeException[Analyzer.max_exceptions];
         Analyzer.current_exceptions = 0;
         System.out.println("Analyzer starting on "+filename);
@@ -1042,24 +1080,10 @@ public class Analyzer {
         try{
             classnode = Analyzer.getClass(node, tree_root);
         }catch(Exception ex){
-            if(Analyzer.current_exceptions != 0){
-                System.out.println("Semantic exceptions: "+Analyzer.current_exceptions);
-                for(i = 0; i < Analyzer.current_exceptions; i++){
-                    System.out.println(Analyzer.thrown_exceptions[i]);
-                }
-                throw new RuntimeException("Semantic error");
-            }else{
-                System.out.println(Analyzer.current_exceptions);
-                throw ex;
-            }
+            Analyzer.throwAllExceptions();
+            throw ex;
         }
-        if(Analyzer.current_exceptions != 0){
-            System.out.println("Semantic exceptions: "+Analyzer.current_exceptions);
-            for(i = 0; i < Analyzer.current_exceptions; i++){
-                System.out.println(Analyzer.thrown_exceptions[i]);
-            }
-            throw new RuntimeException("Semantic error");
-        }
+        Analyzer.throwAllExceptions();
 
         return classnode;
     }

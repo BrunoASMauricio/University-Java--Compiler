@@ -1,0 +1,16 @@
+/*
+Tests 3 errors
+Wrong return type
+No return type for non void method
+Unkown/Invalid variable type
+*/
+class WrongRet {
+    public boolean ohno(){
+        return 1;
+    }
+    public boolean oops(){
+    }
+	public static void main(String[] args) {
+        booleano a;
+    }
+}

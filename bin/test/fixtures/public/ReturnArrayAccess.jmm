@@ -1,0 +1,24 @@
+import static io.println(int);
+
+/*
+One liner to immediately access a returned array
+*/
+class Returned {
+    public int[] getAr(){
+        int[] a;
+        a = new int[5];
+        a[0] = 1;
+        a[1] = 2;
+        a[2] = 3;
+        a[3] = 4;
+        a[4] = 5;
+        return a;
+    }
+    public static void main(String[] a) {
+        Returned b;
+        b = new Returned();
+
+        io.println(b.getAr()[4]);
+
+    }
+}

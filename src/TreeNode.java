@@ -100,14 +100,17 @@ public class TreeNode extends Symbol{
         //Check local symbol table
         Symbol dup = this.table.getSymbol(new_symbol.signature);
         if(dup != null){
-            //throw new RuntimeException("Duplicate declaration: \""+new_symbol.info+"\"\nFirst declaration: \""+dup.info+"\"");
+            //throw new DuplicateException("Duplicate: \""+new_symbol.signature+"\"\nFirst declaration: \""+dup.signature+"\"", n);
             throw new DuplicateException("Duplicate: \""+new_symbol.signature+"\"\nFirst declaration: \""+dup.signature+"\"", n);
+
         }
         //Check parent scope for warning
         dup = this.getSymbol(new_symbol.signature);
         if(dup != null){
             if(dup.type == Symbol.t_class){
-                throw new IllegalNameException(new_symbol.signature, n);
+                //throw new IllegalNameException(new_symbol.signature, n);
+                throw new DuplicateException(new_symbol.signature, n);
+
             }
             System.out.println("WARNING, variable already available in scope: \""+dup.signature+"\"");
         }

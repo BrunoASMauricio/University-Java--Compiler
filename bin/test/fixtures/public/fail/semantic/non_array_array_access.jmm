@@ -1,0 +1,13 @@
+
+class WrongAr {
+	public static void main(String[] args) {
+        boolean a;
+        int b;
+        b = 3;
+
+        b = b.length;
+        b = b[a];
+        b = b[b];
+
+    }
+}

@@ -97,6 +97,41 @@ public class ParserTest {
     public void testWhileAndIF() {
         test("fixtures/public/WhileAndIF.jmm", false);
     }
+    //          CUSTOM
+    //---------------------------
+    //Passes
+    @Test
+    public void testReturnArrayAccess() {
+        test("fixtures/public/ReturnArrayAccess.jmm", false);
+    }
+
+    @Test
+    public void testScopeChange() {
+        test("fixtures/public/ScopeChange.jmm", false);
+    }
+
+    @Test
+    public void testBigMethodTrain() {
+        test("fixtures/public/BigMethodTrain.jmm", false);
+    }
+    //Fails
+    @Test
+    public void testnon_array_array_access() {
+        test("fixtures/public/fail/semantic/non_array_array_access.jmm", true);
+    }
+    
+    @Test
+    public void testwrong_returns() {
+        test("fixtures/public/fail/semantic/wrong_returns.jmm", true);
+    }
+    
+    @Test
+    public void testwrong_control_type() {
+        test("fixtures/public/fail/semantic/wrong_control_type.jmm", true);
+    }
+
+
+    //---------------------------
 
     @Test
     public void testarr_index_not_int() {

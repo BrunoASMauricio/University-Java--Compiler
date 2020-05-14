@@ -1,0 +1,11 @@
+class WrongCtr {
+	public static void main(String[] args) {
+        boolean a;
+
+        if(1){
+            a = true;
+        }else{
+            a = false;
+        }
+    }
+}
