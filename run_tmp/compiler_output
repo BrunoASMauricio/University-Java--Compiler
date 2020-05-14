@@ -1,4 +1,8 @@
-Parsing file ./test/fixtures/public/QuickSort.jmm
+Parsing file ./test/fixtures/public/fail/semantic/no_new.jmm
 Parser starting
-Analyzer starting on ./test/fixtures/public/QuickSort.jmm
-COMPILATION SUCCESSFUL
+Analyzer starting on ./test/fixtures/public/fail/semantic/no_new.jmm
+Semantic exceptions: 1
+java.lang.RuntimeException: Constructors requires new keyword
+Exception in thread "main" java.lang.RuntimeException: Semantic error
+	at Analyzer.throwAllExceptions(Analyzer.java:1043)
+	at Main.main(Main.java:101)

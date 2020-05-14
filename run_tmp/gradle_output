@@ -1,6 +1,6 @@
 Initialized native services in: /home/bruno/.gradle/native
 The client will now receive all logging from the daemon (pid: 664434). The daemon log file: /home/bruno/.gradle/daemon/6.3/daemon-664434.out.log
-Starting 123rd build in daemon [uptime: 5 hrs 19 mins 44.879 secs, performance: 99%, non-heap usage: 21% of 268.4 MB]
+Starting 140th build in daemon [uptime: 5 hrs 51 mins 55.08 secs, performance: 100%, non-heap usage: 22% of 268.4 MB]
 Using 4 worker leases.
 Starting Build
 Settings evaluated using settings file '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/settings.gradle'.
@@ -19,7 +19,7 @@ Tasks that were excluded: []
 Caching disabled for task ':compileJjtree' because:
   Build cache is disabled
 Skipping task ':compileJjtree' as it is up-to-date.
-:compileJjtree (Thread[Execution worker for ':',5,main]) completed. Took 0.003 secs.
+:compileJjtree (Thread[Execution worker for ':',5,main]) completed. Took 0.002 secs.
 :compileJavacc (Thread[Execution worker for ':',5,main]) started.
 
 > Task :compileJavacc UP-TO-DATE
@@ -34,7 +34,7 @@ file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre
 Caching disabled for task ':compileJava' because:
   Build cache is disabled
 Skipping task ':compileJava' as it is up-to-date.
-:compileJava (Thread[Execution worker for ':',5,main]) completed. Took 0.003 secs.
+:compileJava (Thread[Execution worker for ':',5,main]) completed. Took 0.011 secs.
 :processResources (Thread[Execution worker for ':',5,main]) started.
 
 > Task :processResources NO-SOURCE
@@ -46,52 +46,52 @@ Skipping task ':processResources' as it has no source files and no previous outp
 > Task :classes UP-TO-DATE
 Skipping task ':classes' as it has no actions.
 :classes (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
-:jar (Thread[Daemon worker Thread 36,5,main]) started.
+:jar (Thread[Execution worker for ':',5,main]) started.
 
 > Task :jar UP-TO-DATE
 Caching disabled for task ':jar' because:
   Build cache is disabled
 Skipping task ':jar' as it is up-to-date.
-:jar (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.002 secs.
-:assemble (Thread[Daemon worker Thread 36,5,main]) started.
+:jar (Thread[Execution worker for ':',5,main]) completed. Took 0.001 secs.
+:assemble (Thread[Execution worker for ':',5,main]) started.
 
 > Task :assemble UP-TO-DATE
 Skipping task ':assemble' as it has no actions.
-:assemble (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.0 secs.
-:compileTestJava (Thread[Daemon worker Thread 36,5,main]) started.
+:assemble (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
+:compileTestJava (Thread[Execution worker for ':',5,main]) started.
 
 > Task :compileTestJava UP-TO-DATE
 file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/java', not found
 Caching disabled for task ':compileTestJava' because:
   Build cache is disabled
 Skipping task ':compileTestJava' as it is up-to-date.
-:compileTestJava (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.007 secs.
-:processTestResources (Thread[Daemon worker Thread 36,5,main]) started.
+:compileTestJava (Thread[Execution worker for ':',5,main]) completed. Took 0.03 secs.
+:processTestResources (Thread[Execution worker for ':',5,main]) started.
 
 > Task :processTestResources UP-TO-DATE
 file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/resources', not found
 Caching disabled for task ':processTestResources' because:
   Build cache is disabled
 Skipping task ':processTestResources' as it is up-to-date.
-:processTestResources (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.008 secs.
-:testClasses (Thread[Daemon worker Thread 36,5,main]) started.
+:processTestResources (Thread[Execution worker for ':',5,main]) completed. Took 0.017 secs.
+:testClasses (Thread[Execution worker for ':',5,main]) started.
 
 > Task :testClasses UP-TO-DATE
 Skipping task ':testClasses' as it has no actions.
-:testClasses (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.0 secs.
-:test (Thread[Daemon worker Thread 36,5,main]) started.
+:testClasses (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
+:test (Thread[Execution worker for ':',5,main]) started.
 
 > Task :test UP-TO-DATE
 Caching disabled for task ':test' because:
   Build cache is disabled
 Skipping task ':test' as it is up-to-date.
-:test (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.004 secs.
-:check (Thread[Daemon worker Thread 36,5,main]) started.
+:test (Thread[Execution worker for ':',5,main]) completed. Took 0.006 secs.
+:check (Thread[Execution worker for ':',5,main]) started.
 
 > Task :check UP-TO-DATE
 Skipping task ':check' as it has no actions.
-:check (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.0 secs.
-:copyJar (Thread[Daemon worker Thread 36,5,main]) started.
+:check (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
+:copyJar (Thread[Execution worker for ':',5,main]) started.
 
 > Task :copyJar
 Caching disabled for task ':copyJar' because:
@@ -99,12 +99,12 @@ Caching disabled for task ':copyJar' because:
 Task ':copyJar' is not up-to-date because:
   Task has not declared any outputs despite executing actions.
 Copying JAR file to ./
-:copyJar (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.002 secs.
-:build (Thread[Daemon worker Thread 36,5,main]) started.
+:copyJar (Thread[Execution worker for ':',5,main]) completed. Took 0.005 secs.
+:build (Thread[Execution worker for ':',5,main]) started.
 
 > Task :build
 Skipping task ':build' as it has no actions.
-:build (Thread[Daemon worker Thread 36,5,main]) completed. Took 0.0 secs.
+:build (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
 
-BUILD SUCCESSFUL in 846ms
+BUILD SUCCESSFUL in 1s
 8 actionable tasks: 1 executed, 7 up-to-date

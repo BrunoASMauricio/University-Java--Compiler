@@ -134,6 +134,11 @@ public class ParserTest {
     public void testimproper_static_access() {
         test("fixtures/public/fail/semantic/improper_static_access.jmm", true);
     }
+    
+    @Test
+    public void testno_new() {
+        test("fixtures/public/fail/semantic/no_new.jmm", true);
+    }
 
 
     //---------------------------

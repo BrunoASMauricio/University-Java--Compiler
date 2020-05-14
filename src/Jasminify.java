@@ -20,13 +20,10 @@ public class Jasminify {
     }
 
     public static void writeln(String in){
-        if(in.contains("load")){
-            Jasminify.current_stack_index += 1;
-        }
-        out_temp += in + "\n";
+        Jasminify.write(in + "\n");
     }
     public static void write(String in){
-        if(in.contains("load")){
+        if(in.contains("load") || in.contains("dup") || in.contains("new")){
             Jasminify.current_stack_index += 1;
         }
         out_temp += in;
@@ -279,7 +276,11 @@ public class Jasminify {
                     }
                     //IF IN STATIC
                     if(expr.used_symbol.type == Symbol.t_method_instance){
-                        Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
+                        if(expr.used_symbol instanceof JasminMethod){
+                            Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
+                        }else{      //Only happens for constructors
+                            Analyzer.throwException(new RuntimeException("Constructors requires new keyword"));
+                        }
                     }else{
                         Jasminify.writeln("invokestatic "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
                     }
