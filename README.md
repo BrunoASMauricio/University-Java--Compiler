@@ -33,12 +33,11 @@ Working | Custom Test <br> Exists | Description
 [V] | [V] | Duplicate method signature
 [V] | [V] | Method returning array is directly accessed (ex: "M()[0]")
 [V] | [V] | Call overloaded (imported or not) methods
-[?] | [V] | Call overloaded (imported or not) constructors
-[V] | [X] | Main used inside a method
-[?] | [X] | Static access to non static method and vice-versa
-[X] | [X] | Array access to non array variable
+[V] | [V] | Static access to non static method and vice-versa
+[V] | [V] | Array access to non array variable
+[V] | [V] | .length cannot be used on non array
 [X] | [X] | Constructor cannot be called without new
-[X] | [X] | .length cannot be used on non array
+[?] | [X] | Call overloaded (imported or not) constructors
 [?] | [X] | Constructor with arguments
 [X] | [X] | Possible uninitialization of variable due to control flow
 

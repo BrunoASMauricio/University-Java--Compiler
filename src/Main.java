@@ -66,12 +66,9 @@ public class Main {
                 JMMParser.eval(AST_root, 0);
             }
         }catch(Exception ex){
-            JMMParser.eval(AST_root, 0);
-
             ex.printStackTrace();
             throw new RuntimeException("Syntatical error");
         }
-        JMMParser.eval(AST_root, 0);
 
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE

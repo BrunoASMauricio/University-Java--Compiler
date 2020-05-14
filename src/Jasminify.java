@@ -4,16 +4,32 @@ OPTIMIZATIONS
 Constant push depends on the constant size, best instruction is selected
 */
 public class Jasminify {
-    public static int stack_index;
+    public static int max_stack_index;
+    public static int current_stack_index;
     public static String out;
+    public static String out_temp;
     public static int control_index;
     public static int fields_index;
     public static boolean ref_loaded;
-    public static void writeln(String in){
+    
+    public static void directwriteln(String in){
         out += in + "\n";
     }
-    public static void write(String in){
+    public static void directwrite(String in){
         out += in;
+    }
+
+    public static void writeln(String in){
+        if(in.contains("load")){
+            Jasminify.current_stack_index += 1;
+        }
+        out_temp += in + "\n";
+    }
+    public static void write(String in){
+        if(in.contains("load")){
+            Jasminify.current_stack_index += 1;
+        }
+        out_temp += in;
     }
     public static String getIndex(){
         control_index++;
@@ -95,6 +111,7 @@ public class Jasminify {
     }
 
     public static void writePushConstant(int pushed_const){
+        Jasminify.current_stack_index += 1;
         if(pushed_const == -1){
             Jasminify.writeln("iconst_m1");            
         }else if(pushed_const < 0){                     //All negatives except -1
@@ -469,6 +486,10 @@ public class Jasminify {
         }
         //Sometimes, references may be loaded but not used by a method, so we need to reset ref_loaded
         Jasminify.ref_loaded = false;
+        if(Jasminify.current_stack_index > Jasminify.max_stack_index){
+            Jasminify.max_stack_index = Jasminify.current_stack_index;
+        }
+        Jasminify.current_stack_index = 0;
         Jasminify.writeln("");
     }
 
@@ -477,21 +498,23 @@ public class Jasminify {
         int start;
         
         if(method_node.name.equals("main")){    //Generate normal/main method head
-            Jasminify.writeln(".method public static main([Ljava/lang/String;)V");
+            Jasminify.directwriteln(".method public static main([Ljava/lang/String;)V");
             arg_amm = 1;
         }else{
             if(method_node.type == Symbol.t_method_instance){
-                Jasminify.write(".method public ");
+                Jasminify.directwrite(".method public ");
             }else{
-                Jasminify.write(".method public static ");
+                Jasminify.directwrite(".method public static ");
             }
             arg_amm = ((ArrayList<String>)method_node.data).size()-1;           //Last types is return type
-            Jasminify.writeln(method_node.jasmin_signature);
+            Jasminify.directwriteln(method_node.jasmin_signature);
         }
 
+        Jasminify.out_temp = "";
+        Jasminify.current_stack_index = 0;
+        Jasminify.max_stack_index = 0;
+
         method_node.locals_index = arg_amm+1;   //Locals begin after the arguments
-        Jasminify.writeln(".limit stack 99");//                                    NEED TO CALCULATE DEEPEST DEPTH
-        Jasminify.writeln(".limit locals "+(1+arg_amm+method_node.table.getSize()));    //this + arguments + declared local variables
         if(method_node.type == Symbol.t_method_instance){
             start = 1;      //Instance methods have at 0 the This and at 1 the first local variable
         }else{
@@ -514,41 +537,45 @@ public class Jasminify {
         if(method_node.returned == false){
             Jasminify.writeReturn(method_node, "void");
         }
-        Jasminify.writeln(".end method");
+
+        Jasminify.directwriteln(".limit stack "+(Jasminify.max_stack_index));//                                    NEED TO CALCULATE DEEPEST DEPTH
+        Jasminify.directwriteln(".limit locals "+(1+arg_amm+method_node.table.getSize()));    //this + arguments + declared local variables
+        Jasminify.directwriteln(out_temp);
+        Jasminify.directwriteln(".end method");
     }
     static void start(TreeNode root, TreeNode class_node){
         if(class_node == null){
             throw new RuntimeException("No class found");
         }
         Jasminify.out = "";
-
-        Jasminify.stack_index = 0;
+        Jasminify.max_stack_index = 0;
+        Jasminify.current_stack_index = 0;
         Jasminify.fields_index = 0;
         Jasminify.control_index = 0;
 
-        Jasminify.writeln(".class public "+class_node.name);
+        Jasminify.directwriteln(".class public "+class_node.name);
         if(class_node.data == null){
-            Jasminify.writeln(".super java/lang/Object");
+            Jasminify.directwriteln(".super java/lang/Object");
         }else{
-            Jasminify.writeln(".super "+class_node.data);
+            Jasminify.directwriteln(".super "+class_node.data);
         }
         //Set fields
         for(Symbol symb : class_node.table.symbols.values()){
             if(symb.type == Symbol.t_variable_init || symb.type == Symbol.t_variable_ninit){
                 symb.Jfielddsignature = class_node.name+"/f_"+symb.name+" "+getType((String)symb.data);
-                Jasminify.writeln(".field public f_"+symb.name+" "+getType((String)symb.data));
+                Jasminify.directwriteln(".field public f_"+symb.name+" "+getType((String)symb.data));
             }
         }
 
-        Jasminify.writeln(".method <init>()V");
-        Jasminify.writeln("aload_0");
+        Jasminify.directwriteln(".method <init>()V");
+        Jasminify.directwriteln("aload_0");
         if(class_node.data == null){
-            Jasminify.writeln("invokenonvirtual java/lang/Object/<init>()V");
+            Jasminify.directwriteln("invokenonvirtual java/lang/Object/<init>()V");
         }else{
-            Jasminify.writeln("invokenonvirtual "+class_node.data+"/<init>()V");
+            Jasminify.directwriteln("invokenonvirtual "+class_node.data+"/<init>()V");
         }
-        Jasminify.writeln("return");
-        Jasminify.writeln(".end method");
+        Jasminify.directwriteln("return");
+        Jasminify.directwriteln(".end method");
         //Set method jasmin signatures
         for(TreeNode method: class_node.children){
             Jasminify.setJasminSignature((JasminMethod)method, class_node);
@@ -560,7 +587,7 @@ public class Jasminify {
             }
 
             for(TreeNode method: other_class_node.children){
-                Jasminify.writeln("; "+method.name+"/"+other_class_node.name);
+                Jasminify.directwriteln("; "+method.name+"/"+other_class_node.name);
                 Jasminify.setJasminSignature((JasminMethod)method, other_class_node);
             }
         }
