@@ -5,6 +5,9 @@ parsing the method calls and their arguments
 */
 class Train {
     int sz;
+    public int end(int a){
+        return a;
+    }
     public Train Tchoo(int b){
         Train a;
         a = new Train();
@@ -15,6 +18,8 @@ class Train {
         Train a;
         a = new Train();
         a = a.Tchoo(1).Tchoo(2).Tchoo(3).Tchoo(4).Tchoo(5);
+
+        io.println(new Train().Tchoo(6).Tchoo(7).end(4+2*2));
     }
 
 }
