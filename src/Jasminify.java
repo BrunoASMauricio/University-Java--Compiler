@@ -283,6 +283,9 @@ public class Jasminify {
                     default:
                     
                         if(expr.used_symbol == null){                   //It's a this access
+                            if(method.type == Symbol.t_method_static){
+                                Analyzer.throwException(new RuntimeException("Can't access \"this\" from a static method"));
+                            }
                             Jasminify.writeln("aload_0");
                             Jasminify.ref_loaded = true;
                         }else if(expr.used_symbol.type != Symbol.t_class){    //Instances and arrays need to be loaded
@@ -401,6 +404,9 @@ public class Jasminify {
                 //Little hack to find directly called methods
                 helper0 = (Expression)struct;
                 if(helper0.expression_type == Expression.t_method_access){
+                    if(method.type == Symbol.t_method_static){
+                        Analyzer.throwException(new RuntimeException("Non static method access from a static method"));
+                    }
                     if(!helper0.is_new && helper0.used_symbol.type == Symbol.t_method_instance){
                         Jasminify.writeln("; "+Jasminify.ref_loaded);
                         if(!Jasminify.ref_loaded){

@@ -129,6 +129,11 @@ public class ParserTest {
     public void testwrong_control_type() {
         test("fixtures/public/fail/semantic/wrong_control_type.jmm", true);
     }
+    
+    @Test
+    public void testimproper_static_access() {
+        test("fixtures/public/fail/semantic/improper_static_access.jmm", true);
+    }
 
 
     //---------------------------

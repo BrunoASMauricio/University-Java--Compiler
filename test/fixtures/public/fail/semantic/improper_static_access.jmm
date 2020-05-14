@@ -1,12 +1,13 @@
-class Badname {
+class Improper {
     public boolean abc(){
         return true;
     }
     public static void main(String[] a) {
         int c;
-        Badname d;
-        d = new Badname();
-        
+        Improper d;
+        d = new Improper();
+
         this.abc();
+        abc();
     }
 }
