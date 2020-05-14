@@ -36,7 +36,7 @@ Working | Custom Test <br> Exists | Description
 [V] | [V] | Static access to non static method and vice-versa
 [V] | [V] | Array access to non array variable
 [V] | [V] | .length cannot be used on non array
-[X] | [X] | Constructor cannot be called without new
+[V] | [V] | Constructor cannot be called without new
 [?] | [X] | Call overloaded (imported or not) constructors
 [?] | [X] | Constructor with arguments
 [X] | [X] | Possible uninitialization of variable due to control flow
@@ -44,9 +44,13 @@ Working | Custom Test <br> Exists | Description
 ### Optimizations
 
 [X] Array of size 1 as a variable
+
 [X] Liveliness analysis for register allocation
+
 [X] Register selection priority for loop control or body variables (more accessed)
+
 [V] Empty else doesn't generate redundant jumps
+
 [V] Constant pushing instructions are optimized based on the size of the constant
 
 
