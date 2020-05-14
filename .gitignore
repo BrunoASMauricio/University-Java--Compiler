@@ -3,7 +3,7 @@
 /generated/
 *.jar
 /run_tmp/
-
+JasminOut.j
 # Ignore Gradle GUI config
 gradle-app.setting
 
