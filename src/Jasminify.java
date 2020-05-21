@@ -23,10 +23,55 @@ public class Jasminify {
         Jasminify.write(in + "\n");
     }
     public static void write(String in){
-        if(in.contains("load") || in.contains("dup") || in.contains("new")){
+        //arraylength 1 -> 1
+        //iaload/iastore 2 -> 1
+        //iadd/and/mul/... 2 -> 1
+        //dup 1 -> 2
+        //getfield 1 -> 1
+        //newarray 1 -> 1
+        //putfield 2 -> 0
+
+        //invokespecial, invokevirtual and invokestatic are parsed separately
+        int a = Jasminify.current_stack_index;
+        //loads and stores may be written sepparate
+        if(in.startsWith("newarray") || in.startsWith("invoke")){
+            //Do nothing :)
+        }else if(in.startsWith("load") || in.startsWith("ldc ") || in.startsWith("iconst") || in.startsWith("bipush") || in.startsWith("sipush") || in.startsWith("aload") || in.startsWith("iload") || in.startsWith("dup") || in.startsWith("new")){
             Jasminify.current_stack_index += 1;
+        }else{
+            if(in.startsWith("ifeq") || in.startsWith("store") || in.startsWith("istore") || in.startsWith("pop") || in.startsWith("iadd") || in.startsWith("iand") || in.startsWith("imul") || in.startsWith("idiv") || in.startsWith("isub") || in.startsWith("iaload")){
+                Jasminify.current_stack_index -= 1;
+            }else 
+            if(in.startsWith("putfield") || in.startsWith("if_")){
+                Jasminify.current_stack_index -= 2;
+            }else 
+            if(in.startsWith("iastore")){
+                Jasminify.current_stack_index -= 3;
+            }
+        }
+        if(!in.startsWith(";")) {
+            //Jasminify.directwriteln("; :"+(Jasminify.current_stack_index-a)+":"+Jasminify.current_stack_index+": "+in);
+        }
+        if(Jasminify.current_stack_index > Jasminify.max_stack_index){
+            Jasminify.max_stack_index = Jasminify.current_stack_index;
         }
         out_temp += in;
+    }
+    public static void calculateMethodStack(ArrayList arguments_and_return, String type){
+        //# arguments - return (if return non void)
+        //The last element is the return, need to take care into account, even when is void.
+        int a = Jasminify.current_stack_index;
+        if(arguments_and_return.get(arguments_and_return.size()-1).equals("void")){
+            Jasminify.current_stack_index -= arguments_and_return.size() - 1;
+        }else{
+            Jasminify.current_stack_index -= arguments_and_return.size() - 2;
+        }
+        //Also consumes reference
+        if(!type.equals("static")){
+            Jasminify.current_stack_index -= 1;
+        }
+        //Jasminify.directwriteln("; >> invoke "+type+" |"+arguments_and_return.size()+"| "+(Jasminify.current_stack_index-a)+": "+arguments_and_return.get(arguments_and_return.size()-1));
+
     }
     public static String getIndex(){
         control_index++;
@@ -83,6 +128,7 @@ public class Jasminify {
     }
     
     public static void writeReturn(JasminMethod method_node, String return_type){
+        Jasminify.current_stack_index -= 1;
         switch(return_type){
             case "int":
                 Jasminify.writeln("ireturn");
@@ -108,10 +154,9 @@ public class Jasminify {
     }
 
     public static void writePushConstant(int pushed_const){
-        Jasminify.current_stack_index += 1;
         if(pushed_const == -1){
             Jasminify.writeln("iconst_m1");            
-        }else if(pushed_const < 0){                     //All negatives except -1
+        }else if(pushed_const < 0){                     //All negatives except -1 (there are no negatives in Jmm)
             Jasminify.writeln("Dont know how to push: "+pushed_const);
         }else if(pushed_const < 6){                     //From 0 to 5
             Jasminify.writeln("iconst_"+pushed_const);
@@ -175,7 +220,7 @@ public class Jasminify {
         Expression helper0;
         Expression helper1;
         String jump_ind;
-        Jasminify.writeln("; "+expr.expression_type);
+        //Jasminify.writeln("; "+expr.expression_type);
         switch(expr.expression_type){
             case Expression.t_constant:
                 //if(expr.return_type == "int"){
@@ -224,6 +269,8 @@ public class Jasminify {
                 Jasminify.writeln("is_true_"+jump_ind+":");
                 Jasminify.writeln("iconst_0");
                 Jasminify.writeln("end_cond"+jump_ind+":");
+                //Only one of these goes into the stack, but it's hard to detect that elsewhere
+                Jasminify.current_stack_index -= 1;
                 break;
             case Expression.t_and:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
@@ -249,6 +296,9 @@ public class Jasminify {
                     Jasminify.writeln("dup");
                     //Jasminify.writeln("astore ");
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
+                    Jasminify.current_stack_index -= 1;
+                    //Reference + # arguments - return (if return non void)
+                    //Currently not accepting arguments for custructors so stack remains the same
                     for(Structure another_method : expr.nested_structures){
                         Jasminify.ref_loaded = true;
                         //helper0 = (Expression)expr.nested_structures.get(0);
@@ -278,11 +328,14 @@ public class Jasminify {
                     if(expr.used_symbol.type == Symbol.t_method_instance){
                         if(expr.used_symbol instanceof JasminMethod){
                             Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
+                            Jasminify.calculateMethodStack((ArrayList)((JasminMethod)expr.used_symbol).data, "virtual");
                         }else{      //Only happens for constructors
                             Analyzer.throwException(new RuntimeException("Constructors requires new keyword"));
                         }
                     }else{
                         Jasminify.writeln("invokestatic "+((JasminMethod)expr.used_symbol).jasmin_class+"/"+((JasminMethod)expr.used_symbol).jasmin_signature);
+                        Jasminify.calculateMethodStack((ArrayList)((JasminMethod)expr.used_symbol).data, "static");
+
                     }
                     //invokevirtual Simple/add(II)I
                 }
@@ -292,6 +345,7 @@ public class Jasminify {
                 //Jasminify.writeln(";>>>"+expr.used_symbol.name);
 
                 Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol)+"/"+"length()I");
+                Jasminify.calculateMethodStack((ArrayList)((JasminMethod)expr.used_symbol).data, "virtual");
                 break;
             case Expression.t_access:
                 switch(expr.nested_structures.size()){
@@ -357,6 +411,8 @@ public class Jasminify {
                 Jasminify.writeln("is_true_"+jump_ind+":");
                 Jasminify.writeln("iconst_1");
                 Jasminify.writeln("end_cond"+jump_ind+":");
+                //Only one of these goes into the stack, but it's hard to detect that elsewhere
+                Jasminify.current_stack_index -= 1;
                 break;
             default:
                 Jasminify.writeln("CANNOT PARSE "+expr.expression_type+" YET");
@@ -377,6 +433,13 @@ public class Jasminify {
         Expression helper1;
         Expression helper2;
         String jump_ind;
+        if(Jasminify.current_stack_index > Jasminify.max_stack_index){
+            Jasminify.max_stack_index = Jasminify.current_stack_index;
+        }
+        if(Jasminify.current_stack_index != 0){
+            throw new RuntimeException("Stack not 0: "+Jasminify.current_stack_index);
+        }
+        
         switch(struct.type){
             case Structure.t_attribution:
                 switch(struct.nested_structures.size()){
@@ -438,8 +501,10 @@ public class Jasminify {
                     //IF IN STATIC
                     if(helper0.used_symbol.type == Symbol.t_method_instance){
                         Jasminify.writeln("invokevirtual "+((JasminMethod)helper0.used_symbol).jasmin_class+"/"+((JasminMethod)helper0.used_symbol).jasmin_signature);
+                        Jasminify.calculateMethodStack((ArrayList)((JasminMethod)helper0.used_symbol).data, "virtual");
                     }else{
                         Jasminify.writeln("invokestatic "+((JasminMethod)helper0.used_symbol).jasmin_class+"/"+((JasminMethod)helper0.used_symbol).jasmin_signature);
+                        Jasminify.calculateMethodStack((ArrayList)((JasminMethod)helper0.used_symbol).data, "static");
                     }
                 }else{
                     Jasminify.writeExpression(helper0, method);
@@ -487,10 +552,7 @@ public class Jasminify {
         }
         //Sometimes, references may be loaded but not used by a method, so we need to reset ref_loaded
         Jasminify.ref_loaded = false;
-        if(Jasminify.current_stack_index > Jasminify.max_stack_index){
-            Jasminify.max_stack_index = Jasminify.current_stack_index;
-        }
-        Jasminify.current_stack_index = 0;
+        
         Jasminify.writeln("");
     }
 
