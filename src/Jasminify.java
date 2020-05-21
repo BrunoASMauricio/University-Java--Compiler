@@ -156,8 +156,9 @@ public class Jasminify {
     public static void writePushConstant(int pushed_const){
         if(pushed_const == -1){
             Jasminify.writeln("iconst_m1");            
-        }else if(pushed_const < 0){                     //All negatives except -1 (there are no negatives in Jmm)
-            Jasminify.writeln("Dont know how to push: "+pushed_const);
+        }else if(pushed_const < 0){                     //All negatives except -1 (there are no negatives in Jmm but constant pushing might make negatives appear)
+            writePushConstant(-1*pushed_const);
+            Jasminify.writeln("ineg");
         }else if(pushed_const < 6){                     //From 0 to 5
             Jasminify.writeln("iconst_"+pushed_const);
         }else if(pushed_const < 128){
@@ -439,6 +440,7 @@ public class Jasminify {
         if(Jasminify.current_stack_index != 0){
             throw new RuntimeException("Stack not 0: "+Jasminify.current_stack_index);
         }
+        //Jasminify.directwriteln("; STACK NOT 0 : "+Jasminify.current_stack_index);
         
         switch(struct.type){
             case Structure.t_attribution:

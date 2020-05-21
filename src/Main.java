@@ -70,6 +70,7 @@ public class Main {
             throw new RuntimeException("Syntatical error");
         }
 
+        SyntaxToSemanticOptimizations.Optimize(AST_root);
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 
