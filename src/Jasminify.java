@@ -575,9 +575,9 @@ public class Jasminify {
                     for(Structure if_bd : struct.nested_structures.get(2).nested_structures){
                         Jasminify.writeStructure(if_bd, method);
                     }
+                    Jasminify.writeln("endif_"+jump_ind+":");
                 }
                 
-                Jasminify.writeln("endif_"+jump_ind+":");
                 break;
             default:
         }
