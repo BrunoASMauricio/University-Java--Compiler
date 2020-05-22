@@ -49,6 +49,8 @@ Working | Custom Test <br> Exists | Description
 
 [X] Register selection priority for loop control or body variables (more accessed)
 
+[V] Constant folding
+
 [V] Empty else doesn't generate redundant jumps
 
 [V] Constant pushing instructions are optimized based on the size of the constant

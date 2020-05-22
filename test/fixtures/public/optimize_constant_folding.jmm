@@ -6,7 +6,7 @@ class Quicksort {
 
         c = true && true && true && (1 < 2);
         c = true && (2 < 2);
-        b = 4-50;
+        b = 4-50/5;
         a = 2*3*4+5;
     }
 }
