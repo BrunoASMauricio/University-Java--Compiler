@@ -39,7 +39,7 @@ public class Jasminify {
         }else if(in.startsWith("load") || in.startsWith("ldc ") || in.startsWith("iconst") || in.startsWith("bipush") || in.startsWith("sipush") || in.startsWith("aload") || in.startsWith("iload") || in.startsWith("dup") || in.startsWith("new")){
             Jasminify.current_stack_index += 1;
         }else{
-            if(in.startsWith("ifeq") || in.startsWith("store") || in.startsWith("istore") || in.startsWith("pop") || in.startsWith("iadd") || in.startsWith("iand") || in.startsWith("imul") || in.startsWith("idiv") || in.startsWith("isub") || in.startsWith("iaload")){
+            if(in.startsWith("ifge") || in.startsWith("ifeq") || in.startsWith("store") || in.startsWith("istore") || in.startsWith("pop") || in.startsWith("iadd") || in.startsWith("iand") || in.startsWith("imul") || in.startsWith("idiv") || in.startsWith("isub") || in.startsWith("iaload")){
                 Jasminify.current_stack_index -= 1;
             }else 
             if(in.startsWith("putfield") || in.startsWith("if_")){
@@ -422,9 +422,15 @@ public class Jasminify {
     }
     public static void evalCond(Expression expr, String jump_ind, JasminMethod method){
         if(expr.expression_type == Expression.t_lessthan){                                   //For a single less than, we can do this directly
+            //Optimize with iflt or if_icmpge
+            Expression helper1 = (Expression)expr.nested_structures.get(1);
             Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
-            Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
-            Jasminify.writeln("if_icmpge else_"+jump_ind);
+            if(helper1.expression_type == Expression.t_constant && helper1.return_type == "int" && (Integer)helper1.value == 0){
+                Jasminify.writeln("ifge else_"+jump_ind);
+            }else{
+                Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
+                Jasminify.writeln("if_icmpge else_"+jump_ind);
+            }
         }else{                                                                                  //For Boolean value of false (int value of 0)
             Jasminify.writeExpression(expr, method);
             Jasminify.writeln("ifeq else_"+jump_ind);    

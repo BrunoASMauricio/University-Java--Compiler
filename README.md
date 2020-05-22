@@ -53,6 +53,8 @@ Working | Custom Test <br> Exists | Description
 
 [V] Empty else doesn't generate redundant jumps
 
+[V] Condition related expressions are optimized for direct less than comparisons using either iflt when right hand operand is zero or if_icmpge
+
 [V] Constant pushing instructions are optimized based on the size of the constant
 
 

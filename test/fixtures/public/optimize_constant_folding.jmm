@@ -14,5 +14,11 @@ class ConstantOptimizations {
         b = b + 990;
         b = 302 + b;
 
+        if(b < 0){
+
+        }else{
+            
+        }
+
     }
 }
