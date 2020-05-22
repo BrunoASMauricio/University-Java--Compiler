@@ -101,6 +101,8 @@ public class Main {
         }
         Analyzer.throwAllExceptions();
 
+        JasminCodeOptimization.Optimize(Jasminify.out);
+
         PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
         writer.println(Jasminify.out);
         writer.close();

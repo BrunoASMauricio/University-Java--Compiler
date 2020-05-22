@@ -176,6 +176,7 @@ public class Jasminify {
             //Analyzer.throwException(new UndeclaredException("Undefined data type "+type, n));
             //return;
         }
+        Jasminify.writeln(";"+expr.used_symbol.name);
         switch((String)expr.used_symbol.data){
             case "boolean":
             case "int":
@@ -187,9 +188,9 @@ public class Jasminify {
         }
         Jasminify.write(type);
         if(expr.used_symbol.Jvarindex < 4){
-            Jasminify.writeln("_"+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+            Jasminify.writeln("_"+expr.used_symbol.Jvarindex);
         }else{
-            Jasminify.writeln(" "+expr.used_symbol.Jvarindex+"\t\t;"+expr.used_symbol.name);
+            Jasminify.writeln(" "+expr.used_symbol.Jvarindex);
         }
     }
 
@@ -454,11 +455,33 @@ public class Jasminify {
                             Jasminify.writeExpression(helper1, method);
                             Jasminify.writeln("putfield "+helper0.used_symbol.Jfielddsignature);
                         }else{
-                            Jasminify.writeExpression(helper1, method);
-                            if(helper0.expression_type == Expression.t_access){
-                                Jasminify.storeVariable(helper0, method);
+                            //Optimize with iinc
+                            int constant_val = -1;
+                            if(helper1.expression_type == Expression.t_add && helper1.nested_structures.size() == 2){
+                                Expression lhs = (Expression)helper1.nested_structures.get(0);
+                                Expression rhs = (Expression)helper1.nested_structures.get(1);
+                                if(lhs.expression_type == Expression.t_access
+                                && lhs.used_symbol == helper0.used_symbol
+                                && rhs.expression_type == Expression.t_constant
+                                && rhs.return_type == "int"){
+                                    constant_val = (Integer)rhs.value;
+                                }else
+                                if(rhs.expression_type == Expression.t_access
+                                && rhs.used_symbol == helper0.used_symbol
+                                && lhs.expression_type == Expression.t_constant
+                                && lhs.return_type == "int"){
+                                    constant_val = (Integer)lhs.value;
+                                }
+                            }
+                            if(constant_val != -1){
+                                Jasminify.writeln("iinc "+helper0.used_symbol.Jvarindex+" "+constant_val);
                             }else{
-                                Jasminify.writeln("\t\tCANT PARSE TYPE "+helper0.type+" YET");
+                                Jasminify.writeExpression(helper1, method);
+                                if(helper0.expression_type == Expression.t_access){
+                                    Jasminify.storeVariable(helper0, method);
+                                }else{
+                                    Jasminify.writeln("\t\tCANT PARSE TYPE "+helper0.type+" YET");
+                                }
                             }
                         }
                         break;

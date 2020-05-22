@@ -1,4 +1,4 @@
-class Quicksort {
+class ConstantOptimizations {
     public static void main(String[] in) {
         int a;
         int b;
@@ -8,5 +8,11 @@ class Quicksort {
         c = true && (2 < 2);
         b = 4-50/5;
         a = 2*3*4+5;
+
+        b= 0-1;
+
+        b = b + 990;
+        b = 302 + b;
+
     }
 }
