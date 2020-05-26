@@ -9,8 +9,8 @@ else
     mkdir ./run_tmp
 fi
 
-if [ $# != 4 ]; then
-    echo "Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE"
+if [ $# != 6 ]; then
+    echo "Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE RVALUE OVALUE"
     echo "FILE_PATH: the file to compile"
     echo "BASH_VERBOSITY: this scripts verbosity"
     echo "0: No output"
@@ -23,6 +23,8 @@ if [ $# != 4 ]; then
     echo "2: Semantic output and higher"
     echo "3: jasmin output and higher"
     echo "INTERACTIVE: == 1 to allow direct Java program interaction (no java output logging)"
+    echo "RVALUE: -r value to pass to the compiler"
+    echo "OVALUE: -o value to pass to the compiler"
     exit -1
 fi
 
@@ -45,7 +47,7 @@ fi
 echo GRADLE SUCCESSFUL
 
 #Run compiler
-$JavaC -jar comp2020-2i.jar $1 -v=$3 &> ./run_tmp/compiler_output
+$JavaC -jar comp2020-2i.jar $1 -v=$3 -r=$5 -o=$6 &> ./run_tmp/compiler_output
 cat ./run_tmp/compiler_output
 if ! cat ./run_tmp/compiler_output | grep -q 'COMPILATION SUCCESSFUL'; then
     echo COMPILATION FAILED

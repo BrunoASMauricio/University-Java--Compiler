@@ -1,0 +1,48 @@
+import static io.println(int) void;
+class DeepWhile {
+    public static void main(String[] args){
+        int a;
+        int b;
+        int c;
+        int d;
+        b = 0;
+        d = 0;
+        
+        if(2 < 1){
+            a = 2;
+        }else{
+            if(a < d){
+                while(2 < 1){
+                    c = 0;
+                }
+            }else{
+
+            }
+            a = 3;
+        }
+        a = c;
+        /*
+        while(a < 10){
+            b = 0;
+            while(b < 10){
+                c = 0;
+                while(c < 10){
+                    //io.println(d);
+                    d = d + 1;
+                    c = c + 1;
+                    if(d < 1){
+
+                    }else{
+
+                    }
+                }
+                b = b + 1;
+            }
+            a = a + 1;
+        }
+        */
+    }
+  public int winner() {
+    return 1;
+  }
+}

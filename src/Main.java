@@ -27,7 +27,7 @@ public class Main {
         InputStream file_stream = null;
         int r = 0;
         int v = 0;
-        boolean o = false;
+        int o = 0;
         SimpleNode AST_root = null;
         TreeNode semantic_class_root = null;
         TreeNode semantic_file_root = null;
@@ -38,8 +38,8 @@ public class Main {
                 v = Integer.parseInt(args[i].substring(3));
             }else if(args[i].substring(0,3).equals("-r=")){
                 r = Integer.parseInt(args[i].substring(3));
-            }else if(args[i].substring(0,2).equals("-o")){
-                o = true;
+            }else if(args[i].substring(0,3).equals("-o=")){
+                o = Integer.parseInt(args[i].substring(3));
             }else if(args[i].substring(args[i].length()-4, args[i].length()).equals(".jmm")){
                 input_file = args[i];
             }else{
@@ -101,7 +101,10 @@ public class Main {
         }
         Analyzer.throwAllExceptions();
 
-        JasminCodeOptimization.Optimize(Jasminify.out);
+        if(o > 0){
+            JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root);
+            Analyzer.throwAllExceptions();
+        }
 
         PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
         writer.println(Jasminify.out);

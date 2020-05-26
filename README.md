@@ -15,8 +15,6 @@ Usage: java Main [-r= < num >] [-o] < input_file.jmm > [-v=< 0|1|2|3 >]
 
 ### Semantic errors detected
 
-I haven't created any custom testing file yet, only temporarily altered other tests to check for issues.
-
 Working | Custom Test <br> Exists | Description
 -|-|-
 [V] | [V] | Reserved identifier misuse
@@ -39,7 +37,7 @@ Working | Custom Test <br> Exists | Description
 [V] | [V] | Constructor cannot be called without new
 [?] | [X] | Call overloaded (imported or not) constructors
 [?] | [X] | Constructor with arguments
-[X] | [X] | Possible uninitialization of variable due to control flow
+[V] | [V] | Possible uninitialization of variable due to control flow
 
 ### Optimizations
 

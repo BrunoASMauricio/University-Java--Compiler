@@ -4,6 +4,7 @@
 *.jar
 /run_tmp/
 JasminOut.j
+DecisionNode
 # Ignore Gradle GUI config
 gradle-app.setting
 
