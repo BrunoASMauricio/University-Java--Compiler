@@ -13,6 +13,10 @@ Usage: java Main [-r= < num >] [-o] < input_file.jmm > [-v=< 0|1|2|3 >]
 * * 2: Semantic output and higher
 * * 3: Jasmin output and higher
 
+### TODO
+
+Improve compiler thrown exceptions (make them more consistent)
+
 ### Semantic errors detected
 
 Working | Custom Test <br> Exists | Description
@@ -47,7 +51,7 @@ Working | Custom Test <br> Exists | Description
 
 [X] Register selection priority for loop control or body variables (more accessed)
 
-[V] Constant folding
+[V] Constant folding (arithmetic, boolean and logic)
 
 [V] Empty else doesn't generate redundant jumps
 
