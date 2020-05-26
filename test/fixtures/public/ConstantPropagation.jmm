@@ -1,0 +1,39 @@
+import static io.println(int) void;
+class ConstantPropagation {
+    public int abc(){
+        return 9;
+    }
+    public static void main(String[] args){
+        int a;
+        int b;
+        int d;
+        ConstantPropagation c;
+        c = new ConstantPropagation();
+        a = 5;
+
+        //b = 3*a;
+        d = 3;
+        if(a < 9){
+            if(true){
+                a = 2;
+            }else{
+                a = 2;//c.abc();
+            }
+        }else{
+            a = 2;
+        }
+
+        while(false){
+            a = 2;
+            if(true){
+                a = 2;
+            }else{
+                while(a < 0){
+                    a = 2;
+                }
+            }
+        }
+
+        b = a;
+    }
+}

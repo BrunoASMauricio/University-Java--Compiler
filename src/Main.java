@@ -85,13 +85,19 @@ public class Main {
             throw new RuntimeException("Semantic error");
         }
         
+            SemanticToJasminOptimizations.Optimize(semantic_class_root);
+        try{
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
 
         //                      USE THE Scope TREE TO GENERATE JASMIN CODE
 
         try{
             Jasminify.start(semantic_file_root, semantic_class_root);
             if(v > 2){
-                System.out.println("\n"+Jasminify.out);
+                //REMEMBER TO UNCOMMENT THIS!!
+                //System.out.println("\n"+Jasminify.out);
             }
         }catch(Exception ex){
             Analyzer.throwAllExceptions();

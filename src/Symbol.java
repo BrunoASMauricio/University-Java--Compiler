@@ -18,13 +18,19 @@ public class Symbol {
     public String Jfielddsignature;                //Data required by Jasmin
     public int Jvarindex;               //Jasmin symbol index in stack
     public String Jvartype;               //field or local variable
+    //Optimization variables
+    public boolean initialized_with_constant;
+    public Object constant_value;
+    public int while_accesses;
     public Symbol(){
         this.signature = null;
         this.name = null;
         this.type = Symbol.t_unset;
         this.data = null;
+        this.initialized_with_constant = false;
         this.Jfielddsignature = null;
         this.Jvarindex = -1;
+        this.while_accesses = 0;
     }
     /*
     data meaning by type:

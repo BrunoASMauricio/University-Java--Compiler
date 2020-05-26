@@ -23,7 +23,7 @@ public class Expression extends Structure{
     public static final int t_return = 13;
     
     public String return_type;      //The expression value type
-    public Object value;            //The expression value, if available
+    public Object value;            //The expression value, if available (an Integer or Boolean)
     public int expression_type;
     public Symbol used_symbol;
     public Boolean is_new;

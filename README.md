@@ -13,9 +13,28 @@ Usage: java Main [-r= < num >] [-o] < input_file.jmm > [-v=< 0|1|2|3 >]
 * * 2: Semantic output and higher
 * * 3: Jasmin output and higher
 
+### Project cons
+
+By a lapse of judgement, constant folding was done in a stage prior to constant propagation. This could be changed rather easily (since the syntax tree and the semantic tree share the structure of the arithmetic expressions) but there might not be enough time.
+
 ### TODO
 
-Improve compiler thrown exceptions (make them more consistent)
+[X] Rmove optimizations from inside Symbol class
+
+[X] Improve compiler thrown exceptions (make them more consistent)
+
+[X] Improve general code readability
+
+[X] Remove redundancies/Increase modularity (shove repeated code into separate functions)
+
+[X] Improve variable name significance
+
+[X] Improve documentation
+
+[X] Create packages for better file management
+
+[X] Try to fit the code into a consistent naming convention and style guide
+
 
 ### Semantic errors detected
 
@@ -45,9 +64,19 @@ Working | Custom Test <br> Exists | Description
 
 ### Optimizations
 
+[X] Remove unused variables
+
 [X] Array of size 1 as a variable
 
 [X] Liveliness analysis for register allocation
+
+[X] Redundant attributions are removed 1 (setting the same variable to the same value it already had)
+
+[X] Redundant attributions are removed 2 (changing a variables' value before using the variable)
+
+[X] Most appropriate while structure
+
+[X] Constant propagation by segmented sections (detects where a variable is constant, and replaces it in those segments only)
 
 [X] Register selection priority for loop control or body variables (more accessed)
 
