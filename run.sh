@@ -34,9 +34,8 @@ if [ ! -f $1 ]; then
 fi
 
 JavaC=/usr/lib/jvm/java-13-openjdk/bin/java
-
 #Build compiler
-gradle --info build &> ./run_tmp/gradle_output
+gradle -Dorg.gradle.java.home=/usr/lib/jvm/java-13-openjdk --info build &> ./run_tmp/gradle_output
 if [ $2 -gt 0 ]; then
     cat ./run_tmp/gradle_output
 fi

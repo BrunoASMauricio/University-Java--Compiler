@@ -1,0 +1,49 @@
+class Liveliness {
+    public boolean abc(){
+        return false;
+    }
+    public static void main(String[] args){
+        int sum;
+        int i;
+        sum = 0;
+        i = 0;
+        while(i < 9){
+            sum = sum+1;
+            i = i + 1;
+        }
+        /*
+        int a;
+        Liveliness b;
+        b = new Liveliness();
+        a = 1;
+        b.abc();
+        a = 2;
+        */
+        /*
+        int t0;
+        int t1;
+        int t2;
+        int t3;
+        int t4;
+        int t5;
+        int t6;
+        int t7;
+        int t8;
+        int t9;
+        int t10;
+
+        t0 = 4;         //lw $t0, 4($sp)
+        t1 = 8;         //lw $t1, 8($sp)
+        t2 = t0*t1;     //mult $t2, $t1, $t0
+        t3 = 8;         //lw $t3, 8($sp)
+        t4 = 8;         //lw $t4, 8($sp)
+        t5 = t3*t4;     //mult $t5, $t3, $t4
+        t6 = 0;         //lw $t6, 0($sp)
+        t7 = t5*t6;     //mult $t7, $t5, $t6
+        t8 = t7+t2;     //add $t8, $t7, $t2
+        t9 = 12;        //lw $t9, 12($sp)
+        t10 = t8 + t9;  //add $t10, $t8, $t9
+        t0 = t10;       //sw $t10, 16($sp)
+    */
+    }
+}

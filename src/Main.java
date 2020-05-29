@@ -70,7 +70,7 @@ public class Main {
             throw new RuntimeException("Syntatical error");
         }
 
-        SyntaxToSemanticOptimizations.Optimize(AST_root);
+        //SyntaxToSemanticOptimizations.Optimize(AST_root);
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 
@@ -85,7 +85,7 @@ public class Main {
             throw new RuntimeException("Semantic error");
         }
         
-            SemanticToJasminOptimizations.Optimize(semantic_class_root);
+            //SemanticToJasminOptimizations.Optimize(semantic_class_root);
         try{
         }catch(Exception ex){
             ex.printStackTrace();
@@ -106,9 +106,9 @@ public class Main {
             throw new RuntimeException("Jasmin error");
         }
         Analyzer.throwAllExceptions();
-
+        
         if(o > 0){
-            JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root);
+            JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root, r);
             Analyzer.throwAllExceptions();
         }
 

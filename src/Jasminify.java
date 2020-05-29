@@ -481,7 +481,7 @@ public class Jasminify {
                                 }
                             }
                             if(constant_val != -1){
-                                Jasminify.writeln("iinc "+helper0.used_symbol.Jvarindex+" "+constant_val);
+                                Jasminify.writeln("iinc "+helper0.used_symbol.Jvarindex+" "+constant_val+" ;"+helper0.used_symbol.hashCode());
                             }else{
                                 Jasminify.writeExpression(helper1, method);
                                 if(helper0.expression_type == Expression.t_access){

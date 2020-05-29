@@ -11,7 +11,7 @@ class ConstantPropagation {
         c = new ConstantPropagation();
         a = 5;
 
-        //b = 3*a;
+        b = 3*a;
         d = 3;
         if(a < 9){
             if(true){

@@ -134,6 +134,7 @@ public class SemanticToJasminOptimizations {
             if(expr.expression_type == Expression.t_access && expr.used_symbol != null){
                 used_s = inSymbolList(changed_symbols, expr.used_symbol.name);
                 if(used_s != null && used_s.initialized_with_constant == true){
+                    System.out.println("Propagated constant!");
                     expr.expression_type = Expression.t_constant;
                     expr.used_symbol = null;
                     expr.value = used_s.constant_value;
@@ -221,7 +222,7 @@ public class SemanticToJasminOptimizations {
 
             propagateInsideExpression(instr, getUnique(locally_changed_vars, globally_changed_vars));
         }
-        print(getUnique(locally_changed_vars, globally_changed_vars));
+        //print(getUnique(locally_changed_vars, globally_changed_vars));
         return locally_changed_vars;
     }
 

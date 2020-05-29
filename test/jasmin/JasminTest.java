@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class JasminTest {
 	
-
+/*
 	@Test
     public void testFindMaximum() {
 		JasminUtils.testJmm("fixtures/public/FindMaximum.jmm", "Result: 28");
@@ -44,5 +44,5 @@ public class JasminTest {
 		JasminUtils.testJmm("fixtures/public/WhileAndIF.jmm", JasminUtils.getResource("fixtures/public/WhileAndIF.txt"));
     }
 
-
+*/
 }

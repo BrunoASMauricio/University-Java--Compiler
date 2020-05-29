@@ -2,16 +2,315 @@ import java.util.ArrayList;
 
 
 public class JasminCodeOptimization {
-    public static void Optimize(String jasmin_code, TreeNode semantic_class_root){
+    public static void Optimize(String jasmin_code, TreeNode semantic_class_root, int register_ammount){
         CodeTree.generateTree(jasmin_code);
-        getUninitializedVariables(semantic_class_root);
+        //getUninitializedVariables(semantic_class_root);
+        getLiveliness(register_ammount);
     }
-    public static void constantPropagation(CodeTree tree){
-
-    }
-    /*
     
-    */
+    public static void getLiveliness(int register_ammount){
+        int rep = 0;
+        int max_colors;
+        int max_paint_registers;
+        Boolean[] paint;
+        for(CodeTree.CodeNode root_tree : CodeTree.all_roots){
+            //System.out.println("New method");
+            //Remove root node (only used in another section, here it's in the way)
+            root_tree.all_nodes.remove(0);
+            //Locals need to be shoved in as writes
+            for(int i = 0; i < root_tree.jump_index; i++){
+                root_tree.all_nodes.add(i, new CodeTree.CodeNode(i+1, -1, CodeTree.write));
+            }
+            for(int i = 0; i < root_tree.jump_index; i++){
+                root_tree.all_nodes.get(i).next.add(root_tree.all_nodes.get(i+1));
+            }
+
+            /*for(CodeTree.CodeNode node : root_tree.all_nodes){
+                switch(node.type){
+                    case CodeTree.write:
+                        System.out.print("write to index "+node.index);
+                        break;
+                    case CodeTree.read:
+                        System.out.print("read to index "+node.index);
+                        break;
+                    
+                }
+                System.out.print(" "+node+" connected to:");
+                for(CodeTree.CodeNode next : node.next){
+                    System.out.print(" "+next);
+                }
+                System.out.println();
+            }*/
+            
+            GraphNode.all_nodes = new ArrayList<GraphNode>();
+        
+            //Liveliness analysis
+            do{
+                //rep = rep+1;
+                rep = 1;
+                //System.out.println(": "+rep);
+                for(CodeTree.CodeNode node : root_tree.all_nodes){
+                    if(node.type != CodeTree.read && node.type != CodeTree.write){
+                        continue;
+                    }
+                    node.prev_in.clear();
+                    node.prev_out.clear();
+                    node.prev_in.addAll(node.in);
+                    node.prev_out.addAll(node.out);
+
+                    defineOut(node.out, node);
+                    switch(node.type){
+                        case CodeTree.read:
+                            defineIn(node.in, node.out, new Integer(node.index), null);
+                            break;
+                        case CodeTree.write:
+                            defineIn(node.in, node.out, null, new Integer(node.index));
+                            break;
+                        case CodeTree.jump_goto:
+                        case CodeTree.jump_while:
+                        case CodeTree.jump_if:
+                            defineIn(node.in, node.out, null, null);
+                            break;
+                    }
+
+                    //System.out.println(rep);
+                    //rep = rep+1;
+                    //if(node.in.size() != 0) System.out.print("in: ");
+                    //for(Integer a : node.in){
+                    //    System.out.print(" "+a);
+                    //}
+                    //System.out.println();
+                    //if(node.out.size() != 0) System.out.print("out: ");
+                    //for(Integer b : node.out){
+                    //    System.out.print(" "+b);
+                    //}
+                    //System.out.println();
+                }
+                //System.out.println("--------------------------------------");
+            }while(!hasStabilized(root_tree));
+
+            //Create interferences
+            for(CodeTree.CodeNode node : root_tree.all_nodes){
+                //Add all interferences in both in and out
+                GraphNode.addInterferences(node.in);
+                GraphNode.addInterferences(node.out);
+            }
+
+            //Get a maximum ammount of needed colors
+            max_colors = 0;
+            for(GraphNode node : GraphNode.all_nodes){
+                if(node.interference.size() > max_colors){
+                    max_colors = node.interference.size();
+                }
+            }
+            max_colors += 1;//1 interference means 2 nodes
+
+            //Color the graph
+            paint = new Boolean[max_colors];
+            max_paint_registers = 0;
+            for(GraphNode node : GraphNode.all_nodes){
+                //System.out.print("Index: "+node.index+" interferes with:");
+                //for(GraphNode int_node : node.interference){
+                //    System.out.print(" "+int_node.index);
+                //}
+                //System.out.println();
+                for(int i = 0; i < max_colors; i++){
+                    paint[i] = true;
+                }
+                for(GraphNode int_node : node.interference){
+                    if(int_node.painted_index != -1){
+                        paint[int_node.painted_index-1] = false;
+                    }
+                }
+                for(int i = 0; i < max_colors; i++){
+                    if(paint[i]){
+                        node.painted_index = i+1;
+                        if(max_paint_registers < node.painted_index){
+                            max_paint_registers = node.painted_index;
+                        }
+                        //System.out.println("Chosen paint index "+node.painted_index);
+                        break;
+                    }
+                }
+            }
+            
+            //Test for the requested maximum registers
+            if(max_paint_registers > register_ammount){
+                throw new RuntimeException("Cannot use only "+register_ammount+" minimum of "+max_paint_registers);
+            }
+            System.out.println("Reduced locals from "+root_tree.locals+" to "+max_paint_registers);
+            //Update variable indexes
+            for(CodeTree.CodeNode node : root_tree.all_nodes){
+                GraphNode n = GraphNode.getNode(node.index);
+                if(node.index == n.painted_index || node.hash == -1){
+                    continue;
+                }
+                if(n.painted_index == -1){  //No interference
+                    n.painted_index = 1;
+                }
+                if(node.index < 4){
+                    Jasminify.out = Jasminify.out.replaceAll("store_"+node.index+" ;"+node.hash, "store_"+n.painted_index+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
+                    Jasminify.out = Jasminify.out.replaceAll("load_"+node.index+" ;"+node.hash, "load_"+n.painted_index+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
+                }else{
+                    Jasminify.out = Jasminify.out.replaceAll("store "+node.index+" ;"+node.hash, "store "+n.painted_index+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
+                    Jasminify.out = Jasminify.out.replaceAll("load "+node.index+" ;"+node.hash, "load "+n.painted_index+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
+                }
+                if(node.iinc != -1){
+                    Jasminify.out = Jasminify.out.replaceAll("iinc "+node.index+" "+node.iinc+" ;"+node.hash, "iinc "+n.painted_index+" "+node.iinc+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
+                }
+                //istore_1 ;747464370
+            }
+        }
+    }
+    public static class GraphNode{
+        public static ArrayList<GraphNode> all_nodes;
+        public ArrayList<GraphNode> interference;
+        public int index;
+        public int painted_index;
+        public int hash;
+        public GraphNode(int _index){
+            this.interference = new ArrayList<GraphNode>();
+            this.index = _index;
+            this.painted_index = -1;
+        }
+        //Retrieve node from all_nodes, add a new one if no node is found
+        public static GraphNode getNode(int target){
+            GraphNode helper;
+            for(GraphNode node : GraphNode.all_nodes){
+                if(node.index == target){
+                    return node;
+                }
+            }
+            helper = new GraphNode(target);
+            GraphNode.all_nodes.add(helper);
+            return helper;
+        }
+        //Add all interferences in between the given nodes
+        public static void addInterferences(ArrayList<Integer> nodes){
+            GraphNode n1;
+            GraphNode n2;
+            for(Integer node1 : nodes){
+                n1 = getNode(node1.intValue());
+                for(Integer node2 : nodes){
+                    n2 = getNode(node2.intValue());//Force all variables to be placed in the graph
+                    if(node1.intValue() == node2.intValue()){
+                        continue;
+                    }
+                    addInterference(n1, n2);
+                }
+            }
+        }
+        //Add a single interference to both nodes
+        public static void addInterference(GraphNode node_1, GraphNode node_2){
+            for(GraphNode node1_int : node_1.interference){
+                if(node1_int.index == node_2.index){
+                    return;
+                }
+            }
+            node_1.interference.add(node_2);
+            node_2.interference.add(node_1);
+        }
+    }
+    //So as not to create duplicates (duplicates are problematic in this algorithm)
+    public static void addInt(ArrayList<Integer> list, int new_int){
+        for(Integer list_el : list){
+            if(list_el.intValue() == new_int){
+                return;
+            }
+        }
+        list.add(new Integer(new_int));
+    }
+    //Since we are dealing with loads and stores, only 1 use OR 1 def is needed per in
+    public static void defineIn(ArrayList<Integer> in, ArrayList<Integer> out, Integer use, Integer def){
+        //helper[n] = out[n] – def [n]
+        ArrayList<Integer> helper = new ArrayList<Integer>();
+        helper.addAll(out);
+        if(def != null){
+            for(Integer out_int : helper){
+                if(out_int.intValue() == def.intValue()){
+                    helper.remove(out_int);
+                    break;
+                }
+            }
+        }
+        //helper[n] = out[n] U use[n]
+        if(use != null){
+            addInt(helper, use);
+        }
+        //in[n] = helper[n] = use[n] U (out[n] – def [n])
+        in.clear();
+        in.addAll(helper);
+    }
+    //out[n] = Usucc in[s]
+    public static void defineOut(ArrayList<Integer> out, CodeTree.CodeNode succs){
+        ArrayList<CodeTree.CodeNode> succs_next = getNext(succs);
+        out.clear();
+        for(CodeTree.CodeNode succ : succs_next){
+            for(Integer in_int : succ.in){
+                addInt(out, in_int.intValue());
+            }
+        }
+    }
+
+    public static ArrayList<CodeTree.CodeNode> getNext(CodeTree.CodeNode succ){
+        ArrayList<CodeTree.CodeNode> next = new ArrayList<CodeTree.CodeNode>();
+        for(CodeTree.CodeNode next_succ : succ.next){
+            switch(next_succ.type){
+                case CodeTree.read:
+                case CodeTree.write:
+                    next.add(next_succ);
+                break;
+                default:
+                    next.addAll(getNext(next_succ));    
+            }
+        }
+
+        return next;
+    }
+    //Compares two Array Lists of Integers
+    public static Boolean compareLists(ArrayList<Integer> list1, ArrayList<Integer> list2){
+        if(list1.size() != list2.size()){
+            return false;
+        }
+        Boolean found;
+        for(Integer int1 : list1){
+            found = false;
+            for(Integer int2 : list1){
+                if(int1.intValue() == int2.intValue()){
+                    found = true;
+                    break;
+                }
+            }
+            if(found == false){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    //Compares ins and prev_ins, outs and prev_outs, in all nodes
+    public static Boolean hasStabilized(CodeTree.CodeNode root_tree){
+        CodeTree.CodeNode current_node;
+        for(CodeTree.CodeNode node : root_tree.all_nodes){
+            if(!compareLists(node.in, node.prev_in) || !compareLists(node.out, node.prev_out)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static void getUninitializedVariables(TreeNode semantic_class_root){
         //For each method tree
         int hash;
@@ -156,117 +455,4 @@ public class JasminCodeOptimization {
             recursiveSearch(initialized_vars, next);
         }
     }
-
-    public static void getLiveliness(CodeTree tree){
-        
-    }
 }
-/*
-bruteforce
-
-public static void getUninitializedVariables(){
-        //CodeTree.unreadAll();
-        ArrayList<Integer> initialized_vars;
-        
-        DecisionNode root_node;
-        DecisionNode current_decision_node;
-        ArrayList<Integer> next_decisions;
-        int decision_step;
-        CodeTree.CodeNode current_tree_node;
-        //For each method tree
-        for(CodeTree.CodeNode root : CodeTree.all_roots){
-            ////System.out.println("New method tree");
-            root_node = new DecisionNode(null);
-            next_decisions = null;
-            current_decision_node = root_node;
-            current_tree_node = root;
-            ////System.out.println(current_tree_node);
-            //while there is still a decision to be made (next decisions are made in a binary add 1 fashion)
-            while(true){
-                CodeTree.unreadAll();
-                decision_step = 0;
-                //While we still have a next node (haven't reached the end of the program)
-                while(current_tree_node.next.size() != 0){
-                    //If it's a jump node
-                    if(current_tree_node.next.size() == 2){
-                        //Following previous decisions
-                        if(next_decisions != null && decision_step < next_decisions.size()){
-                            ////System.out.println("Making a predetermined decision");
-                            switch(current_tree_node.type){
-                                case CodeTree.jump_if:
-                                    //For ifs, decision 0 is not to enter (jump is at 0), 1 to enter
-                                    if(next_decisions.get(decision_step) == 0){
-                                        ////System.out.println("If: Decision 0, entering");
-                                        current_tree_node = current_tree_node.next.get(0);
-                                        current_decision_node = current_decision_node.choices[0];
-                                    }else{
-                                        ////System.out.println("If: Decision 1, not entering");
-                                        current_tree_node = current_tree_node.next.get(1);
-                                        current_decision_node = current_decision_node.choices[1];
-                                    }
-                                    decision_step++;
-                                    break;
-                                case CodeTree.jump_while:
-                                    //For whiles, decision 0 is never to enter, decision 1 is to enter once (jump is at 0)
-                                    if(next_decisions.get(decision_step) == 0){
-                                        ////System.out.println("While: Decision 0, not entering");
-                                        current_tree_node = current_tree_node.next.get(0);
-                                        current_decision_node = current_decision_node.choices[0];
-                                        decision_step++;
-                                    }else{
-                                        if(current_tree_node.read == false){
-                                            ////System.out.println("While: Decision 1, entering");
-                                            current_tree_node.read = true;
-                                            current_tree_node = current_tree_node.next.get(1);
-                                            current_decision_node = current_decision_node.choices[1];
-                                            decision_step++;
-                                        }else{
-                                            ////System.out.println("While: Decision 1, not entering");
-                                            current_tree_node = current_tree_node.next.get(0);
-                                            current_tree_node.read = false;
-                                        }
-                                    }
-                                    break;
-                                default:
-                                    throw new RuntimeException("FORK "+current_tree_node.type);
-                            }
-                        }else{
-                            //Making new decisions (decisions 0 must not include jumps to avoid infinite loops here)
-                            switch(current_tree_node.type){
-                                case CodeTree.jump_if:
-                                    ////System.out.println("New if decision 0, entering!");
-                                    current_decision_node = current_decision_node.newChoice();
-                                    current_tree_node = current_tree_node.next.get(0);
-                                    break;
-                                case CodeTree.jump_while:
-                                    ////System.out.println("New while decision 0, not entering!");
-                                    current_decision_node = current_decision_node.newChoice();
-                                    current_tree_node = current_tree_node.next.get(0);
-                                    break;
-                            }
-                        }
-                    }else{
-                        //load store or goto
-                        //////System.out.println("non condition instruction "+current_tree_node.type);
-                        current_tree_node = current_tree_node.next.get(0);
-                    }
-                }
-                if(current_tree_node.next.size() == 0){
-                    ////System.out.println("Reached the end of the program");
-                }
-                current_tree_node = root;
-                current_decision_node.finalizeNode();
-                current_decision_node = root_node;
-                next_decisions = root_node.searchForNextDecision();
-                if(next_decisions == null){
-                    break;
-                }
-                for(Integer a : next_decisions){
-                    //System.out.print(a+" ");
-                }
-                //System.out.print("_\n\n");
-            }
-            //root_node.printAll(0);
-        }
-    }
-*/

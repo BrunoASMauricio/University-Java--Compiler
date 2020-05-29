@@ -19,7 +19,6 @@ class CodeTree {
     public final static int label = 5;
 
     public static ArrayList<CodeNode> all_roots;
-    public static ArrayList<CodeNode> all_nodes;
     //Jumps to labels ahead in the code need to be saved as jump_requests since de actual node doesn't exist yet
     public CodeNode root;
 
@@ -36,14 +35,12 @@ class CodeTree {
         labels = null;
         node_list = null;
         CodeTree.all_roots = new ArrayList<CodeNode>();
-        CodeTree.all_nodes = new ArrayList<CodeNode>();
         for(String unescaped_line: lines){
             line = unescaped_line.split(" ;")[0];        //Purge comments
             if(line.length() == 0){
                 continue;
             }else
 
-            //if .method
             if(line.startsWith(".method")){
                 node_list = new ArrayList<CodeNode>();
                 labels = new ArrayList<CodeNode>();
@@ -54,11 +51,15 @@ class CodeTree {
                     new_root.jump_index = Integer.parseInt(unescaped_line.split(" ;")[1]);
                 }
                 labels.add(new_root);
+                new_root.all_nodes = new ArrayList<CodeNode>();
+
                 node_list.add(new_root);
                 all_roots.add(new_root);
                 //System.out.println("ROOT> "+new_root);
             }else
-
+            if(line.startsWith(".limit locals ")){
+                new_root.locals = Integer.parseInt(line.substring(14));
+            }else
             //if load (YYloads don't exist and ialoads don't matter)
             if(line.substring(1).startsWith("load")){
                 //Ignore loads of this (and getfields and putfields, cant analyze those)
@@ -68,6 +69,12 @@ class CodeTree {
                 node_list.add(new CodeNode(Integer.parseInt(line.substring(6)), Integer.parseInt(unescaped_line.split(";")[1]), CodeTree.read));
             }else
 
+            //if iinc
+            if(line.startsWith("iinc")){
+                helper = new CodeNode(Integer.parseInt(line.split(" ")[1]), Integer.parseInt(unescaped_line.split(";")[1]),CodeTree.write);
+                helper.iinc = Integer.parseInt(line.split(" ")[2]);
+                node_list.add(helper);
+            }else
             //if store (YYstores don't exist and iastores don't matter)
             if(line.substring(1).startsWith("store")){
                 node_list.add(new CodeNode(Integer.parseInt(line.substring(7)), Integer.parseInt(unescaped_line.split(";")[1]),CodeTree.write));
@@ -98,7 +105,7 @@ class CodeTree {
             if(line.startsWith(".end method")){
                 if(node_list.size() != 1){
                     connectTree(new_root, node_list, labels);
-                    CodeTree.all_nodes.addAll(node_list);
+                    new_root.all_nodes.addAll(node_list);
                 }else{
                     //System.out.println("Removing empty root");
                     node_list.remove(0);
@@ -120,6 +127,7 @@ class CodeTree {
         }
         throw new RuntimeException(a+" Label issue, could not find "+label);
     }
+
     //Connect tree
     public static void connectTree(CodeNode root, ArrayList<CodeNode> node_list, ArrayList<CodeNode> labels){
         CodeNode previous_node = null;
@@ -172,8 +180,10 @@ class CodeTree {
     }
 
     public static void unreadAll(){
-        for(CodeNode node : CodeTree.all_nodes){
-            node.read = false;
+        for(CodeNode root_tree : CodeTree.all_roots){
+            for(CodeNode node : root_tree.all_nodes){
+                node.read = false;
+            }
         }
     }
 
@@ -192,18 +202,40 @@ class CodeTree {
         public int hash;
         //Helper read boolean
         public Boolean read;
+        //constant increase
+        public int iinc;
         //Reachable nodes
         public ArrayList<CodeNode> next;
-        //The jumps index
-        int jump_index;
+        //The jumps index, or agumment ammount for the root
+        public int jump_index;
+        //The root node needs to have a list of all it's nodes, as well as know the locals
+        public ArrayList<CodeNode> all_nodes;
+        public int locals;
+        //Liveliness
+        ArrayList<Integer> in;
+        ArrayList<Integer> prev_in;
+        ArrayList<Integer> out;
+        ArrayList<Integer> prev_out;
+        ArrayList<Integer> interference;
+        
+        public void __CodeNode_def__(){
+            this.in = new ArrayList<Integer>();
+            this.prev_in = new ArrayList<Integer>();
+            this.out = new ArrayList<Integer>();
+            this.prev_out = new ArrayList<Integer>();
+            this.interference = new ArrayList<Integer>();
 
+            this.read = false;
+            this.next = new ArrayList<CodeNode>();
+            this.all_nodes = null;
+            this.iinc = -1;
+        }
         //Add store or load node
         public CodeNode(int _index, int _hash,int _type){
             this.type = _type;
             this.index = _index;
             this.hash = _hash;
-            this.read = false;
-            this.next = new ArrayList<CodeNode>();
+            this.__CodeNode_def__();
         }
     
         //Add if goto or label node
@@ -214,8 +246,7 @@ class CodeTree {
                 this.jump_index = Integer.parseInt(_label.substring(_label.indexOf('_')+1));
             }
             this.index = -1;
-            this.read = false;
-            this.next = new ArrayList<CodeNode>();
+            this.__CodeNode_def__();
         }
 
         public void addNext(CodeNode n){
