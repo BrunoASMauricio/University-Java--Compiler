@@ -114,6 +114,25 @@ class CodeTree {
             }
 
         }
+        //Trim
+        
+    }
+    public static void trimTree(){
+        String new_jasmin_out = new String();
+        Boolean has_load = false;
+        /*
+        for(String line : Jasminify.out.split("\n")){
+            if(line.substring(1).startsWith("store")){
+
+                for(String line2 : Jasminify.out.split("\n")){
+                    a
+                }
+                Integer.parseInt(line.substring(7))
+                Integer.parseInt(unescaped_line.split(";")[1]);
+            }
+            new_jasmin_out += line;
+        }
+        */
     }
     
     //Search for the correct label node

@@ -3,23 +3,6 @@ class Liveliness {
         return false;
     }
     public static void main(String[] args){
-        int sum;
-        int i;
-        sum = 0;
-        i = 0;
-        while(i < 9){
-            sum = sum+1;
-            i = i + 1;
-        }
-        /*
-        int a;
-        Liveliness b;
-        b = new Liveliness();
-        a = 1;
-        b.abc();
-        a = 2;
-        */
-        /*
         int t0;
         int t1;
         int t2;
@@ -44,6 +27,24 @@ class Liveliness {
         t9 = 12;        //lw $t9, 12($sp)
         t10 = t8 + t9;  //add $t10, $t8, $t9
         t0 = t10;       //sw $t10, 16($sp)
+
+        /*
+        int a;
+        Liveliness b;
+        b = new Liveliness();
+        a = 1;
+        b.abc();
+        a = 2;
+        */
+        /*
+        int sum;
+        int i;
+        sum = 0;
+        i = 0;
+        while(i < 9){
+            sum = sum+1;
+            i = i + 1;
+        }        
     */
     }
 }

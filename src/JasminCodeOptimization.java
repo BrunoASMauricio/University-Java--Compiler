@@ -14,7 +14,7 @@ public class JasminCodeOptimization {
         int max_paint_registers;
         Boolean[] paint;
         for(CodeTree.CodeNode root_tree : CodeTree.all_roots){
-            //System.out.println("New method");
+            System.out.println("New method");
             //Remove root node (only used in another section, here it's in the way)
             root_tree.all_nodes.remove(0);
             //Locals need to be shoved in as writes
@@ -25,7 +25,7 @@ public class JasminCodeOptimization {
                 root_tree.all_nodes.get(i).next.add(root_tree.all_nodes.get(i+1));
             }
 
-            /*for(CodeTree.CodeNode node : root_tree.all_nodes){
+            for(CodeTree.CodeNode node : root_tree.all_nodes){
                 switch(node.type){
                     case CodeTree.write:
                         System.out.print("write to index "+node.index);
@@ -40,7 +40,7 @@ public class JasminCodeOptimization {
                     System.out.print(" "+next);
                 }
                 System.out.println();
-            }*/
+            }
             
             GraphNode.all_nodes = new ArrayList<GraphNode>();
         
@@ -57,6 +57,9 @@ public class JasminCodeOptimization {
                     node.prev_out.clear();
                     node.prev_in.addAll(node.in);
                     node.prev_out.addAll(node.out);
+    
+                    //System.out.println("-> "+node.index);
+                    GraphNode.getNode(node.index);
 
                     defineOut(node.out, node);
                     switch(node.type){
@@ -73,27 +76,33 @@ public class JasminCodeOptimization {
                             break;
                     }
 
-                    //System.out.println(rep);
-                    //rep = rep+1;
-                    //if(node.in.size() != 0) System.out.print("in: ");
-                    //for(Integer a : node.in){
-                    //    System.out.print(" "+a);
-                    //}
-                    //System.out.println();
-                    //if(node.out.size() != 0) System.out.print("out: ");
-                    //for(Integer b : node.out){
-                    //    System.out.print(" "+b);
-                    //}
-                    //System.out.println();
+                    System.out.println(rep);
+                    rep = rep+1;
+                    if(node.in.size() != 0) System.out.print("in: ");
+                    for(Integer a : node.in){
+                        System.out.print(" "+a);
+                    }
+                    System.out.println();
+                    if(node.out.size() != 0) System.out.print("out: ");
+                    for(Integer b : node.out){
+                        System.out.print(" "+b);
+                    }
+                    System.out.println();
                 }
-                //System.out.println("--------------------------------------");
+                System.out.println("--------------------------------------");
             }while(!hasStabilized(root_tree));
 
             //Create interferences
+            ArrayList<Integer> self_int;
             for(CodeTree.CodeNode node : root_tree.all_nodes){
                 //Add all interferences in both in and out
-                GraphNode.addInterferences(node.in);
+                //GraphNode.addInterferences(node.in);
                 GraphNode.addInterferences(node.out);
+                //Also need, for writes, add interference for outs
+                self_int = new ArrayList<Integer>();
+                self_int.addAll(node.out);
+                self_int.add(node.index);
+                GraphNode.addInterferences(self_int);
             }
 
             //Get a maximum ammount of needed colors
@@ -109,11 +118,11 @@ public class JasminCodeOptimization {
             paint = new Boolean[max_colors];
             max_paint_registers = 0;
             for(GraphNode node : GraphNode.all_nodes){
-                //System.out.print("Index: "+node.index+" interferes with:");
-                //for(GraphNode int_node : node.interference){
-                //    System.out.print(" "+int_node.index);
-                //}
-                //System.out.println();
+                System.out.print("Index: "+node.index+" interferes with:");
+                for(GraphNode int_node : node.interference){
+                    System.out.print(" "+int_node.index);
+                }
+                System.out.println();
                 for(int i = 0; i < max_colors; i++){
                     paint[i] = true;
                 }

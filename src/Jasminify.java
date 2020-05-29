@@ -225,7 +225,6 @@ public class Jasminify {
         //Jasminify.writeln("; "+expr.expression_type);
         switch(expr.expression_type){
             case Expression.t_constant:
-                //if(expr.return_type == "int"){
                 switch(expr.return_type){
                     case "int":
                         Jasminify.writePushConstant((Integer)expr.value);
@@ -296,7 +295,6 @@ public class Jasminify {
                 if(expr.is_new){
                     Jasminify.writeln("new "+expr.used_symbol.name);
                     Jasminify.writeln("dup");
-                    //Jasminify.writeln("astore ");
                     Jasminify.writeln("invokespecial "+expr.used_symbol.name+"/<init>()V");
                     Jasminify.current_stack_index -= 1;
                     //Reference + # arguments - return (if return non void)
@@ -396,14 +394,8 @@ public class Jasminify {
                 }
                 break;
             case Expression.t_array_access:
-                Jasminify.writeln("NOT supposed to happen");
-                /*helper0 = (Expression)expr.nested_structures.get(0);
-                helper1 = (Expression)expr.nested_structures.get(1);
+                throw new RuntimeException("Array access at this point should not happen");
 
-                Jasminify.loadVariable(helper0);
-                Jasminify.writeExpression(helper1, method);
-                Jasminify.writeln("iaload");*/
-                break;
             case Expression.t_negate:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 jump_ind = Jasminify.getIndex();

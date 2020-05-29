@@ -22,6 +22,7 @@ public class Symbol {
     public boolean initialized_with_constant;
     public Object constant_value;
     public int while_accesses;
+    //Check variable accesses
     public Symbol(){
         this.signature = null;
         this.name = null;
