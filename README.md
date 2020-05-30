@@ -80,7 +80,7 @@ Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE RVALUE O
 
 ### Semantic errors detected
 
-Working | Custom Test <br> Exists | Description
+Working | Custom Test Exists | Description
 -|-|-
 [V] | [V] | Reserved identifier misuse
 [V] | [V] | Invalid variable type
@@ -183,7 +183,7 @@ So as to allow for a better manipulation of the stream-like code, hash-based hoo
 
 ### Logical Structure
 
-The Syntax tree is transformed into a High-Level Intermediate Representation.
+The Syntax tree is transformed into a High-Level Intermediate Representation (ScopeNode).
 
 The HLIR used is a tree where each node (ScopeNode) is a scope. Each node except the file root, is a Symbol in it's parents' table.
 
@@ -196,7 +196,9 @@ For j--, the main ScopeNode root is the file root and defines the global scope. 
 
 The nodes that represent classes (only 1 for j--), also have a tree of Structures/Expressions.
 
-Structure define the control flow and its extended object, Expression, define the "leaf" node expressions/statements.
+Structures are code lines.
+
+They define the control flow and its extended object, Expression, define the "leaf" node expressions/statements.
 
 
 
