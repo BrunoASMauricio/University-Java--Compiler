@@ -25,22 +25,22 @@ public class JasminCodeOptimization {
                 root_tree.all_nodes.get(i).next.add(root_tree.all_nodes.get(i+1));
             }
 
-            for(CodeTree.CodeNode node : root_tree.all_nodes){
-                switch(node.type){
-                    case CodeTree.write:
-                        System.out.print("write to index "+node.index);
-                        break;
-                    case CodeTree.read:
-                        System.out.print("read to index "+node.index);
-                        break;
-                    
-                }
-                System.out.print(" "+node+" connected to:");
-                for(CodeTree.CodeNode next : node.next){
-                    System.out.print(" "+next);
-                }
-                System.out.println();
-            }
+            //for(CodeTree.CodeNode node : root_tree.all_nodes){
+            //    switch(node.type){
+            //        case CodeTree.write:
+            //            System.out.print("write to index "+node.index);
+            //            break;
+            //        case CodeTree.read:
+            //            System.out.print("read to index "+node.index);
+            //            break;
+            //        
+            //    }
+            //    System.out.print(" "+node+" connected to:");
+            //    for(CodeTree.CodeNode next : node.next){
+            //        System.out.print(" "+next);
+            //    }
+            //    System.out.println();
+            //}
             
             GraphNode.all_nodes = new ArrayList<GraphNode>();
         
@@ -76,20 +76,20 @@ public class JasminCodeOptimization {
                             break;
                     }
 
-                    System.out.println(rep);
-                    rep = rep+1;
-                    if(node.in.size() != 0) System.out.print("in: ");
-                    for(Integer a : node.in){
-                        System.out.print(" "+a);
-                    }
-                    System.out.println();
-                    if(node.out.size() != 0) System.out.print("out: ");
-                    for(Integer b : node.out){
-                        System.out.print(" "+b);
-                    }
-                    System.out.println();
+                    //System.out.println(rep);
+                    //rep = rep+1;
+                    //if(node.in.size() != 0) System.out.print("in: ");
+                    //for(Integer a : node.in){
+                    //    System.out.print(" "+a);
+                    //}
+                    //System.out.println();
+                    //if(node.out.size() != 0) System.out.print("out: ");
+                    //for(Integer b : node.out){
+                    //    System.out.print(" "+b);
+                    //}
+                    //System.out.println();
                 }
-                System.out.println("--------------------------------------");
+                //System.out.println("--------------------------------------");
             }while(!hasStabilized(root_tree));
 
             //Create interferences
