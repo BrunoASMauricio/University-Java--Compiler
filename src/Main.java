@@ -29,8 +29,8 @@ public class Main {
         int v = 0;
         int o = 0;
         SimpleNode AST_root = null;
-        TreeNode semantic_class_root = null;
-        TreeNode semantic_file_root = null;
+        ScopeNode semantic_class_root = null;
+        ScopeNode semantic_file_root = null;
         
         //Read arguments
         for(int i = 0; i < args.length; i++){
@@ -48,6 +48,7 @@ public class Main {
             }
         }
         System.out.println("Parsing file "+input_file);
+
         //Read file
         try{
             //Instead of System.in
@@ -62,33 +63,31 @@ public class Main {
 
         try{
             AST_root = JMMParser.parse(file_stream);
-            if(v > 0){
-                JMMParser.eval(AST_root, 0);
-            }
         }catch(Exception ex){
             ex.printStackTrace();
             throw new RuntimeException("Syntatical error");
         }
 
-        //SyntaxToSemanticOptimizations.Optimize(AST_root);
+        if(v > 0){
+            JMMParser.eval(AST_root, 0);
+        }
+
+        SyntaxToSemanticOptimizations.Optimize(AST_root, o);
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 
         try{
-            semantic_file_root = new TreeNode(null);
+            semantic_file_root = new ScopeNode(null);
             semantic_class_root = Analyzer.analyze(semantic_file_root, AST_root, input_file);
-            if(v > 1){
-                semantic_file_root.evalT(0);
-            }
         }catch(Exception ex){
             ex.printStackTrace(); 
             throw new RuntimeException("Semantic error");
         }
         
-            //SemanticToJasminOptimizations.Optimize(semantic_class_root);
-        try{
-        }catch(Exception ex){
-            ex.printStackTrace();
+        SemanticToJasminOptimizations.Optimize(semantic_class_root, o);
+        
+        if(v > 1){
+            semantic_file_root.evalT(0);
         }
 
         //                      USE THE Scope TREE TO GENERATE JASMIN CODE
@@ -107,10 +106,8 @@ public class Main {
         }
         Analyzer.throwAllExceptions();
         
-        if(o > 0){
-            JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root, r);
-            Analyzer.throwAllExceptions();
-        }
+        JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root, r, o);
+
 
         PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
         writer.println(Jasminify.out);

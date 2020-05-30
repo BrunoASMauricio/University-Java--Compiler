@@ -19,7 +19,7 @@ By a lapse of judgement, constant folding was done in a stage prior to constant 
 
 ### TODO
 
-[X] Rmove optimizations from inside Symbol class
+[X] Remove optimizations from inside Symbol class
 
 [X] Improve compiler thrown exceptions (make them more consistent)
 
@@ -31,7 +31,7 @@ By a lapse of judgement, constant folding was done in a stage prior to constant 
 
 [X] Improve documentation
 
-[X] Create packages for better file management
+[V] Create packages for better file management
 
 [X] Try to fit the code into a consistent naming convention and style guide
 
@@ -68,7 +68,7 @@ Working | Custom Test <br> Exists | Description
 
 [X] Array of size 1 as a variable
 
-[X] Liveliness analysis for register allocation
+[V] Liveliness analysis for register allocation
 
 [X] Redundant attributions are removed 1 (setting the same variable to the same value it already had)
 
@@ -76,15 +76,17 @@ Working | Custom Test <br> Exists | Description
 
 [X] Most appropriate while structure
 
-[X] Constant propagation by segmented sections (detects where a variable is constant, and replaces it in those segments only)
+[V] Constant propagation by segmented sections (detects where a variable is constant, and replaces it in those segments only)
 
 [X] Register selection priority for loop control or body variables (more accessed)
 
 [V] Constant folding (arithmetic, boolean and logic)
 
+[X] Constant folding after constant propagation (arithmetic, boolean and logic)
+
 [V] Empty else doesn't generate redundant jumps
 
-[V] Condition related expressions are optimized for direct less than comparisons using either iflt when right hand operand is zero or if_icmpge
+[V] Condition related expressions are optimized for direct less than comparisons using either iflt when right hand operand is zero or if_icmpge for simple less than
 
 [V] Constant pushing instructions are optimized based on the size of the constant
 
@@ -94,14 +96,14 @@ Working | Custom Test <br> Exists | Description
 
 The Syntax tree is transformed into a High-Level Intermediate Representation.
 
-The HLIR used is a tree where each node (TreeNode) is a scope. Each node except the file root, is a Symbol in it's parents' table.
+The HLIR used is a tree where each node (ScopeNode) is a scope. Each node except the file root, is a Symbol in it's parents' table.
 
 Each node in the tree has:
     A table of the Symbols that belong to its scope.
 
 A Symbol is a variable, class or method, and contains the relevant information as well as a signature.
 
-For j--, the main TreeNode root is the file root and defines the global scope. It's children are the imported classes, local class, and all the constructors.
+For j--, the main ScopeNode root is the file root and defines the global scope. It's children are the imported classes, local class, and all the constructors.
 
 The nodes that represent classes (only 1 for j--), also have a tree of Structures/Expressions.
 
