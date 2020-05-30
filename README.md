@@ -61,23 +61,22 @@ Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE RVALUE O
 
 ### TODO
 
+[V] Improve general code readability
+
+[V] Improve documentation
+
+[V] Improve README.md
+
+[X/V] Create packages for better file management (VS code and gradle aren't using the same paths and it becomes hard to develop the code further)
+
 [X] Remove optimization variables from inside Symbol class
 
 [X] Improve compiler thrown exceptions (make them more consistent)
 
-[V] Improve general code readability
-
-[X] Remove redundancies/Increase modularity (shove repeated code into separate functions)
-
 [X] Improve variable name significance
-
-[X] Improve documentation
-
-[X/V] Create packages for better file management (VS code and gradle aren't using the same paths and it becomes hard to develop the code further)
 
 [X] Try to fit the code into a consistent naming convention and style guide
 
-[V] Improve README.md
 
 ### Semantic errors detected
 
@@ -101,8 +100,6 @@ Working | Custom Test <br> Exists | Description
 [V] | [V] | Array access to non array variable
 [V] | [V] | .length cannot be used on non array
 [V] | [V] | Constructor cannot be called without new
-[?] | [X] | Call overloaded (imported or not) constructors
-[?] | [X] | Constructor with arguments
 [V] | [V] | Possible uninitialization of variable due to control flow
 
 ### Optimizations
@@ -127,9 +124,7 @@ Working | Custom Test <br> Exists | Description
 
 [X] Redundant attributions are removed 2 (changing a variables' value before using the variable)
 
-[X] Most appropriate while structure
-
-[X] Register selection priority for loop control or body variables (more accessed)
+[?] Most appropriate while structure
 
 
 ### Optimization details
