@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-#read -r input
-#printf "${input//%/%%}\n"
-
 if [ -d "./run_tmp" ]; then
     rm -f ./run_tmp/*
 else
@@ -34,6 +31,7 @@ if [ ! -f $1 ]; then
 fi
 
 JavaC=/usr/lib/jvm/java-13-openjdk/bin/java
+
 #Build compiler
 gradle -Dorg.gradle.java.home=/usr/lib/jvm/java-13-openjdk --info build &> ./run_tmp/gradle_output
 if [ $2 -gt 0 ]; then
@@ -61,7 +59,7 @@ mv JasminOut.j ./run_tmp
 
 #Run Jasmin
 $JavaC -jar jasmin.jar ./run_tmp/JasminOut.j &> ./run_tmp/jasmin_output
-#java -jar jasmin.jar ./run_tmp/JasminOut.j &> ./run_tmp/jasmin_output
+
 if [ $2 -gt 1 ]; then
     cat ./run_tmp/jasmin_output
 fi
@@ -94,9 +92,3 @@ else
         cat ./java_output
     fi
 fi
-
-
-
-
-#gradle build
-
