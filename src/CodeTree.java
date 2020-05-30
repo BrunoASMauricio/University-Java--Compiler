@@ -1,13 +1,16 @@
 import java.util.ArrayList;
 /*
-Algorithm for capturing the tree
+Algorithm for capturing the code tree
 
-First: Ignore lines until .method is found or we run out of lines
-Second: Capture all relevant (stores loads ifs gotos and labels) Nodes in sequential order, until .end method is reached. Keep separate label reference only list as well.
-Third: From the first Node, start attaching other Nodes, until a goto is reached or we run out of Nodes. If a Node is a label mark it as "read"
-Fourth: For each Label if it is not marked as read, repeat Third step starting from it.
-Fifth: Go back to the First
+First, we capture the nodes:
+    1. Ignore lines until .method is found or we run out of lines
+    2. Capture all relevant (stores loads ifs gotos and labels) Nodes in sequential order, until .end method is reached, all while keeping separate label reference only list as well
 
+    Second, connect the nodes:
+    For every label, if the label is not marked as read:
+        1. From the first Node, start attaching other Nodes sequentially
+        2. When a goto is reached, attach the corresponding label, mark the current label as read and go to the next label
+        3. If the end of the nodes is reached, mark the current label as read and go to the next label
 */
 
 class CodeTree {
@@ -22,7 +25,10 @@ class CodeTree {
     //Jumps to labels ahead in the code need to be saved as jump_requests since de actual node doesn't exist yet
     public CodeNode root;
 
-    //Capture and mark nodes
+    /**
+     * Retrieve the relevant information from the jasmin code into the CodeNodes
+     * @param jasmin_code The jasmin code to analyse
+     */
     public static void generateTree(String jasmin_code){
         ArrayList<CodeNode> node_list;
         ArrayList<CodeNode> labels;
@@ -55,7 +61,6 @@ class CodeTree {
 
                 node_list.add(new_root);
                 all_roots.add(new_root);
-                //System.out.println("ROOT> "+new_root);
             }else
             if(line.startsWith(".limit locals ")){
                 new_root.locals = Integer.parseInt(line.substring(14));
@@ -68,7 +73,6 @@ class CodeTree {
                 }
                 node_list.add(new CodeNode(Integer.parseInt(line.substring(6)), Integer.parseInt(unescaped_line.split(";")[1]), CodeTree.read));
             }else
-
             //if iinc
             if(line.startsWith("iinc")){
                 helper = new CodeNode(Integer.parseInt(line.split(" ")[1]), Integer.parseInt(unescaped_line.split(";")[1]),CodeTree.write);
@@ -79,7 +83,6 @@ class CodeTree {
             if(line.substring(1).startsWith("store")){
                 node_list.add(new CodeNode(Integer.parseInt(line.substring(7)), Integer.parseInt(unescaped_line.split(";")[1]),CodeTree.write));
             }else
-
             //if jump
             if(line.startsWith("if")){
                 if(unescaped_line.split(";")[1].equals("if")){
@@ -88,12 +91,10 @@ class CodeTree {
                     node_list.add(new CodeNode(line.split(" ")[1], CodeTree.jump_while));
                 }
             }else
-
             //if goto
             if(line.startsWith("goto")){
                 node_list.add(new CodeNode(line.split(" ")[1], CodeTree.jump_goto));
             }else
-            
             //if label (cut spaces from the end)
             if(line.split(" ")[0].endsWith(":")){
                 helper = new CodeNode(line.split(" ")[0].substring(0, line.split(" ")[0].length()-1), CodeTree.label);
@@ -152,8 +153,6 @@ class CodeTree {
         CodeNode previous_node = null;
         CodeNode node;
 
-        //tree.root = node_list.get(0);   //In the for bellow we need the ";" label but here we can cut it out and ignore it
-        //System.out.println("ROOT: "+root);
         for(CodeNode label : labels){
             //Label was already "read"
             if(label.index == 1){
@@ -162,34 +161,24 @@ class CodeTree {
             //Point previous_node to label and set it as "read"
             previous_node = node_list.get(label.line);
             previous_node.index = 1;
-            //System.out.println("Label "+label.label+" "+label.line+" "+previous_node);
             for(int i = label.line+1; i < node_list.size(); i++){
                 node = node_list.get(i);
                 //The first one to be added is the instruction afterwards
                 previous_node.addNext(node);
-                //System.out.println("Instruction "+node.type);
 
                 //If a label, set it as read
                 if(node.type == CodeTree.label){
-                    //System.out.println("Label "+node.label);
                     node.index = 1;
                 }else
 
                 //For ifs, also add label node as next
                 if(node.type == CodeTree.jump_if || node.type == CodeTree.jump_while){
                     node.addNext(getLabel(labels, node.label));
-                    if(node.type == CodeTree.jump_if){
-                        //System.out.println("If jumps to label "+node.label);
-                    }else{
-                        //System.out.println("While jumps to label "+node.label);
-                    }
                 }else
                 
                 //A goto is a jump to another label, set label as next and abandon
                 if(node.type == CodeTree.jump_goto){
                     node.addNext(getLabel(labels, node.label));
-                    //System.out.println("Go to jumps to label "+node.label);
-
                     break;
                 }
 

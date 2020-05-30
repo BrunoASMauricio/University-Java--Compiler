@@ -12,16 +12,32 @@ public class Jasminify {
     public static int fields_index;
     public static boolean ref_loaded;
     
+    /**
+     * Write directly to the jasmin output (+\n)
+     * @param in the string to write
+     */
     public static void directwriteln(String in){
         out += in + "\n";
     }
+    /**
+     * Write directly to the jasmin output
+     * @param in the string to write
+     */
     public static void directwrite(String in){
         out += in;
     }
-
+    /**
+     * Write to an intermediate String buffer (+\n)
+     * @param in the string to write
+     */
     public static void writeln(String in){
         Jasminify.write(in + "\n");
     }
+    /**
+     * Write to an intermediate String buffer
+     * Calculates stack
+     * @param in the string to write
+     */
     public static void write(String in){
         //arraylength 1 -> 1
         //iaload/iastore 2 -> 1
@@ -49,34 +65,45 @@ public class Jasminify {
                 Jasminify.current_stack_index -= 3;
             }
         }
-        if(!in.startsWith(";")) {
-            //Jasminify.directwriteln("; :"+(Jasminify.current_stack_index-a)+":"+Jasminify.current_stack_index+": "+in);
-        }
+        //if(!in.startsWith(";")) {
+        //    Jasminify.directwriteln("; :"+(Jasminify.current_stack_index-a)+":"+Jasminify.current_stack_index+": "+in);
+        //}
         if(Jasminify.current_stack_index > Jasminify.max_stack_index){
             Jasminify.max_stack_index = Jasminify.current_stack_index;
         }
         out_temp += in;
     }
+    /**
+     * Calculates the stack change in the method call
+     * @param arguments_and_return
+     * @param type
+     */
     public static void calculateMethodStack(ArrayList arguments_and_return, String type){
         //# arguments - return (if return non void)
-        //The last element is the return, need to take care into account, even when is void.
+        //The last element is the return, need to take that into account, even when is void.
         int a = Jasminify.current_stack_index;
         if(arguments_and_return.get(arguments_and_return.size()-1).equals("void")){
             Jasminify.current_stack_index -= arguments_and_return.size() - 1;
         }else{
             Jasminify.current_stack_index -= arguments_and_return.size() - 2;
         }
-        //Also consumes reference
+        //Does it also consume a reference?
         if(!type.equals("static")){
             Jasminify.current_stack_index -= 1;
         }
         //Jasminify.directwriteln("; >> invoke "+type+" |"+arguments_and_return.size()+"| "+(Jasminify.current_stack_index-a)+": "+arguments_and_return.get(arguments_and_return.size()-1));
-
     }
+    /**
+     * @return The next index to use in a control structure jump
+     */
     public static String getIndex(){
         control_index++;
         return ""+(control_index-1);
     }
+    /**
+     * @param type The type to retrieve
+     * @return The jasmin symbol(s) that represent the given type
+     */
     public static String getType(String type){
         String ret = "";
         switch(type){
@@ -97,12 +124,14 @@ public class Jasminify {
                 ret += "Z";
                 break;
             default:
-                //throw new RuntimeException("Dunno how to jasminfy "+type);
-                ret+=/*"Dunno how to jasminfy "+*/"L"+type+";";
+                ret += "L"+type+";";
         }
         return ret;
     }
-
+    /**
+     * @param s The target method symbol
+     * @return The jasmin representation for the given method symbol
+     */
     public static String getJasminSignature(Symbol s){
         ArrayList<String> types;
         String sig = "";
@@ -121,13 +150,20 @@ public class Jasminify {
         }
         return sig;
     }
-
+    /**
+     * Sets a methods jasmin signature
+     * @param method_node The target method
+     * @param class_node The current scope
+     */
     public static void setJasminSignature(JasminMethod method_node, ScopeNode class_node){
         method_node.jasmin_signature = Jasminify.getJasminSignature(method_node);
         method_node.jasmin_class = class_node.name;
     }
-    
-    public static void writeReturn(JasminMethod method_node, String return_type){
+    /**
+     * Writes to jasmin output the respective return type instruction
+     * @param return_type The required return type (int/int[]/String/String[]/boolean/void/object reference)
+     */
+    public static void writeReturn(String return_type){
         Jasminify.current_stack_index -= 1;
         switch(return_type){
             case "int":
@@ -152,7 +188,10 @@ public class Jasminify {
                 Jasminify.writeln("areturn");
         }
     }
-
+    /**
+     * Writes the most optimized instruction to push the given constant
+     * @param pushed_const Constant to push
+     */
     public static void writePushConstant(int pushed_const){
         if(pushed_const == -1){
             Jasminify.writeln("iconst_m1");            
@@ -169,12 +208,14 @@ public class Jasminify {
             Jasminify.writeln("ldc "+pushed_const);
         }
     }
-
+    /**
+     * Handles variable loads and stores
+     * @param expr
+     * @param type
+     */
     public static void handleVariable(Expression expr, String type){
         if(expr.used_symbol.Jvarindex < 0){
-            throw new RuntimeException("Negative index is unacceptable "+expr.used_symbol.Jvarindex+" "+expr.used_symbol.name);
-            //Analyzer.throwException(new UndeclaredException("Undefined data type "+type, n));
-            //return;
+            throw new RuntimeException("Variable "+expr.used_symbol.name+" not initialized");
         }
         Jasminify.writeln(";"+expr.used_symbol.name);
         switch((String)expr.used_symbol.data){
@@ -193,18 +234,24 @@ public class Jasminify {
             Jasminify.writeln(" "+expr.used_symbol.Jvarindex+" ;"+expr.used_symbol.hashCode());
         }
     }
-
+    /**
+     * Writes a store instruction
+     * @param expr the expression object that contains the variable to store
+     * @param method current method
+     */
     public static void storeVariable(Expression expr, JasminMethod method){
         if(expr.used_symbol.Jvarindex == -1){
             expr.used_symbol.Jvarindex = method.locals_index++;
         }
         handleVariable(expr, "store");
-
     }
-
+    /**
+     * Writes a store instruction
+     * @param expr the expression object that contains the variable to load
+     */
     public static void loadVariable(Expression expr){
         if(expr.used_symbol.Jvartype == null){
-            System.out.println("SHOULD NOT HAPPEN "+expr.used_symbol.name);
+            throw new RuntimeException("Null value were it shouldn't be "+expr.used_symbol.name);
         }
         if(expr.used_symbol.Jvartype.equals("class")){
             Jasminify.writeln("aload_0 ;this");
@@ -215,12 +262,11 @@ public class Jasminify {
     }
     /**
      * Parses an expression and places the result in the last stack position
-     * @param str
-     * @param scope
+     * @param expr The expression to parse
+     * @param method The current method
      */
     public static void writeExpression(Expression expr, JasminMethod method){
         Expression helper0;
-        Expression helper1;
         String jump_ind;
         //Jasminify.writeln("; "+expr.expression_type);
         switch(expr.expression_type){
@@ -264,13 +310,13 @@ public class Jasminify {
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(1), method);
                 jump_ind = Jasminify.getIndex();
-                Jasminify.writeln("if_icmpge istrue_"+jump_ind+" ;if");
+                Jasminify.writeln("if_icmpge else_"+jump_ind+" ;if");
                 Jasminify.writeln("iconst_1");
-                Jasminify.writeln("goto endcond_"+jump_ind);
-                Jasminify.writeln("istrue_"+jump_ind+":");
+                Jasminify.writeln("goto endif_"+jump_ind);
+                Jasminify.writeln("else_"+jump_ind+":");
                 Jasminify.writeln("iconst_0");
-                Jasminify.writeln("endcond_"+jump_ind+":");
-                //Only one of these goes into the stack, but it's hard to detect that elsewhere
+                Jasminify.writeln("endif_"+jump_ind+":");
+                //Only one of these constants goes into the stack, easier to adjust stack size here
                 Jasminify.current_stack_index -= 1;
                 break;
             case Expression.t_and:
@@ -280,13 +326,12 @@ public class Jasminify {
                 break;
             case Expression.t_return:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
-                //Return
                 method.returned = true;
-                Jasminify.writeReturn(method, expr.return_type);
+                Jasminify.writeReturn(expr.return_type);
                 break;
             case Expression.t_int_array:
                 if(expr.nested_structures.size() != 1){
-                    Jasminify.writeln("WRONG SIZE "+expr.nested_structures.size());
+                    throw new RuntimeException("WRONG SIZE "+expr.nested_structures.size());
                 }
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 Jasminify.writeln("newarray int");
@@ -301,7 +346,6 @@ public class Jasminify {
                     //Currently not accepting arguments for custructors so stack remains the same
                     for(Structure another_method : expr.nested_structures){
                         Jasminify.ref_loaded = true;
-                        //helper0 = (Expression)expr.nested_structures.get(0);
                         helper0 = (Expression)another_method;
                         for(Structure str : helper0.nested_structures){
                             writeExpression((Expression)str, method);
@@ -309,20 +353,14 @@ public class Jasminify {
                         Jasminify.writeExpression(helper0, method);
                     }
                 }else{
-                    //There are no static methods being evaluated
                     //if(method.type == Symbol.t_method_static){}
-                    
                     //IF IN INSTANCE AND DIRECT ACCESS
-
                     if(!expr.is_new && expr.expression_type == Expression.t_method_access && expr.used_symbol.type == Symbol.t_method_instance){
                         //Jasminify.writeln("; "+Jasminify.ref_loaded);
                         if(!Jasminify.ref_loaded){
                             Jasminify.writeln("aload_0 ;this");
                             Jasminify.ref_loaded = false;
                         }
-                        /*for(Structure str : expr.nested_structures){
-                            writeExpression((Expression)str, method);
-                        }*/
                     }
                     //IF IN STATIC
                     if(expr.used_symbol.type == Symbol.t_method_instance){
@@ -337,13 +375,10 @@ public class Jasminify {
                         Jasminify.calculateMethodStack((ArrayList)((JasminMethod)expr.used_symbol).data, "static");
 
                     }
-                    //invokevirtual Simple/add(II)I
                 }
                 break;
             case Expression.t_access_length:
                 //arraylength
-                //Jasminify.writeln(";>>>"+expr.used_symbol.name);
-
                 Jasminify.writeln("invokevirtual "+((JasminMethod)expr.used_symbol)+"/"+"length()I");
                 Jasminify.calculateMethodStack((ArrayList)((JasminMethod)expr.used_symbol).data, "virtual");
                 break;
@@ -353,7 +388,6 @@ public class Jasminify {
                         Jasminify.loadVariable(expr);
                         break;
                     default:
-                    
                         if(expr.used_symbol == null){                   //It's a this access
                             if(method.type == Symbol.t_method_static){
                                 Analyzer.throwException(new RuntimeException("Can't access \"this\" from a static method"));
@@ -399,12 +433,12 @@ public class Jasminify {
             case Expression.t_negate:
                 Jasminify.writeExpression((Expression)expr.nested_structures.get(0), method);
                 jump_ind = Jasminify.getIndex();
-                Jasminify.writeln("ifeq istrue_"+jump_ind+" ;if");
+                Jasminify.writeln("ifeq else_"+jump_ind+" ;if");
                 Jasminify.writeln("iconst_0");
-                Jasminify.writeln("goto endcond_"+jump_ind);
-                Jasminify.writeln("istrue_"+jump_ind+":");
+                Jasminify.writeln("goto endif_"+jump_ind);
+                Jasminify.writeln("else_"+jump_ind+":");
                 Jasminify.writeln("iconst_1");
-                Jasminify.writeln("endcond_"+jump_ind+":");
+                Jasminify.writeln("endif_"+jump_ind+":");
                 //Only one of these goes into the stack, but it's hard to detect that elsewhere
                 Jasminify.current_stack_index -= 1;
                 break;
@@ -412,6 +446,13 @@ public class Jasminify {
                 Jasminify.writeln("CANNOT PARSE "+expr.expression_type+" YET");
         }
     }
+    /**
+     * Evaluates a head condition expression (if or while test/decision)
+     * @param expr The expression to evaluate
+     * @param jump_ind The jump index to use
+     * @param method The current method
+     * @param type Condition type (" ;while" or " ;if"), required for some optimizations
+     */
     public static void evalCond(Expression expr, String jump_ind, JasminMethod method, String type){
         if(expr.expression_type == Expression.t_lessthan){                                   //For a single less than, we can do this directly
             //Optimize with iflt or if_icmpge
@@ -429,6 +470,11 @@ public class Jasminify {
         }
         Jasminify.writeln(type);
     }
+    /**
+     * Parse a structure (single line of code)
+     * @param struct The structure to parse
+     * @param method The current method
+     */
     public static void writeStructure(Structure struct, JasminMethod method){
         Expression helper0;
         Expression helper1;
@@ -437,10 +483,10 @@ public class Jasminify {
         if(Jasminify.current_stack_index > Jasminify.max_stack_index){
             Jasminify.max_stack_index = Jasminify.current_stack_index;
         }
+
         if(Jasminify.current_stack_index != 0){
             throw new RuntimeException("Stack not 0: "+Jasminify.current_stack_index);
         }
-        //Jasminify.directwriteln("; STACK NOT 0 : "+Jasminify.current_stack_index);
         
         switch(struct.type){
             case Structure.t_attribution:
@@ -490,10 +536,6 @@ public class Jasminify {
                         helper2 = (Expression)struct.nested_structures.get(2);
                         //Load arrayref
                         Jasminify.loadVariable(helper0);
-                        /*if(helper0.expression_type == Expression.t_access){
-                        }else{
-                            Jasminify.writeln(";\t\tCANT PARSE TYPE "+helper0.expression_type+" YET");
-                        }*/
                         //Load index
                         Jasminify.writeExpression((Expression)helper1.nested_structures.get(0), method);
                         //Load value
@@ -502,7 +544,7 @@ public class Jasminify {
 
                         break;
                     default:
-                        Jasminify.writeln("; WEIRD NUMBER OF CHILDREN "+struct.nested_structures.size()+"");
+                        throw new RuntimeException(" INCORRECT NUMBER OF CHILDREN "+struct.nested_structures.size());
                 }
                 break;
             case Structure.t_expression:
@@ -548,7 +590,6 @@ public class Jasminify {
                     Jasminify.writeStructure(struct.nested_structures.get(i), method);
                 }
                 Jasminify.writeln("goto while_"+jump_ind);
-
                 Jasminify.writeln("else_"+jump_ind+":");
                 
                 break;
@@ -574,17 +615,18 @@ public class Jasminify {
                 break;
             default:
         }
-        //Sometimes, references may be loaded but not used by a method, so we need to reset ref_loaded
-        Jasminify.ref_loaded = false;
-        
+        Jasminify.ref_loaded = false;        
         Jasminify.writeln("");
     }
-
+    /**
+     * Writes a full method to its jasmin equivalent
+     * @param method_node The method to analyse
+     */
     public static void writeMethod(JasminMethod method_node){
         int arg_amm;
         int start;
         
-        if(method_node.name.equals("main")){    //Generate normal/main method head
+        if(method_node.name.equals("main")){    //Generate normal main method head
             Jasminify.directwriteln(".method public static main([Ljava/lang/String;)V ;0");
             arg_amm = 0;
         }else{
@@ -593,7 +635,7 @@ public class Jasminify {
             }else{
                 Jasminify.directwrite(".method public static ");
             }
-            arg_amm = ((ArrayList<String>)method_node.data).size()-1;           //Last types is return type
+            arg_amm = ((ArrayList<String>)method_node.data).size()-1;           //Last types is the return type
             Jasminify.directwriteln(method_node.jasmin_signature+" ;"+(arg_amm));  //Give optimizer method argument ammount
         }
 
@@ -613,7 +655,7 @@ public class Jasminify {
             method_node.variables[j].Jvarindex = i;
         }
 
-        for(Structure s: method_node.structures){           //Parse inner structures
+        for(Structure s: method_node.structures){           //Parse inner structures (code lines)
             Jasminify.writeStructure(s, method_node);
             Jasminify.writeln("");
         }
@@ -622,14 +664,19 @@ public class Jasminify {
             method_node.variables[j].Jvarindex = -1;
         }
         if(method_node.returned == false){
-            Jasminify.writeReturn(method_node, "void");
+            Jasminify.writeReturn("void");
         }
 
-        Jasminify.directwriteln(".limit stack "+(Jasminify.max_stack_index));//                                    NEED TO CALCULATE DEEPEST DEPTH
+        Jasminify.directwriteln(".limit stack "+(Jasminify.max_stack_index));
         Jasminify.directwriteln(".limit locals "+(1+arg_amm+method_node.table.getSize()));    //this + arguments + declared local variables
         Jasminify.directwriteln(out_temp);
         Jasminify.directwriteln(".end method");
     }
+    /**
+     * Generate jasmin code for the class
+     * @param root the AST root for the file
+     * @param class_node the AST root for the class
+     */
     static void start(ScopeNode root, ScopeNode class_node){
         if(class_node == null){
             throw new RuntimeException("No class found");

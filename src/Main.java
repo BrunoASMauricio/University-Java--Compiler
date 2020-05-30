@@ -51,7 +51,6 @@ public class Main {
 
         //Read file
         try{
-            //Instead of System.in
             file_stream = new FileInputStream(input_file);
         }catch(Exception e){
             System.out.println("A problem occured while reading the file "+input_file);
@@ -71,8 +70,6 @@ public class Main {
         if(v > 0){
             JMMParser.eval(AST_root, 0);
         }
-
-        //SyntaxToSemanticOptimizations.Optimize(AST_root, o);
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 
@@ -94,10 +91,6 @@ public class Main {
 
         try{
             Jasminify.start(semantic_file_root, semantic_class_root);
-            if(v > 2){
-                //REMEMBER TO UNCOMMENT THIS!!
-                //System.out.println("\n"+Jasminify.out);
-            }
         }catch(Exception ex){
             Analyzer.throwAllExceptions();
             System.out.println("Unhandled exception");
@@ -106,13 +99,17 @@ public class Main {
         }
         Analyzer.throwAllExceptions();
         
-        JasminCodeOptimization.Optimize(Jasminify.out, semantic_class_root, r, o);
+        if(v > 2){
+            System.out.println("\n"+Jasminify.out);
+        }
+
+        JasminCodeOptimization.Optimize(semantic_class_root, r, o);
 
 
         PrintWriter writer = new PrintWriter("JasminOut.j", "UTF-8");
         writer.println(Jasminify.out);
         writer.close();
-        //*
+
         System.out.println("COMPILATION SUCCESSFUL");
 	}
 	

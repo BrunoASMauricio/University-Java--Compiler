@@ -17,7 +17,11 @@ class ConstantPropagation {
             if(true){
                 a = 2;
             }else{
-                a = 2;//c.abc();
+                //Since a is still 5 here, it's replaced
+                b = a;
+                //Depending on what is commented, b will become 4 (2*2) or a*a
+                a = 2;
+                //a = c.abc();
             }
         }else{
             a = 2;
@@ -29,7 +33,8 @@ class ConstantPropagation {
                 a = 2;
             }else{
                 while(a < 0){
-                    a = 2;
+                    //Uncommenting the following line will make the compiler not propagate further 
+                    //a = 3;
                 }
             }
         }

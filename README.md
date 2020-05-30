@@ -40,13 +40,32 @@ Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE RVALUE O
 
 1. The lookahead in the syntatic section is globally of 1, but in a few local situations of 2
 
+2. Missing optimizations for conditions that can be analysed at compile time
+
+3. Only detects 1 uninitialized variable per method at a time.
+
+
+### Project pros
+
+1. This project is extremely modular, the sections (syntatic, semantic, jasmin and optimizations) are completely independent, and only rely in the IRs that are required as input/output.
+
+2. Stack calculation is precise.
+
+3. Exceptions for all the required situations.
+
+4. With the -r flag, the liveliness analysis usesthe least ammount of registers, and warns the user if the required maximum is possible
+
+5. Improved "segmented" Constant propagation and constant folding (more in formation in the section "Optimization details") with the flag -o.
+
+6. Can detect variable not-initialized issues inside control structures (ifs/whiles), can be tested with "NotInitialized.jmm". Activated with the -o flag.
+
 ### TODO
 
 [X] Remove optimization variables from inside Symbol class
 
 [X] Improve compiler thrown exceptions (make them more consistent)
 
-[X] Improve general code readability
+[V] Improve general code readability
 
 [X] Remove redundancies/Increase modularity (shove repeated code into separate functions)
 

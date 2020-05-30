@@ -13,7 +13,8 @@ public class Analyzer {
         }
     }
     /**
-     * Checks if the given type is a basic type
+     * @param type The type to evaluate
+     * @return Boolean value representing wether the type is basic (int/int[]/String/String[]/boolean) or not
      */
     public static Boolean checkBasicType(String type){
         switch(type){
@@ -63,11 +64,12 @@ public class Analyzer {
         return helper;
     }
     /**
-     * Handles the Arithmetic expression that starts at node expr_node and sets an Expression object accordingly
+     * Handles the requested Operation expression that starts at node expr_node and sets the Expression object expr accordingly
      * @param expr_node The start of the operation
      * @param expr The target Expression object
+     * @param operation Operation type (Arithmetic, Boolean or Logic)
      */
-    public static void parseArithOperation(SimpleNode expr_node, Expression expr){
+    public static void parseOperation(SimpleNode expr_node, Expression expr, String operation){
         if(expr_node.jjtGetNumChildren() != 2){
             Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
             return;
@@ -76,74 +78,52 @@ public class Analyzer {
         Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
         expr.nested_structures.add(lhs);
         expr.nested_structures.add(rhs);
-        
-        if(!lhs.return_type.equals(rhs.return_type)){
-            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+lhs.return_type, expr_node));
-            return;
-        }else{//Only accept int return types
-            if(!(lhs.return_type.equals("int"))){
-                Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
-                return;
-            }
+
+        switch(operation){
+            case "Arithmetic":
+                if(!lhs.return_type.equals(rhs.return_type)){
+                    Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+lhs.return_type, expr_node));
+                    return;
+                }else{
+                    if(!(lhs.return_type.equals("int"))){
+                        Analyzer.throwException(new IncompatibleException("Cannot perform operation on type: "+lhs.return_type, expr_node));
+                        return;
+                    }
+                }
+                expr.return_type = "int";
+                break;
+            case "Boolean":
+                if(!lhs.return_type.equals(rhs.return_type)){
+                    Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+                    return;
+                }else{
+                    if(!checkBasicType(lhs.return_type)){
+                        Analyzer.throwException(new IncompatibleException("Cannot perform boolean operation on type: "+lhs.return_type, expr_node));
+                        return;
+                    }
+                }
+                expr.return_type = "boolean";
+                break;
+            case "Logic":
+                if(!lhs.return_type.equals(rhs.return_type)){
+                    Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
+                    return;
+                }else{
+                    if(!lhs.return_type.equals("int")){
+                        Analyzer.throwException(new IncompatibleException("Cannot perform logic operation on type: "+lhs.return_type, expr_node));
+                        return;
+                    }
+                }
+                expr.return_type = "boolean";
+                break;
         }
-        expr.return_type = "int";
     }
+
     /**
-     * Handles the Boolean Operation expressions (and) that starts at node expr_node and sets an Expression object accordingly
-     * @param expr_node The start of the operation
-     * @param expr The target Expression object
+     * Checks if an invalid array operation (access or length is occuring)
+     * @param return_type The expressions' return type
+     * @param node The supposed array node
      */
-    public static void parseBooleanOperation(SimpleNode expr_node, Expression expr){
-        if(expr_node.jjtGetNumChildren() != 2){
-            Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
-            return;
-        }
-        Expression lhs = getExpression((SimpleNode)expr_node.jjtGetChild(0) , expr.scope);
-        Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
-        expr.nested_structures.add(lhs);
-        expr.nested_structures.add(rhs);
-        
-        if(!lhs.return_type.equals(rhs.return_type)){
-            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
-            return;
-        }else{
-            // 1 && true is valid????
-            if(!checkBasicType(lhs.return_type)){
-                Analyzer.throwException(new IncompatibleException("Cannot perform boolean operation on type: "+lhs.return_type, expr_node));
-                return;
-            }
-        }
-        expr.return_type = "boolean";
-    }
-    /**
-     * Handles the Logic Operation expressions (less than) that starts at node expr_node and sets an Expression object accordingly
-     * @param expr_node The start of the operation
-     * @param expr The target Expression object
-     */
-    public static void parseLogicOperation(SimpleNode expr_node, Expression expr){
-        if(expr_node.jjtGetNumChildren() != 2){
-            Analyzer.throwException(new RuntimeException("Operation should only have 2 children, current one has "+expr_node.jjtGetNumChildren()+", "+expr_node.id));
-            return;
-        }
-        Expression lhs = getExpression((SimpleNode)expr_node.jjtGetChild(0) , expr.scope);
-        Expression rhs = getExpression((SimpleNode)expr_node.jjtGetChild(1) , expr.scope);
-        expr.nested_structures.add(lhs);
-        expr.nested_structures.add(rhs);
-        
-        if(!lhs.return_type.equals(rhs.return_type)){
-            Analyzer.throwException(new IncompatibleException("Incompatible types: "+lhs.return_type+" and "+rhs.return_type, expr_node));
-            return;
-        }else{
-            if(!lhs.return_type.equals("int")){
-                Analyzer.throwException(new IncompatibleException("Cannot perform logic operation on type: "+lhs.return_type, expr_node));
-                return;
-            }
-        }
-        expr.return_type = "boolean";
-    }
-    /*
-    Checks if an invalid array operation (access or length is occuring)
-    */
     public static void parseArrayOperation(String return_type, SimpleNode node){
         if(return_type != null && !return_type.equals("int[]")){
             if(node.id == JMMParserTreeConstants.JJTARRAYACCESS){
@@ -202,7 +182,7 @@ public class Analyzer {
     }
     /**
      * Follows the scopes in a method call / variable or array access
-     * f.ex. A.B.C   the overall scope is the same when evaluating all
+     * f.ex. A.B.C the overall scope is the same when evaluating all
      * of them but B has A as a parent and C has B
      * @param follow_node The Node to follow
      * @param parent The parent expression (local scope, relative to the previous selector)
@@ -279,48 +259,54 @@ public class Analyzer {
         i = 0;
         expr = new Expression(current_scope);
         expr.type = Structure.t_expression;
-        //System.out.println(">>>>"+JMMParserTreeConstants.jjtNodeName[expr_node.id]);
         switch(expr_node.id){
             //Operations
+            // &&
             case JMMParserTreeConstants.JJTAND:
                 expr.expression_type = Expression.t_and;
-                parseBooleanOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Boolean");
                 expr.return_type = "boolean";
                 break;
+            // <
             case JMMParserTreeConstants.JJTLESSTHAN:
                 expr.expression_type = Expression.t_lessthan;
-                parseLogicOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Logic");
                 expr.return_type = "boolean";
                 break;
+            // + 
             case JMMParserTreeConstants.JJTADD:
                 expr.expression_type = Expression.t_add;
-                parseArithOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Arithmetic");
                 break;
+            // -
             case JMMParserTreeConstants.JJTSUB:
                 expr.expression_type = Expression.t_sub;
-                parseArithOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Arithmetic");
                 break;
+            // *
             case JMMParserTreeConstants.JJTMUL:
                 expr.expression_type = Expression.t_mul;
-                parseArithOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Arithmetic");
                 break;
+            // /
             case JMMParserTreeConstants.JJTDIV:
                 expr.expression_type = Expression.t_div;
-                parseArithOperation(expr_node, expr);
+                parseOperation(expr_node, expr, "Arithmetic");
                 break;
             //Nodes
+            //["0"-"9"]
             case JMMParserTreeConstants.JJTINTCONST:
                 expr.value = (Object)(new Integer(expr_node.int_val));
                 expr.expression_type = Expression.t_constant;
                 expr.return_type = "int";
             break;
-
+            //true false
             case JMMParserTreeConstants.JJTBOOLCONST:
                 expr.value = (Object)(new Boolean(expr_node.bool_val));
                 expr.expression_type = Expression.t_constant;
                 expr.return_type = "boolean";
             break;
-
+            //ID
             case JMMParserTreeConstants.JJTIDENTIFIER:
                 helper_symbol = Analyzer.getByIdentifier(expr_node.image, current_scope, expr_node);
                 expr.expression_type = Expression.t_access;
@@ -340,6 +326,7 @@ public class Analyzer {
                         return null;
                 }
                 break;
+            //!
             case JMMParserTreeConstants.JJTNEGATE:
                 expr.expression_type = Expression.t_negate;
                 if(expr_node.jjtGetNumChildren() != 1){
@@ -361,9 +348,9 @@ public class Analyzer {
                     return null;
                 }
                 return getExpression((SimpleNode)expr_node.jjtGetChild(0), current_scope);
-            
+            // new
             case JMMParserTreeConstants.JJTNEW:
-                //Can only be int[] or Identifier[] where Identifier must be an existing class
+                //Can only be int[] or Identifier() where Identifier must be an existing class
                 if(((SimpleNode)expr_node.jjtGetChild(0)).id != JMMParserTreeConstants.JJTIDENTIFIER){
                     expr.expression_type = Expression.t_int_array;
                     expr.return_type = "int[]";
@@ -375,12 +362,12 @@ public class Analyzer {
                 if(node_children <= 1){
                     throw new RuntimeException("Not supposed to hacve these "+node_children);
                 }
+                //There isn't a break here on purpose!
             //The next two cases start from a scope and follow it (down, unless they come across another identifier access)
+            // afunction() or avariable
             case JMMParserTreeConstants.JJTIDENTIFIERACCESS:
-                //Get and use "remote"/higher scope/symbol
+                //Started with a method, with or without "new" keyword
                 if(node_children > 1){
-                    //Started with a method (normally, being static or non static depends on the current method, but since methods must be non static, assume non static)
-                    //The new clause extends downwards for non array new
                     if(((SimpleNode)expr_node.jjtGetChild(1)).id == JMMParserTreeConstants.JJTSELECTORARGUMENTS){
                         expr.expression_type = Expression.t_method_access;
                         
@@ -388,11 +375,6 @@ public class Analyzer {
                         
                         expr.used_symbol = getByIdentifier(signature, current_scope, expr_node);
                         helper_al = ((ArrayList<String>)(expr.used_symbol.data));
-                        
-                        //helper_expression = new Expression(current_scope);
-                        //helper_expression.return_type = helper_al.get(helper_al.size()-1);
-                        
-                        //expr.addChild(helper_expression);
 
                         static_access = false;
                         //See if the return type is a class, or not
@@ -428,7 +410,6 @@ public class Analyzer {
                                 helper_scope = null;
                             }else{
                                 helper_scope = (ScopeNode)getByIdentifier((String)expr.used_symbol.data, current_scope, expr_node);
-                                //expr.used_symbol = helper_scope;
                             }
                         }
 
@@ -439,14 +420,8 @@ public class Analyzer {
                         }
                         str_helper = (String)expr.used_symbol.data;
                     }
-                    /*
-                    Expression expr;
-                    Symbol helper_symbol;
-                    Expression helper_expression;
-                    ScopeNode helper_scope;
-                    SimpleNode helper_node;
-                    */
                     //If there are more nodes to be parsed, it must be SELECTOR nodes
+                    // afunction().anotherone().andanotherone()
                     if(i < node_children){
                         while(i < node_children){
                             helper_node = (SimpleNode)expr_node.jjtGetChild(i++);
@@ -487,6 +462,7 @@ public class Analyzer {
                     }
                 }
                 break;
+            //this.
             case JMMParserTreeConstants.JJTTHIS:
                 expr.expression_type = Expression.t_access;
                 //Local scope only, find current class
@@ -656,7 +632,6 @@ public class Analyzer {
         node_children = if_structure_node.jjtGetNumChildren();
         cond_if_else = new ArrayList<Structure>();
 
-
         this_if = new Structure(current_scope);
         this_if.type = Structure.t_if;
 
@@ -667,15 +642,11 @@ public class Analyzer {
         }
 
         cond_if_else.add(helper);
-        //cond_if_else.add(0, new Structure(current_scope));
         cond_if_else.add(new Structure(current_scope));
         cond_if_else.add(new Structure(current_scope));
         
-        //this_if.addChild(helper);
-
         while(i < node_children && ((SimpleNode)if_structure_node.jjtGetChild(i)).id != JMMParserTreeConstants.JJTELSESTRUCTURE){   //If body statements
             help_node = (SimpleNode)if_structure_node.jjtGetChild(i++);
-            //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
             cond_if_else.get(1).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
         }
         //Parse else
@@ -685,7 +656,6 @@ public class Analyzer {
             i = 0;
             while(i < node_children){
                 help_node = (SimpleNode)help_node1.jjtGetChild(i++);
-                //this_if.addChild(Analyzer.getStatement(help_node, current_scope));
                 cond_if_else.get(2).nested_structures.add(Analyzer.getStatement(help_node, current_scope));
             }
         }
@@ -701,13 +671,20 @@ public class Analyzer {
      * @return The generated structure object
      */
     public static Structure getStatement(SimpleNode statement_node, ScopeNode current_scope){
+        //if
         if(statement_node.id == JMMParserTreeConstants.JJTIFSTRUCTURE){
             return Analyzer.getIf(statement_node, current_scope);
-        }else if(statement_node.id == JMMParserTreeConstants.JJTWHILESTRUCTURE){
+        }else
+        //while
+        if(statement_node.id == JMMParserTreeConstants.JJTWHILESTRUCTURE){
             return Analyzer.getWhile(statement_node, current_scope);
-        }else if(statement_node.id == JMMParserTreeConstants.JJTATTRIBUTION){
+        }else
+        //X = Y
+        if(statement_node.id == JMMParserTreeConstants.JJTATTRIBUTION){
             return Analyzer.getAttribution(statement_node, current_scope);
-        }else if(statement_node.id == JMMParserTreeConstants.JJTDIRECTEXPRESSION){
+        }else
+        //a+b+c
+        if(statement_node.id == JMMParserTreeConstants.JJTDIRECTEXPRESSION){
             return Analyzer.getExpression(statement_node, current_scope);
         }else{
             Analyzer.throwException( new RuntimeException("Unrecognized token "+statement_node.id));
@@ -718,6 +695,7 @@ public class Analyzer {
      * Retrieves a variable declaration
      * @param decl_node The AST node
      * @param current_scope The current scope
+     * @param type "local" for method variables, "class" for class variables. Needed for easier jasmin management
      */
     public static void getVarDecl(SimpleNode decl_node, ScopeNode current_scope, String type){
         Symbol this_variable = new Symbol();
@@ -754,7 +732,7 @@ public class Analyzer {
         ArrayList<String> types = new ArrayList<String>();
         ArrayList<Symbol> argument_variables = new ArrayList<Symbol>();
 
-        this_method =  new JasminMethod(parent);            //Simple wrapper, Analyzer uses just as a ScopeNode
+        this_method =  new JasminMethod(parent);            //Simple wrapper (packs extra utility for Jasmin handling), Analyzer uses just as a ScopeNode
         node_children = method_node.jjtGetNumChildren();
         i = 0;
         help_node = (SimpleNode)method_node.jjtGetChild(i++);
@@ -967,7 +945,7 @@ public class Analyzer {
             System.exit(-1);
         }
         
-        if(names.size() == 0){          //If is a simple method import (aka import Name;)
+        if(names.size() == 0){          //If is a simple method import (ex.: import Name;)
             names.add((((SimpleNode)import_node.jjtGetChild(0))).image);
         }
 
@@ -992,7 +970,7 @@ public class Analyzer {
             }
         }
 
-        if(names.size() == 1){            //Can only be a constructor (impoort Name();)
+        if(names.size() == 1){            //Can only be a constructor (import Name();), add it to the rest of constructors
             this_import_method.name = names.get(0);
             if(help_node.id == JMMParserTreeConstants.JJTRETURN){
                 types.add(((SimpleNode)help_node.jjtGetChild(0)).image);
@@ -1011,10 +989,9 @@ public class Analyzer {
             ((ArrayList<String>)this_constructor.data).add(names.get(0));
             this_constructor.type = Symbol.t_method_instance;
 
-            try{//Try to add the method to the class symbol table (Java allows duplicate imports?)
+            try{//Try to add the method to the class symbol table (Java allows duplicate imports)
                 root_scope.addSymbol(this_constructor, import_node);
-            }catch(DuplicateException ex){
-            }
+            }catch(DuplicateException ex){}
 
             this_import_method.name = names.get(1);
             if(help_node.id == JMMParserTreeConstants.JJTRETURN){
@@ -1044,7 +1021,7 @@ public class Analyzer {
         }
     }
     /**
-     * Fully semantically parse the program AST inside root into a HIR
+     * Fully semantically parse the AST inside root into a HIR
      * @param root The AST root node
      * @param filename The filename
      * @return The HIR root (HIR is a tree)

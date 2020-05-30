@@ -2,11 +2,22 @@ import java.util.ArrayList;
 
 
 public class SemanticToJasminOptimizations {
-    public static void Optimize(ScopeNode class_root, Boolean optimizations_arg){
-        constantPropagation(class_root);
-        constantFolding(class_root);
-    }
 
+    /**
+     * Generate code tree, and depending on the arguments, optimize
+     * @param class_root The ScopeNode class root
+     * @param optimizations_arg Optimizations argument
+     */
+    public static void Optimize(ScopeNode class_root, Boolean optimizations_arg){
+        if(optimizations_arg){
+            constantPropagation(class_root);
+            constantFolding(class_root);
+        }
+    }
+    /**
+     * Apply constant folding to the ScopeNode
+     * @param class_root The class ScopeNode
+     */
     public static void constantFolding(ScopeNode class_root){
         for(ScopeNode method : class_root.children){
             for(Structure struct : method.structures){
@@ -14,6 +25,10 @@ public class SemanticToJasminOptimizations {
             }
         }
     }
+    /**
+     * Fold a structure/code line
+     * @param struct
+     */
     public static void foldOnStructure(Structure  struct){
         Expression lhs;
         Expression rhs;
@@ -35,7 +50,7 @@ public class SemanticToJasminOptimizations {
                         expr.value = (Integer)lhs.value * (Integer)rhs.value;
                         break;
                     case Expression.t_div:
-                        if(((Integer)rhs.value).intValue() == 0){       //Let the JVM warn the user for being dumb
+                        if(((Integer)rhs.value).intValue() == 0){       //Let it be the JVM warn the user for being dumb (this is a very literal /0)
                             return;
                         }
                         expr.value = (Integer)lhs.value / (Integer)rhs.value;
@@ -57,25 +72,35 @@ public class SemanticToJasminOptimizations {
             }
         }
     }
-
+    /**
+     * Propagates constants on a class
+     * @param class_root The class ScopeNode
+     */
     public static void constantPropagation(ScopeNode class_root){
-
         for(ScopeNode method : class_root.children){
-            //System.out.println("On method "+method.name);
             propagateOnBody(new ArrayList<Symbol>(), method.structures);
         }
     }
-
-    //Returns an equivalent (local) symbol t if it is present inside list
-    public static Symbol inSymbolList(ArrayList<Symbol> list, String t){
+    /**
+     * Looks for the given symbol name inside a Symbol list
+     * @param list The list to search in
+     * @param name The name to find
+     * @return The symbol if found, null otherwise
+     */
+    public static Symbol inSymbolList(ArrayList<Symbol> list, String name){
         for(Symbol present : list){
-            if(present.name.equals(t)){
+            if(present.name.equals(name)){
                 return present;
             }
         }
         return null;
     }
-    //Merges the changes in the global and local variables into a single list, prioritizing local changes
+    /**
+     * Merges the changes in the global and local variables into a single list, prioritizing local changes
+     * @param locals
+     * @param globals
+     * @return The combined list
+     */
     public static ArrayList<Symbol> mergeChanges(ArrayList<Symbol> locals, ArrayList<Symbol> globals){
         ArrayList<Symbol> merged = new ArrayList<Symbol>();
         merged.addAll(locals);
@@ -87,9 +112,12 @@ public class SemanticToJasminOptimizations {
         }
         return merged;
     }
-    /*
-    Evaluates a chunk of code, and returns a changed Symbol list
-    */
+    /**
+     * Evaluates a chunk of code, and returns an updated Symbol list
+     * @param globally_changed_vars The variable states so far
+     * @param body The structures to analyse
+     * @return The updated state of the variables
+     */
     public static ArrayList<Symbol> propagateOnBody(ArrayList<Symbol> globally_changed_vars, ArrayList<Structure> body){
         ArrayList<Symbol> locally_changed_vars;
         Expression helper0;
@@ -102,7 +130,6 @@ public class SemanticToJasminOptimizations {
         for(Structure base_structure : body){
             switch(base_structure.type){
                 case Structure.t_attribution:
-                    //System.out.println("ATTRIBUTION!");
                     helper0 = (Expression)base_structure.nested_structures.get(0);
                     helper1 = (Expression)base_structure.nested_structures.get(1);
                     //It's a normal attribution
@@ -119,7 +146,6 @@ public class SemanticToJasminOptimizations {
                                     locally_changed_vars.add(helper_symbol);                        
                                 }
                                 if(helper1.expression_type == Expression.t_constant){
-                                    //System.out.println(helper_symbol.name+" Initialized to a constant");
                                     helper_symbol.initialized_with_constant = true;
                                     helper_symbol.constant_value = helper1.value;
                                 }else{
@@ -139,6 +165,9 @@ public class SemanticToJasminOptimizations {
                     locally_changed_vars = mergeChanges(propagateInsideIf(base_structure, mergeChanges(locally_changed_vars, globally_changed_vars)), locally_changed_vars);
                     break;
                 case Structure.t_while:
+                    //propagateInsideWhile returns all the possible conflicting changes inside the while
+                    //Doesnt include the changes that happen inside the while but did not conflict with previous changes,
+                    //so by getting the "unique" changes, what we get is actually  changes_so_far - problematic_changes_inside_while
                     locally_changed_vars = getUnique(propagateInsideWhile(base_structure, mergeChanges(locally_changed_vars, globally_changed_vars)), locally_changed_vars) ;
                     break;
                 case Structure.t_expression:
@@ -150,14 +179,15 @@ public class SemanticToJasminOptimizations {
         }
         return locally_changed_vars;
     }
-    /*
-    Search through expression to find and replace locally constant variables.
-    When in a while body, this can be called to also evaluate ifs and whiles
-    */
+    /**
+     * Search through expression to find and replace locally constant variables.
+     * When in a while body, this can be called to also evaluate ifs and whiles inside that while
+     * @param str Structure to evaluate
+     * @param changed_symbols Current state of the symbols
+     */
     public static void propagateInsideExpression(Structure str, ArrayList<Symbol> changed_symbols){
         Symbol used_s;
         Expression expr;
-        Expression helper0;
         Expression helper1;
         Expression helper2;
         //This condition is only true inside while bodies because we only want to propagate the constants
@@ -199,6 +229,11 @@ public class SemanticToJasminOptimizations {
             }
         }
     }
+    /**
+     * Ignoring whiles and ifs, returns a single block of Structures/Code lines
+     * @param str The structure to evaluate
+     * @return The ArrayList<Structure> with the contiguous "lines"
+     */
     public static ArrayList<Structure> mergeAllStructures(Structure str){
         ArrayList<Structure> ret = new ArrayList<Structure>();
         switch(str.type){
@@ -221,10 +256,14 @@ public class SemanticToJasminOptimizations {
         }
         return ret;
     }
-    /*
-    Whiles are special because if a variable is used and changed inside it, we cannot replace it anywhere inside
-    So first we need to find the variables that are in fact changed and only afterwards propagate constants
-    */
+    /**
+     * Whiles are special because if a variable is used and changed inside it, we cannot replace it anywhere inside
+     * Not can we speculate for after the while is done
+     * So first we need to find the variables that are in fact changed and only afterwards propagate constants
+     * @param str
+     * @param globally_changed_vars
+     * @return
+     */
     public static ArrayList<Symbol> propagateInsideWhile(Structure str, ArrayList<Symbol> globally_changed_vars){
         Expression helper0;
         Expression helper1;
@@ -232,7 +271,6 @@ public class SemanticToJasminOptimizations {
         Symbol local_symbol;
         ArrayList<Symbol> locally_changed_vars = new ArrayList<Symbol>();
         ArrayList<Structure> all_structures;
-
 
         all_structures = mergeAllStructures(str);
         
@@ -265,21 +303,23 @@ public class SemanticToJasminOptimizations {
                 }
             }
         }
-        /*
-        Now, we can replace the variables that are present in global as constants but not present in the local changes
-        */
+        //Now, we can replace the variables that are present in global as constants but not present in the local changes
         for(Structure instr : all_structures){
             //All the changed variables in local are in global, but not all the ones in global are
             //in local so we can use the "uniques" to retrieve the global changes that weren't made
             //useless by a local change
-
             propagateInsideExpression(instr, getUnique(locally_changed_vars, globally_changed_vars));
         }
         //print(getUnique(locally_changed_vars, globally_changed_vars));
         return locally_changed_vars;
     }
 
-    //Returns symbols present (changed) in only one of the given lists
+    /**
+     * Returns symbols present (changed) in only one of the given lists
+     * @param list1
+     * @param list2
+     * @return ArrayList<Symbol> with the Symbols that only appear in one of the two lists
+     */
     public static ArrayList<Symbol> getUnique(ArrayList<Symbol> list1, ArrayList<Symbol> list2){
         ArrayList<Symbol> diffs = new ArrayList<Symbol>();
         for(Symbol el_in_1 : list1){
@@ -294,7 +334,13 @@ public class SemanticToJasminOptimizations {
         }
         return diffs;
     }
-    //Returns true if the symbols have had the same changes
+    
+    /**
+     * Returns true if the symbols have had the same changes
+     * @param s1
+     * @param s2
+     * @return
+     */
     public static Boolean commonChanges(Symbol s1, Symbol s2){
         if(s1.initialized_with_constant == true && s2.initialized_with_constant == true){
             switch((String)(s1.data)){
@@ -312,7 +358,13 @@ public class SemanticToJasminOptimizations {
         }
         return false;
     }
-    //Returns symbols with the same name and changes in both lists
+    
+    /**
+     * Returns symbols with the same name and same changes in both lists
+     * @param list1
+     * @param list2
+     * @return
+     */
     public static ArrayList<Symbol> getCommonChanged(ArrayList<Symbol> list1, ArrayList<Symbol> list2){
         ArrayList<Symbol> same = new ArrayList<Symbol>();
         Symbol helper;
@@ -323,19 +375,21 @@ public class SemanticToJasminOptimizations {
                     helper.initialized_with_constant = false;
                 }
                 same.add(helper);                    
-
             }
         }
         return same;
     }
-    /*
-    Search through both arms of an if expression
-    If both arms change the same variable into the same constant, save that change
-    Since both branches are analyzed one after the other, local changes need to be stores locally
-    and when both branches end, merged. Ex:
-    In the if body the variable a, which has the constant value of 2, is altered. The else branch
-    can still use the constant value, but after both branches end, a can't be replaced anymore
-    */
+    /**
+     * Search through both arms of an if expression
+     * If both arms change the same variable into the same constant, save that change
+     * Since both branches are analyzed one after the other, local changes need to be stored locally
+     * and when both branches end, merged. Ex:
+     * In the if body the variable a, which has the constant value of 2, is altered. The else branch
+     * can still use the constant value, but after both branches end, a can't be assumed constant anymore
+     * @param str if Structure
+     * @param globally_changed_vars Global variable changes so far
+     * @return A list with the variables that are common in both branches
+     */
     public static ArrayList<Symbol> propagateInsideIf(Structure str, ArrayList<Symbol> globally_changed_vars){
         if(str.type != Structure.t_if){
             throw new RuntimeException("Wrong type "+str.type);
@@ -349,7 +403,10 @@ public class SemanticToJasminOptimizations {
         //print(getCommonChanged(changes_on_branch_1, changes_on_branch_2));
         return a;
     }
-
+    /**
+     * Prints a list of symbols and their current state
+     * @param els The symbols to print
+     */
     public static void print(ArrayList<Symbol> els){
         for (Symbol el : els) {
             System.out.println(el.name+" "+el.initialized_with_constant);

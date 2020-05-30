@@ -1,18 +1,27 @@
 import java.util.ArrayList;
 
-
 public class JasminCodeOptimization {
-    public static void Optimize(String jasmin_code, ScopeNode semantic_class_root, int register_ammount, Boolean optimizations_arg){
-        CodeTree.generateTree(jasmin_code);
-        getUninitializedVariables(semantic_class_root);
+    /**
+     * Generate code tree, and depending on the arguments, optimize
+     * @param semantic_class_root The ScopeNode class root
+     * @param register_ammount Registers argument
+     * @param optimizations_arg Optimizations argument
+     */
+    public static void Optimize(ScopeNode semantic_class_root, int register_ammount, Boolean optimizations_arg){
+        CodeTree.generateTree(Jasminify.out);
+        if(optimizations_arg){
+            getUninitializedVariables(semantic_class_root);
+        }
         if(register_ammount > 0){
             setLiveliness(register_ammount);
         }
         Analyzer.throwAllExceptions();
     }
-    
+    /**
+     * Perform the liveliness analysis
+     * @param register_ammount User request maximum of registers
+     */
     public static void setLiveliness(int register_ammount){
-        int rep = 0;
         int max_colors;
         int max_paint_registers;
         int max_current;
@@ -49,9 +58,6 @@ public class JasminCodeOptimization {
         
             //Liveliness analysis
             do{
-                //rep = rep+1;
-                rep = 1;
-                //System.out.println(": "+rep);
                 for(CodeTree.CodeNode node : root_tree.all_nodes){
                     if(node.type != CodeTree.read && node.type != CodeTree.write){
                         continue;
@@ -60,8 +66,7 @@ public class JasminCodeOptimization {
                     node.prev_out.clear();
                     node.prev_in.addAll(node.in);
                     node.prev_out.addAll(node.out);
-    
-                    //System.out.println("-> "+node.index);
+
                     GraphNode.getNode(node.index);
 
                     defineOut(node.out, node);
@@ -98,13 +103,12 @@ public class JasminCodeOptimization {
             //Create interferences
             ArrayList<Integer> self_int;
             for(CodeTree.CodeNode node : root_tree.all_nodes){
-                //Add all interferences in both in and out
-                //GraphNode.addInterferences(node.in);
-                GraphNode.addInterferences(node.out);
-                //Also need, for writes, add interference for outs
+                //Add all interferences between the out variables
                 self_int = new ArrayList<Integer>();
-                self_int.addAll(node.out);
-                self_int.add(node.index);
+                if(node.type == CodeTree.write){        //If thre is a write to a variable, include it in the interferences
+                    self_int.addAll(node.out);
+                }
+                addInt(self_int, node.index);
                 GraphNode.addInterferences(self_int);
             }
 
@@ -115,7 +119,7 @@ public class JasminCodeOptimization {
                     max_colors = node.interference.size();
                 }
             }
-            max_colors += 1;//1 interference means 2 nodes
+            max_colors += 1;//1 interference involves 2 nodes
 
             //Color the graph
             paint = new Boolean[max_colors];
@@ -146,12 +150,13 @@ public class JasminCodeOptimization {
                 }
             }
             
-            //Test for the requested maximum registers
+            //Check for the requested maximum register ammount
             if(max_paint_registers > register_ammount){
                 throw new RuntimeException("Cannot use only "+register_ammount+" minimum of "+max_paint_registers);
             }
-            max_current = 0;
+
             //Update variable indexes
+            max_current = 0;
             for(CodeTree.CodeNode node : root_tree.all_nodes){
                 GraphNode n = GraphNode.getNode(node.index);
                 if(max_current < node.index){
@@ -173,13 +178,15 @@ public class JasminCodeOptimization {
                 if(node.iinc != -1){
                     Jasminify.out = Jasminify.out.replaceAll("iinc "+node.index+" "+node.iinc+" ;"+node.hash, "iinc "+n.painted_index+" "+node.iinc+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
                 }
-                //istore_1 ;747464370
             }
             if(max_paint_registers != max_current){
                 System.out.println("Reduced locals from "+max_current+" to "+max_paint_registers);
             }
         }
     }
+    /**
+     * The instruction node
+     */
     public static class GraphNode{
         public static ArrayList<GraphNode> all_nodes;
         public ArrayList<GraphNode> interference;
@@ -191,7 +198,11 @@ public class JasminCodeOptimization {
             this.index = _index;
             this.painted_index = -1;
         }
-        //Retrieve node from all_nodes, add a new one if no node is found
+        /**
+         * Retrieve a node with a specified index from "all_nodes", add a new one if no node is found
+         * @param target The target index
+         * @return
+         */
         public static GraphNode getNode(int target){
             GraphNode helper;
             for(GraphNode node : GraphNode.all_nodes){
@@ -203,7 +214,10 @@ public class JasminCodeOptimization {
             GraphNode.all_nodes.add(helper);
             return helper;
         }
-        //Add all interferences in between the given nodes
+        /**
+         * Uses a list of nodes, to add interference in between them all
+         * @param nodes the nodes that interfere with eachother
+         */
         public static void addInterferences(ArrayList<Integer> nodes){
             GraphNode n1;
             GraphNode n2;
@@ -218,7 +232,11 @@ public class JasminCodeOptimization {
                 }
             }
         }
-        //Add a single interference to both nodes
+        /**
+         * Add interference between two nodes
+         * @param node_1
+         * @param node_2
+         */
         public static void addInterference(GraphNode node_1, GraphNode node_2){
             for(GraphNode node1_int : node_1.interference){
                 if(node1_int.index == node_2.index){
@@ -229,7 +247,11 @@ public class JasminCodeOptimization {
             node_2.interference.add(node_1);
         }
     }
-    //So as not to create duplicates (duplicates are problematic in this algorithm)
+    /**
+     * Add an Integer object to an ArrayList if an object with the same value isn't already present (duplicates are problematic in this algorithm)
+     * @param list The list to add the int value to
+     * @param new_int The int value
+     */
     public static void addInt(ArrayList<Integer> list, int new_int){
         for(Integer list_el : list){
             if(list_el.intValue() == new_int){
@@ -238,7 +260,14 @@ public class JasminCodeOptimization {
         }
         list.add(new Integer(new_int));
     }
-    //Since we are dealing with loads and stores, only 1 use OR 1 def is needed per in
+    /**
+     * Defines the new in based on the given information
+     * Since we are dealing with loads and stores, only 1 use OR 1 def is ever needed per defineIn
+     * @param in The "in" list
+     * @param out The "out" list
+     * @param use The used variable
+     * @param def The defined variable
+     */
     public static void defineIn(ArrayList<Integer> in, ArrayList<Integer> out, Integer use, Integer def){
         //helper[n] = out[n] – def [n]
         ArrayList<Integer> helper = new ArrayList<Integer>();
@@ -259,19 +288,34 @@ public class JasminCodeOptimization {
         in.clear();
         in.addAll(helper);
     }
-    //out[n] = Usucc in[s]
+    /**
+     * Defines the new out based on the given information
+     * @param out
+     * @param succs
+     */
     public static void defineOut(ArrayList<Integer> out, CodeTree.CodeNode succs){
-        ArrayList<CodeTree.CodeNode> succs_next = getNext(succs);
+        ArrayList<CodeTree.CodeNode> succs_next = getNext(new ArrayList<CodeTree.CodeNode>(), succs);
         out.clear();
+        //out[n] = Usucc in[s]
         for(CodeTree.CodeNode succ : succs_next){
             for(Integer in_int : succ.in){
                 addInt(out, in_int.intValue());
             }
         }
     }
-
-    public static ArrayList<CodeTree.CodeNode> getNext(CodeTree.CodeNode succ){
+    /**
+     * Retrieves the relevant successor nodes (stores and loads)
+     * The applied algorithm doesn't work well with "empty" nodes (nodes that don't have use or def, like ifs gotos and labels)
+     * @param previous Prevent possible infinite loops (empty structures can cause this)
+     * @param succ The node from which to retrieve the successors
+     * @return A list with all the relevant node successors
+     */
+    public static ArrayList<CodeTree.CodeNode> getNext(ArrayList<CodeTree.CodeNode> previous, CodeTree.CodeNode succ){
         ArrayList<CodeTree.CodeNode> next = new ArrayList<CodeTree.CodeNode>();
+        if(previous.contains(succ)){
+            return next;
+        }
+        previous.add(succ);
         for(CodeTree.CodeNode next_succ : succ.next){
             switch(next_succ.type){
                 case CodeTree.read:
@@ -279,13 +323,17 @@ public class JasminCodeOptimization {
                     next.add(next_succ);
                 break;
                 default:
-                    next.addAll(getNext(next_succ));    
+                    next.addAll(getNext(previous,next_succ));    
             }
         }
-
         return next;
     }
-    //Compares two Array Lists of Integers
+    /**
+     * Compares if two Array Lists of Integers have the same values
+     * @param list1
+     * @param list2
+     * @return True or False, depending on the lists having the same values or not
+     */
     public static Boolean compareLists(ArrayList<Integer> list1, ArrayList<Integer> list2){
         if(list1.size() != list2.size()){
             return false;
@@ -306,9 +354,12 @@ public class JasminCodeOptimization {
         return true;
     }
     
-    //Compares ins and prev_ins, outs and prev_outs, in all nodes
+    /**
+     * Compares ins and prev_ins, outs and prev_outs, in all nodes, to see if the algorithm has converged
+     * @param root_tree The root (method)
+     * @return Wether the algorithm for the given root/method has stabilized
+     */
     public static Boolean hasStabilized(CodeTree.CodeNode root_tree){
-        CodeTree.CodeNode current_node;
         for(CodeTree.CodeNode node : root_tree.all_nodes){
             if(!compareLists(node.in, node.prev_in) || !compareLists(node.out, node.prev_out)){
                 return false;
@@ -316,7 +367,10 @@ public class JasminCodeOptimization {
         }
         return true;
     }
-
+    /**
+     * Analyse the program flow to see if it's possible for an index to be accessed (load) before it is initialized (store)
+     * @param semantic_class_root The class to analyse
+     */
     public static void getUninitializedVariables(ScopeNode semantic_class_root){
         //For each method tree
         int hash;
@@ -325,6 +379,7 @@ public class JasminCodeOptimization {
             try{
                 searchNest(empty_start, root, -1, -1);
             }catch(Exception uninit){
+                //Get variable name to print in exception
                 try{
                     hash = Integer.parseInt((""+uninit).split(" ")[1]+"");
                     for(ScopeNode method : semantic_class_root.children){
@@ -342,63 +397,68 @@ public class JasminCodeOptimization {
                         }
                     }
                 }catch(Exception oops){
-                    throw oops;
+                    throw uninit;
                 }
             }
         }
     }
-
-    public static boolean searchForLife(ArrayList<Integer> the_living, int life){
-        for(Integer alive : the_living){
-            if(alive.intValue() == life){
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Search inside a "nest", or a code "block".
+     * This can be either of the branches on an if, a single line (store/load), or a while body
+     * @param in_alive variables that have already been initialized
+     * @param node The node to analyse
+     * @param nest_jump_index the index for else branch to stop
+     * @param _arg_amm ammount of arguments (arguments are assumed to be initialized)
+     * @return The list of locally initialized variables
+     */
     public static ArrayList<Integer> searchNest(ArrayList<Integer> in_alive, CodeTree.CodeNode node, int nest_jump_index, int _arg_amm){
         ArrayList<Integer> localFauna = new ArrayList<Integer>();
         ArrayList<Integer> nestedFauna1;
         ArrayList<Integer> nestedFauna2;
         ArrayList<Integer> totalFauna;
+        int if_skip = -1;
         int arg_amm = 0;
         if(_arg_amm != -1){
             arg_amm = _arg_amm;
         }
         CodeTree.CodeNode current_node = node;
-        //System.out.println("diggin "+arg_amm);
         while(true){
             switch(current_node.type){
-
                 case CodeTree.label:
-                    //else body ends in the label
                     if(current_node.label.equals(";")){
-                        //System.out.println("YAY "+current_node.jump_index);
                         arg_amm = current_node.jump_index;
+                        System.out.println("\n");
                     }
+                    //else body ends in the label
                     if(nest_jump_index != -1 && current_node.label.equals("endif_"+nest_jump_index)){
                         return localFauna;
+                    }
+                    
+                    //If we are in a branched if, reaching the end of the "parent" if means we need to return
+                    //System.out.println(">> "+current_node.label);
+                    if(current_node.label.startsWith("endif_") && if_skip != -1){
+                        return localFauna;
+                    }
+                    //Ignore whiles, initializations inside them mean nothing here
+                    if(current_node.label.startsWith("while_")){
+                        current_node = current_node.next.get(0);
+                        if(current_node.next.size() != 0){
+                            current_node = current_node.next.get(0);
+                        }else{
+                            return localFauna;
+                        }
                     }
                     break;
                 case CodeTree.read:
                     if(arg_amm < current_node.index && !searchForLife(in_alive, current_node.index) && !searchForLife(localFauna, current_node.index)){
-                        //System.out.println("variable "+current_node.index+" not found :( "+current_node.hash);
+                        //Unitialized variable found
                         throw new RuntimeException(""+current_node.hash);
-                    }else{
-                        if(searchForLife(in_alive, current_node.index)){
-                            //System.out.println("variable "+current_node.index+" found in global fauna");
-                        }
-                        if(searchForLife(localFauna, current_node.index)){
-                            //System.out.println("variable "+current_node.index+" found in local fauna");
-                        }
                     }
                 break;
 
                 case CodeTree.write:
                     if(!searchForLife(localFauna, current_node.index)){
                         localFauna.add(current_node.index);
-                        //System.out.println("Adding index: "+current_node.index);
                     }
                 break;
 
@@ -416,20 +476,20 @@ public class JasminCodeOptimization {
                             }
                         }
                     }
-
+                    if_skip = current_node.next.get(0).jump_index;
                     //Skip to the end of the else
                     while(true){
                         current_node = current_node.next.get(0);
                         if(current_node.next.size() == 0){
                             break;
                         }
-                        if(current_node.label != null && current_node.label.equals("endif_"+current_node.next.get(0).jump_index)){
+                        if(current_node.label != null && current_node.label.equals("endif_"+if_skip)){
                             break;
                         }
                     }
                 break;
                 case CodeTree.jump_goto:
-                    //if and while bodies end here
+                    //if bodies end here
                     return localFauna;
             }
 
@@ -438,25 +498,20 @@ public class JasminCodeOptimization {
             }
             current_node = current_node.next.get(0);
         }
-        //System.out.println("done diggin");
         return localFauna;
     }
-    /*
-    Every jump decision has 2 possible states.
-    There are if decisions and while decisions.
-    The two possible states for each are as follows:
-        Ifs: The state can be either False (the condition in the if was false), which represents a jump forward or True, (the condition in the if was true) which represents no jump was done
-        Whiles: The states can be False (the condition in the while was false), which represents a jump forward or True, (the condition in the while was True ONCE), which means we perform the condition once
-
-    Checks if all paths have been searched.
-    Paths that ended are marked True
-    */
-
-    public static void recursiveSearch(ArrayList<Integer> initialized_vars, CodeTree.CodeNode node){
-        node.read = true;
-
-        for(CodeTree.CodeNode next : node.next){
-            recursiveSearch(initialized_vars, next);
+    /**
+     * Search for an index inside an array of Integers
+     * @param the_living List of Integer
+     * @param life value to look for
+     * @return Presence of the value inside the list
+     */
+    public static boolean searchForLife(ArrayList<Integer> the_living, int life){
+        for(Integer alive : the_living){
+            if(alive.intValue() == life){
+                return true;
+            }
         }
+        return false;
     }
 }

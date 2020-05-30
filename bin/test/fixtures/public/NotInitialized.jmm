@@ -1,0 +1,18 @@
+import static io.println(int);
+class NotInitialized{
+	public static void main(String[] args) {
+        int a;
+        int b;
+
+        while(false){
+            a = 2;
+        }
+
+        if(false){
+            b = 1;
+        }else{
+            a = 2;
+        }
+        io.println(b);
+    }
+}
