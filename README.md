@@ -1,25 +1,48 @@
-# COMP - Project 1
+# Compiler Project 2020
 
 ### Using this compiler
 
 Usage: java Main [-r= < num >] [-o] < input_file.jmm > [-v=< 0|1|2|3 >]
 
-* [NOT IMPLEMENTED] The "–r" option tells the compiler to use only the first <num> local variables of the JVM when assigning the local variables used in each Java-- function to the local JVM variables.
+* The "–r" option tells the compiler to use only the first <num> local variables of the JVM when assigning the local variables used in each Java-- function to the local JVM variables.
 * Without the "–r" option (similar to –r=0), the compiler will use the available JVM local variables to store the local variables used in each Java-- function.
-* [NOT IMPLEMENTED]With the "–o" option, the compiler should perform a set of code optimizations.
-* The "–v" option, defines the verbose output type.
+* –o: Performs a set of code optimizations
+* –v: Compiler verbosity
 * * 0: No console output (DEFAULT)
 * * 1: Only syntactic output
 * * 2: Semantic output and higher
 * * 3: Jasmin output and higher
 
+### Using the custom run.sh
+
+Script to run gradle, the compiler on a file, jasmin on the result and then launch the resulting .class
+
+Also logs the resulting outputs into files in the run_tmp directory, for easier debugging and output analysis.
+
+Usage: ./run.sh FILE_PATH BASH_VERBOSITY COMPILER_VERBOSITY INTERACTIVE RVALUE OVALUE
+
+* FILE_PATH: the file to compile
+* BASH_VERBOSITY: this scripts verbosity
+* * 0: No output
+* * 1: Only gradle
+* * 2: Jasmin + above
+* * 3: Java + above
+* COMPILER_VERBOSITY: the verbosity to send to the compiler
+* * 0: No output
+* * 1: Only syntactic output
+* * 2: Semantic output and higher
+* * 3: jasmin output and higher
+* INTERACTIVE: 1 to allow direct Java program interaction (no java output logging)
+* RVALUE: -r value to pass to the compiler
+* OVALUE: -o value to pass to the compiler (!0 to activate the flag)
+
 ### Project cons
 
-By a lapse of judgement, constant folding was done in a stage prior to constant propagation. This could be changed rather easily (since the syntax tree and the semantic tree share the structure of the arithmetic expressions) but there might not be enough time.
+1. The lookahead in the syntatic section is globally of 1, but in a few local situations of 2
 
 ### TODO
 
-[X] Remove optimizations from inside Symbol class
+[X] Remove optimization variables from inside Symbol class
 
 [X] Improve compiler thrown exceptions (make them more consistent)
 
@@ -31,10 +54,11 @@ By a lapse of judgement, constant folding was done in a stage prior to constant 
 
 [X] Improve documentation
 
-[V] Create packages for better file management
+[X/V] Create packages for better file management (VS code and gradle aren't using the same paths and it becomes hard to develop the code further)
 
 [X] Try to fit the code into a consistent naming convention and style guide
 
+[V] Improve README.md
 
 ### Semantic errors detected
 
@@ -64,25 +88,11 @@ Working | Custom Test <br> Exists | Description
 
 ### Optimizations
 
-[X] Remove unused variables
-
-[X] Array of size 1 as a variable
-
 [V] Liveliness analysis for register allocation
-
-[X] Redundant attributions are removed 1 (setting the same variable to the same value it already had)
-
-[X] Redundant attributions are removed 2 (changing a variables' value before using the variable)
-
-[X] Most appropriate while structure
 
 [V] Constant propagation by segmented sections (detects where a variable is constant, and replaces it in those segments only)
 
-[X] Register selection priority for loop control or body variables (more accessed)
-
 [V] Constant folding (arithmetic, boolean and logic)
-
-[X] Constant folding after constant propagation (arithmetic, boolean and logic)
 
 [V] Empty else doesn't generate redundant jumps
 
@@ -90,7 +100,72 @@ Working | Custom Test <br> Exists | Description
 
 [V] Constant pushing instructions are optimized based on the size of the constant
 
+[X] Remove unused variables
 
+[X] Array of size 1 as a variable
+
+[X] Redundant attributions are removed 1 (setting the same variable to the same value it already had)
+
+[X] Redundant attributions are removed 2 (changing a variables' value before using the variable)
+
+[X] Most appropriate while structure
+
+[X] Register selection priority for loop control or body variables (more accessed)
+
+
+### Optimization details
+
+#### Constant propagation
+
+The way constant propagation is done, is by looking at the possible branches (whiles and ifs), and assert wether or not a variable is constant at a certain part in the code. This means that a variable that stops being constant at a certain part of the code, and later resumes being a constant, is treated as such. Follows a simple example:
+
+int a;
+int b;
+a = afunction();
+b = a;
+a = 2;
+b = a;
+
+In the above example, only for the second attribution will a be swapped with "2".
+
+For a more complex and detailed example of how the created algorithm behaves, look at the test "ConstantPropagation.jmm" and the implementation at Optimizations/SemanticToJasminOptimizations.java
+
+#### Constant folding
+
+Constant folding is relatively straight forward and is executed for all the supported logic, arithmetic and boolean operations (+, -, *, /, <, &&).
+
+The example test is "ConstantFolding.jmm" and it is implemented in Optimizations/SemanticToJasminOptimizations.java
+
+Runs after constant propagation.
+
+#### Liveliness
+
+To perform the liveliness analysis, the IR CodeTree was used (further detail on the IR is presented bellow).
+
+The analysis is made as depicted in the given slides, and is working.
+
+On the resulting, final jasmin code, a tag saying "changed X Y" can be seen where there was a choice to swap the X register with the Y register
+
+Also outputs to the console a message that tells us, per method, the reduction in locals.
+
+
+### Intermediate Representations
+
+#### ScopeNode
+
+An IR that represents scopes as a tree structure. Created during the semantic analysis.
+
+The leaves are the methods, and are nested inside the class scope, that itself is nested in the file/root scope.
+
+If there could be inner scopes such as variable declarations inside {}, the leaves would be those nested scopes.
+
+The file scope also includes the constructors and imports (as classes) with their respective constructors.
+
+#### CodeTree
+
+This IR is generated from Jasmin code, and is a graph structure, where the nodes are either "loads", "stores", "ifs", "gotos" or "labels", and have the necessary information (such as the current chosen index, etc), "ponting" to the next possible instructions ("ifs" point to 2 nodes).
+
+So as to allow for a better manipulation of the stream-like code, hash-based hooks are inserted into the jasmin code as comments and then stored in the nodes of this IR, to allow for unequivocal line manipulation (p.ex. store_1 can be present in two different methods, but we need to treat them separately)
 
 ### Logical Structure
 
@@ -109,37 +184,8 @@ The nodes that represent classes (only 1 for j--), also have a tree of Structure
 
 Structure define the control flow and its extended object, Expression, define the "leaf" node expressions/statements.
 
-## Project Structure
 
-### File Structure
 
-#### Main.java
-
-The class containing the main function.
-
-Reads the arguments and sends them to the relevant classes.
-
-Reads the file, starts the parser, analyzer and handles whatever exceptions pop-up
-
-#### javacc/JMMParser.jjt
-
-The JJTree/Javacc parser.
-
-Implements the grammar and throws parsing exceptions.
-
-#### javacc/SimpleNode.java
-
-A replacement for the auto-generated simple node.
-
-Holds custom information (only 3 new variables).
-
-#### src/Analyzer.java
-
-The class that handles all of the Semantic analysis and generates the structures needed for Jasmin.
-
-#### src/Jasminify.java
-
-Turn the HIR into Jasmin code.
 
 ## Project requirements
 

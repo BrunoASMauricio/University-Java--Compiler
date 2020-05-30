@@ -2,22 +2,22 @@ import java.util.ArrayList;
 
 
 public class JasminCodeOptimization {
-    public static void Optimize(String jasmin_code, ScopeNode semantic_class_root, int register_ammount, int optimizations_arg){
+    public static void Optimize(String jasmin_code, ScopeNode semantic_class_root, int register_ammount, Boolean optimizations_arg){
         CodeTree.generateTree(jasmin_code);
         getUninitializedVariables(semantic_class_root);
-        if(optimizations_arg > 1){
-            getLiveliness(register_ammount);
+        if(register_ammount > 0){
+            setLiveliness(register_ammount);
         }
         Analyzer.throwAllExceptions();
     }
     
-    public static void getLiveliness(int register_ammount){
+    public static void setLiveliness(int register_ammount){
         int rep = 0;
         int max_colors;
         int max_paint_registers;
+        int max_current;
         Boolean[] paint;
         for(CodeTree.CodeNode root_tree : CodeTree.all_roots){
-            System.out.println("New method");
             //Remove root node (only used in another section, here it's in the way)
             root_tree.all_nodes.remove(0);
             //Locals need to be shoved in as writes
@@ -121,11 +121,11 @@ public class JasminCodeOptimization {
             paint = new Boolean[max_colors];
             max_paint_registers = 0;
             for(GraphNode node : GraphNode.all_nodes){
-                System.out.print("Index: "+node.index+" interferes with:");
-                for(GraphNode int_node : node.interference){
-                    System.out.print(" "+int_node.index);
-                }
-                System.out.println();
+                //System.out.print("Index: "+node.index+" interferes with:");
+                //for(GraphNode int_node : node.interference){
+                //    System.out.print(" "+int_node.index);
+                //}
+                //System.out.println();
                 for(int i = 0; i < max_colors; i++){
                     paint[i] = true;
                 }
@@ -150,10 +150,13 @@ public class JasminCodeOptimization {
             if(max_paint_registers > register_ammount){
                 throw new RuntimeException("Cannot use only "+register_ammount+" minimum of "+max_paint_registers);
             }
-            System.out.println("Reduced locals from "+root_tree.locals+" to "+max_paint_registers);
+            max_current = 0;
             //Update variable indexes
             for(CodeTree.CodeNode node : root_tree.all_nodes){
                 GraphNode n = GraphNode.getNode(node.index);
+                if(max_current < node.index){
+                    max_current = node.index;
+                }
                 if(node.index == n.painted_index || node.hash == -1){
                     continue;
                 }
@@ -171,6 +174,9 @@ public class JasminCodeOptimization {
                     Jasminify.out = Jasminify.out.replaceAll("iinc "+node.index+" "+node.iinc+" ;"+node.hash, "iinc "+n.painted_index+" "+node.iinc+" ;"+node.hash+"\n; changed "+node.index+" "+n.painted_index);
                 }
                 //istore_1 ;747464370
+            }
+            if(max_paint_registers != max_current){
+                System.out.println("Reduced locals from "+max_current+" to "+max_paint_registers);
             }
         }
     }
@@ -311,18 +317,6 @@ public class JasminCodeOptimization {
         return true;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     public static void getUninitializedVariables(ScopeNode semantic_class_root){
         //For each method tree
         int hash;
@@ -352,8 +346,8 @@ public class JasminCodeOptimization {
                 }
             }
         }
-
     }
+
     public static boolean searchForLife(ArrayList<Integer> the_living, int life){
         for(Integer alive : the_living){
             if(alive.intValue() == life){
@@ -362,6 +356,7 @@ public class JasminCodeOptimization {
         }
         return false;
     }
+
     public static ArrayList<Integer> searchNest(ArrayList<Integer> in_alive, CodeTree.CodeNode node, int nest_jump_index, int _arg_amm){
         ArrayList<Integer> localFauna = new ArrayList<Integer>();
         ArrayList<Integer> nestedFauna1;
@@ -456,9 +451,6 @@ public class JasminCodeOptimization {
     Checks if all paths have been searched.
     Paths that ended are marked True
     */
-    public static void allPathsSearched(){
-        
-    }
 
     public static void recursiveSearch(ArrayList<Integer> initialized_vars, CodeTree.CodeNode node){
         node.read = true;

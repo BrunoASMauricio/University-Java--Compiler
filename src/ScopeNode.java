@@ -28,6 +28,7 @@ public class ScopeNode extends Symbol{
         this.structures = new ArrayList<Structure>();
         this.table = new SymbolTable();
     }
+
     public static void buildSignature(Symbol _symbol) {
         switch(_symbol.type){
             case Symbol.t_method_static:
@@ -138,16 +139,4 @@ public class ScopeNode extends Symbol{
         }
         return null;
     }
-
-    /*public int getType(){
-        return this.type;
-    }
-    
-    public int getNmbChildren(){
-        return this.children.size();
-    }
-    
-    public ScopeNode getChild(int i){
-        return this.children.get(i);
-    }*/
 }

@@ -27,19 +27,19 @@ public class Main {
         InputStream file_stream = null;
         int r = 0;
         int v = 0;
-        int o = 0;
+        boolean o = false;
         SimpleNode AST_root = null;
         ScopeNode semantic_class_root = null;
         ScopeNode semantic_file_root = null;
         
         //Read arguments
         for(int i = 0; i < args.length; i++){
-            if(args[i].substring(0,3).equals("-v=")){
-                v = Integer.parseInt(args[i].substring(3));
+            if(args[i].substring(0,2).equals("-o")){
+                o = true;
             }else if(args[i].substring(0,3).equals("-r=")){
                 r = Integer.parseInt(args[i].substring(3));
-            }else if(args[i].substring(0,3).equals("-o=")){
-                o = Integer.parseInt(args[i].substring(3));
+            }else if(args[i].substring(0,3).equals("-v=")){
+                v = Integer.parseInt(args[i].substring(3));
             }else if(args[i].substring(args[i].length()-4, args[i].length()).equals(".jmm")){
                 input_file = args[i];
             }else{
@@ -72,7 +72,7 @@ public class Main {
             JMMParser.eval(AST_root, 0);
         }
 
-        SyntaxToSemanticOptimizations.Optimize(AST_root, o);
+        //SyntaxToSemanticOptimizations.Optimize(AST_root, o);
 
         //                  USE SEMANTIC ANALYZER TO GENERATE Scope TREE
 

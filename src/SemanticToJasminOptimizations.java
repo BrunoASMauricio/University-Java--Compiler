@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 
 public class SemanticToJasminOptimizations {
-    public static void Optimize(ScopeNode class_root, int optimizations_arg){
+    public static void Optimize(ScopeNode class_root, Boolean optimizations_arg){
         constantPropagation(class_root);
         constantFolding(class_root);
     }
@@ -57,7 +57,7 @@ public class SemanticToJasminOptimizations {
             }
         }
     }
-    
+
     public static void constantPropagation(ScopeNode class_root){
 
         for(ScopeNode method : class_root.children){

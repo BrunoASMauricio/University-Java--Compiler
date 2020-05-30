@@ -24,7 +24,7 @@ if [ $# != 6 ]; then
     echo "3: jasmin output and higher"
     echo "INTERACTIVE: == 1 to allow direct Java program interaction (no java output logging)"
     echo "RVALUE: -r value to pass to the compiler"
-    echo "OVALUE: -o value to pass to the compiler"
+    echo "OVALUE: -o value to pass to the compiler (!0 to activate the flag)"
     exit -1
 fi
 
@@ -46,7 +46,12 @@ fi
 echo GRADLE SUCCESSFUL
 
 #Run compiler
-$JavaC -jar comp2020-2i.jar $1 -v=$3 -r=$5 -o=$6 &> ./run_tmp/compiler_output
+if [ $6 -gt 0 ]; then
+    $JavaC -jar comp2020-2i.jar $1 -v=$3 -r=$5 -o &> ./run_tmp/compiler_output
+else
+    $JavaC -jar comp2020-2i.jar $1 -v=$3 -r=$5 &> ./run_tmp/compiler_output
+fi
+
 cat ./run_tmp/compiler_output
 if ! cat ./run_tmp/compiler_output | grep -q 'COMPILATION SUCCESSFUL'; then
     echo COMPILATION FAILED
