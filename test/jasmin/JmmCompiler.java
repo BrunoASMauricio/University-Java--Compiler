@@ -21,7 +21,7 @@ public class JmmCompiler {
 		// Below there is an example implementation, that assumes that the .j file is generated in the repository root
 		// Adapt the code according to your implementation.
 		//throw new RuntimeException("Implement JmmCompiler.compile() in order to test the execution of .jmm files");			
-
+		
 		
 
 		
@@ -41,8 +41,8 @@ public class JmmCompiler {
         } catch (Exception e) {
 			throw new RuntimeException("Error with compiling jmm", e);
 		}
-
-		var filename = SpecsIo.removeExtension(jmm.getName()) + ".j";
+		
+		var filename = "JasminOut.j";
 		
 		// TODO: where is the .j file? This code works when the .j file has the same name as the .jmm file, and is generated in the repository root. Adapt code according to how your J-- compiler works
 		var jFile = new File(filename);

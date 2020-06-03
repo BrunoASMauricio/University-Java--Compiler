@@ -175,7 +175,7 @@ public class JasminUtils {
 			classpath += File.pathSeparator + testClasspath;
 		}
 		
-		var command = Arrays.asList("java", "-cp", classpath, SpecsIo.removeExtension(classFile.getName()));
+		var command = Arrays.asList("/usr/lib/jvm/java-13-openjdk/bin/java", "-cp", classpath, SpecsIo.removeExtension(classFile.getName()));
 		System.out.println("Executing " + command.stream().collect(Collectors.joining(" ")));
 		
 		

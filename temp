@@ -1,0 +1,229 @@
+Initialized native services in: /home/bruno/.gradle/native
+Starting process 'command '/usr/lib/jvm/java-13-openjdk/bin/java''. Working directory: /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i Command: /usr/lib/jvm/java-13-openjdk/bin/java -version
+Successfully started process 'command '/usr/lib/jvm/java-13-openjdk/bin/java''
+Found daemon DaemonInfo{pid=1352674, address=[bb083821-c387-4ba0-99aa-86f2325f8111 port:37797, addresses:[/127.0.0.1]], state=Idle, lastBusy=1591187433477, context=DefaultDaemonContext[uid=21936472-fc2e-405e-9095-6067244794e1,javaHome=/usr/lib/jvm/java-8-openjdk,daemonRegistryDir=/home/bruno/.gradle/daemon,pid=1352674,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=utf8,-Duser.country=US,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+Java home is different.
+Wanted: DefaultDaemonContext[uid=null,javaHome=/usr/lib/jvm/java-13-openjdk,daemonRegistryDir=/home/bruno/.gradle/daemon,pid=1374138,idleTimeout=null,priority=NORMAL,daemonOpts=--add-opens,java.base/java.util=ALL-UNNAMED,--add-opens,java.base/java.lang=ALL-UNNAMED,--add-opens,java.base/java.lang.invoke=ALL-UNNAMED,--add-opens,java.prefs/java.util.prefs=ALL-UNNAMED,-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+Actual: DefaultDaemonContext[uid=21936472-fc2e-405e-9095-6067244794e1,javaHome=/usr/lib/jvm/java-8-openjdk,daemonRegistryDir=/home/bruno/.gradle/daemon,pid=1352674,idleTimeout=10800000,priority=NORMAL,daemonOpts=-XX:MaxMetaspaceSize=256m,-XX:+HeapDumpOnOutOfMemoryError,-Xms256m,-Xmx512m,-Dfile.encoding=utf8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 1353438). The daemon log file: /home/bruno/.gradle/daemon/6.4/daemon-1353438.out.log
+Starting 23rd build in daemon [uptime: 3 hrs 18 mins 6.837 secs, performance: 100%, non-heap usage: 26% of 268.4 MB]
+Using 4 worker leases.
+Starting Build
+Settings evaluated using settings file '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/settings.gradle'.
+Projects loaded. Root project using build file '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/build.gradle'.
+Included projects: [root project 'comp2020-2i']
+
+> Configure project :
+Evaluating root project 'comp2020-2i' using build file '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/build.gradle'.
+All projects evaluated.
+Selected primary task 'build' from project :
+Tasks to be executed: [task ':compileJjtree', task ':compileJavacc', task ':compileJava', task ':processResources', task ':classes', task ':jar', task ':assemble', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test', task ':check', task ':copyJar', task ':build']
+Tasks that were excluded: []
+:compileJjtree (Thread[Execution worker for ':',5,main]) started.
+
+> Task :compileJjtree UP-TO-DATE
+Caching disabled for task ':compileJjtree' because:
+  Build cache is disabled
+Skipping task ':compileJjtree' as it is up-to-date.
+:compileJjtree (Thread[Execution worker for ':',5,main]) completed. Took 0.01 secs.
+:compileJavacc (Thread[Execution worker for ':',5,main]) started.
+
+> Task :compileJavacc UP-TO-DATE
+Caching disabled for task ':compileJavacc' because:
+  Build cache is disabled
+Skipping task ':compileJavacc' as it is up-to-date.
+:compileJavacc (Thread[Execution worker for ':',5,main]) completed. Took 0.002 secs.
+:compileJava (Thread[Execution worker for ':',5,main]) started.
+
+> Task :compileJava UP-TO-DATE
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/main/java', not found
+Caching disabled for task ':compileJava' because:
+  Build cache is disabled
+Skipping task ':compileJava' as it is up-to-date.
+:compileJava (Thread[Execution worker for ':',5,main]) completed. Took 0.021 secs.
+:processResources (Thread[Execution worker for ':',5,main]) started.
+
+> Task :processResources NO-SOURCE
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/main/resources', not found
+Skipping task ':processResources' as it has no source files and no previous output files.
+:processResources (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
+:classes (Thread[Execution worker for ':',5,main]) started.
+
+> Task :classes UP-TO-DATE
+Skipping task ':classes' as it has no actions.
+:classes (Thread[Execution worker for ':',5,main]) completed. Took 0.0 secs.
+:jar (Thread[Execution worker for ':',5,main]) started.
+
+> Task :jar UP-TO-DATE
+Caching disabled for task ':jar' because:
+  Build cache is disabled
+Skipping task ':jar' as it is up-to-date.
+:jar (Thread[Execution worker for ':',5,main]) completed. Took 0.006 secs.
+:assemble (Thread[Execution worker for ':' Thread 3,5,main]) started.
+
+> Task :assemble UP-TO-DATE
+Skipping task ':assemble' as it has no actions.
+:assemble (Thread[Execution worker for ':' Thread 3,5,main]) completed. Took 0.001 secs.
+:compileTestJava (Thread[Execution worker for ':' Thread 3,5,main]) started.
+
+> Task :compileTestJava
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/java', not found
+Caching disabled for task ':compileTestJava' because:
+  Build cache is disabled
+Task ':compileTestJava' is not up-to-date because:
+  Input property 'stableSources' file /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/test/jasmin/JasminTest.java has changed.
+  Input property 'stableSources' file /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/test/jasmin/JasminUtils.java has changed.
+Created classpath snapshot for incremental compilation in 0.011 secs.
+Class dependency analysis for incremental compilation took 0.003 secs.
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/java', not found
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/java', not found
+Compiling with JDK Java compiler API.
+Incremental compilation of 2 classes completed in 0.247 secs.
+:compileTestJava (Thread[Execution worker for ':' Thread 3,5,main]) completed. Took 0.33 secs.
+:processTestResources (Thread[Execution worker for ':' Thread 3,5,main]) started.
+
+> Task :processTestResources UP-TO-DATE
+file or directory '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/resources', not found
+Could not read file path '/home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/src/test/resources'.
+Caching disabled for task ':processTestResources' because:
+  Build cache is disabled
+Skipping task ':processTestResources' as it is up-to-date.
+:processTestResources (Thread[Execution worker for ':' Thread 3,5,main]) completed. Took 0.03 secs.
+:testClasses (Thread[Execution worker for ':' Thread 3,5,main]) started.
+
+> Task :testClasses
+Skipping task ':testClasses' as it has no actions.
+:testClasses (Thread[Execution worker for ':' Thread 3,5,main]) completed. Took 0.0 secs.
+:test (Thread[Execution worker for ':' Thread 3,5,main]) started.
+Gradle Test Executor 12 started executing tests.
+
+> Task :test
+Caching disabled for task ':test' because:
+  Build cache is disabled
+Task ':test' is not up-to-date because:
+  Input property 'candidateClassFiles' file /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/build/classes/java/test/jasmin/JasminTest.class has changed.
+  Input property 'candidateClassFiles' file /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/build/classes/java/test/jasmin/JasminUtils.class has changed.
+  Input property 'classpath' file /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i/build/classes/java/test/jasmin/JasminTest.class has changed.
+Starting process 'Gradle Test Executor 12'. Working directory: /home/bruno/transport/documentation/FEUP/TEC/4_Ano/2_Semestre/Compiladores/trabalho/GitLab/comp2020-2i Command: /usr/lib/jvm/java-13-openjdk/bin/java -Dorg.gradle.native=false @/tmp/gradle-worker-classpath7960882556211611383txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 12'
+Successfully started process 'Gradle Test Executor 12'
+
+jasmin.JasminTest > testMonteCarloPi STANDARD_OUT
+    Parsing file /tmp/fixtures/public/MonteCarloPi.jmm_bruno/fixtures/public/MonteCarloPi.jmm
+    Parser starting
+    Analyzer starting on /tmp/fixtures/public/MonteCarloPi.jmm_bruno/fixtures/public/MonteCarloPi.jmm
+    COMPILATION SUCCESSFUL
+    Jasmin:
+    Generated: /tmp/jasmin-comp_bruno/df4f5483-4c08-4f14-ba12-8e53c108f649/MonteCarloPi.class
+
+    Executing /usr/lib/jvm/java-13-openjdk/bin/java -cp /tmp/jasmin-comp_bruno/df4f5483-4c08-4f14-ba12-8e53c108f649:./test/fixtures/libs/compiled MonteCarloPi
+    Insert number: Result: 0
+    Program output:
+    Insert number: Result: 0
+
+
+jasmin.JasminTest > testTicTacToe STANDARD_OUT
+    Parsing file /tmp/fixtures/public/TicTacToe.jmm_bruno/fixtures/public/TicTacToe.jmm
+    Parser starting
+    Analyzer starting on /tmp/fixtures/public/TicTacToe.jmm_bruno/fixtures/public/TicTacToe.jmm
+    WARNING duplicate import on line 2
+    COMPILATION SUCCESSFUL
+    Jasmin:
+    Generated: /tmp/jasmin-comp_bruno/0d0d5501-e3e7-4078-9b7d-48230067c936/TicTacToe.class
+
+    Executing /usr/lib/jvm/java-13-openjdk/bin/java -cp /tmp/jasmin-comp_bruno/0d0d5501-e3e7-4078-9b7d-48230067c936:./test/fixtures/libs/compiled TicTacToe
+
+    0|0|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|0|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 2 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    0|1|0
+    - - -
+    0|0|0
+
+    Player 2 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    2|1|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    2|1|0
+    - - -
+    0|0|1
+
+    Congratulations, 1, you have won the game.
+    Program output:
+
+    0|0|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|0|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 2 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    0|0|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    0|1|0
+    - - -
+    0|0|0
+
+    Player 2 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    2|1|0
+    - - -
+    0|0|0
+
+    Player 1 turn! Enter the row(0-2):  Enter the column(0-2): 
+    1|2|0
+    - - -
+    2|1|0
+    - - -
+    0|0|1
+
+    Congratulations, 1, you have won the game.
+
+
+jasmin.JasminTest > testWhileAndIF STANDARD_OUT
+    Parsing file /tmp/fixtures/public/WhileAndIF.jmm_bruno/fixtures/public/WhileAndIF.jmm
+    Parser starting
+    Analyzer starting on /tmp/fixtures/public/WhileAndIF.jmm_bruno/fixtures/public/WhileAndIF.jmm
+    COMPILATION SUCCESSFUL
