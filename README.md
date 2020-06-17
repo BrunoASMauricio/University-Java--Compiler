@@ -1,5 +1,31 @@
 # Compiler Project 2020
 
+## Group i
+
+NAME1: Bruno Alexandre de Salabert Maurício, NR1: up201604107, GRADE1: 19, CONTRIBUTION1: 100 %
+
+GLOBAL Grade of the project: 18
+
+The compiler fullfills all the given requirements except for:
+
+* LOOKAHEAD of 1
+* * There are 3 moments in the Parser where the Lookahead is of 2 and not 1. This isn't "necessary", but it surely isn't as best as it could be.
+* Multiple while error exception
+* * This functionality was working in the required checkpoint but wasn't tested since then and even though it does save the exceptions, currently it only prints the last one (bug)
+* While optimization
+* After register optimization, .locals isn't updated
+* This keyword used as a variable, and not an access (a = this vs a = this.something())
+
+Due to the lack of time and experience on my behalf, the compiler isn't as good as it could be, but it succeeds in the great majority of the required tasks. Thus, I think it's reasonable to assess it as 18/20
+
+Since the majority of the things that I could evaluate as lacking or not working, would be indeed working if I had a bit more time and/or availability (and I believe that I prove this with the present work done), I think its fair to assess myself a 19/20 due to the effort put in, and the scale of the project.
+
+Further bellow is a more detailed explanation on the project.
+Please Note that most of the cons and "missing features" aren't required, and were ideas in case there was enough time.
+
+P.S.
+I think I was fair with my evaluation but I understand that, in my inexperience, I may have overlooked some aspects that diminish it.
+
 ### Using this compiler
 
 Usage: java Main [-r= < num >] [-o] < input_file.jmm > [-v=< 0|1|2|3 >]
@@ -199,7 +225,6 @@ The nodes that represent classes (only 1 for j--), also have a tree of Structure
 Structures are code lines.
 
 They define the control flow and its extended object, Expression, define the "leaf" node expressions/statements.
-
 
 
 
